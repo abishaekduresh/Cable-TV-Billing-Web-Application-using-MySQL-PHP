@@ -1,6 +1,7 @@
 <?php 
    session_start();
-   include "dbconfig.php";
+   require "dbconfig.php";
+   require "componenet.php";
     if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
         $session_username = $_SESSION['username']; ?>
         
@@ -77,20 +78,17 @@ if (mysqli_num_rows($query) > 0) {
         $hideoldMonthBalRow = ($oldMonthBal == 0);
         
         $hideStatusRow = ($pMode === 'cash' || $pMode === 'gpay');
-    
-    if (isset($_SESSION['id'])) {
-        // Get the user information before destroying the session
-        $userId = $_SESSION['id'];
-        $username = $_SESSION['username'];
-        $role = $_SESSION['role'];
-        // $currentDate = date('Y-m-d');  Taken from dbconfig.php file
-        // $currentTime = date('H:i:s');
-        $action = "Bill Printed - $stbNo";
 
-        // Insert user Bill Excel downloaded
-        $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$username', '$role', '$action')";
-        mysqli_query($con, $insertSql);
-    }
+        if (isset($_SESSION['id'])) {
+            // Get the user information before destroying the session
+            $userId = $_SESSION['id'];
+            $username = $_SESSION['username'];
+            $role = $_SESSION['role'];
+            $action = "Bill Printed - $stbNo";
+        
+            // Call the function to insert user activity log
+            logUserActivity($userId, $username, $role, $action);
+        }
     
 ?>
         <table border="1">

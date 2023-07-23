@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('dbconfig.php');
+require 'componenet.php';
 
 require 'vendor/autoload.php';
 $session_username = $_SESSION['username'];
@@ -33,19 +34,16 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    if (isset($_SESSION['id'])) {
-        // Get the user information before destroying the session
-        $userId = $_SESSION['id'];
-        $userName = $_SESSION['name'];
-        $role = $_SESSION['role'];
-        // $currentDate = date('Y-m-d');  Taken from dbconfig.php file
-        // $currentTime = date('H:i:s');
-        $action = "Group Bill Excel downloaded";
-
-        // Insert user Bill Excel downloaded
-        $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$userName', '$role', '$action')";
-        mysqli_query($con, $insertSql);
-    }
+        if (isset($_SESSION['id'])) {
+            // Get the user information before destroying the session
+            $userId = $_SESSION['id'];
+            $username = $_SESSION['username'];
+            $role = $_SESSION['role'];
+            $action = "Group Bill Excel downloaded";
+        
+            // Call the function to insert user activity log
+            logUserActivity($userId, $username, $role, $action);
+        }
 
     // Query to fetch data between two dates and apply filter conditions
     $query = "SELECT * FROM billgroup WHERE date BETWEEN '$from_date' AND '$to_date' $filterCondition $statusFilterCondition";

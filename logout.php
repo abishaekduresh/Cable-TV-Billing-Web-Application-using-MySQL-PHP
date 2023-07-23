@@ -20,21 +20,19 @@
 // ?>
 
 <?php
-session_start(); // Start the session
-include "dbconfig.php";
+session_start();
+require "dbconfig.php";
+require "componenet.php";
 
 if (isset($_SESSION['id'])) {
     // Get the user information before destroying the session
     $userId = $_SESSION['id'];
-    $session_username = $_SESSION['username'];
+    $username = $_SESSION['username'];
     $role = $_SESSION['role'];
-    $currentDate = $currentDate;
-    $currentTime = $currentTime;
-    $action = 'logged out';
+    $action = "Logged out";
 
-    // Insert user logout activity
-    $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$session_username', '$role', '$action')";
-    mysqli_query($con, $insertSql);
+    // Call the function to insert user activity log
+    logUserActivity($userId, $username, $role, $action);
 }
 
 // Unset all session variables

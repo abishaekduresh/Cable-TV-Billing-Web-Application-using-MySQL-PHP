@@ -1,7 +1,7 @@
 <?php
 session_start();
-include "dbconfig.php";
-require 'dbconfig.php';
+require "dbconfig.php";
+require "componenet.php";
 
 if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
@@ -171,19 +171,17 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             // Prepare the SQL statement
             $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, status, printStatus) VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', '$bill_status', '$printStatus')";
             
-            
-            
-                // Activity Log
                 if (isset($_SESSION['id'])) {
-                // Get the user information before destroying the session
-                $userId = $_SESSION['id'];
-                $role = $_SESSION['role'];
-                $action = "Bill Successful - $pMode - $stbno";
-            
-                // Insert user logout activity
-                $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$session_username', '$role', '$action')";
-                mysqli_query($con, $insertSql);
+                    // Get the user information before destroying the session
+                    $userId = $_SESSION['id'];
+                    $username = $_SESSION['username'];
+                    $role = $_SESSION['role'];
+                    $action = "Bill Successful - $pMode - $stbno";
+                
+                    // Call the function to insert user activity log
+                    logUserActivity($userId, $username, $role, $action);
                 }
+                
                 
             // Execute the SQL statement
             if ($con->query($sql) === TRUE) {

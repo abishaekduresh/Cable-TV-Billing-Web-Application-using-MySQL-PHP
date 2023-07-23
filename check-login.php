@@ -1,7 +1,8 @@
 <?php
 //login login
 session_start();
-include "dbconfig.php";
+require "dbconfig.php";
+require "componenet.php";
 
 if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role'])) {
 
@@ -42,15 +43,14 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role
                 $_SESSION['role'] = $row['role'];
                 $_SESSION['username'] = $row['username'];
 
-                // Insert user login activity
-                $userId = $row['id'];
-                $userName = $row['username'];
-                $role = $row['role'];
-                $currentDate = $currentDate;
-                $currentTime = $currentTime;
-                $action = 'logged in';
-                $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$userName', '$role', '$action')";
-                mysqli_query($con, $insertSql);
+                    // Get the user information before destroying the session
+                    $userId = $_SESSION['id'];
+                    $username = $_SESSION['username'];
+                    $role = $_SESSION['role'];
+                    $action = "Logged in";
+                
+                    // Call the function to insert user activity log
+                    logUserActivity($userId, $username, $role, $action);
 
                 header("Location: redirect-login.php");
                 exit(); // Terminate the script to prevent further execution

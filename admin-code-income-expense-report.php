@@ -1,16 +1,12 @@
 <?php
-require 'dbconfig.php';
+require "dbconfig.php";
+require "componenet.php";
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the selected fruit value from the form
     $selectedValue = $_POST['selectedValue'];
     $bill_no = $_POST['bill_no'];
-$currentDate = $currentDate;
-$currentTime = $currentTime;
-    // Perform any necessary validation or sanitization of the input data
-
-    // Connect to the database (assuming you have a database connection established)
 
     // Update the table with the selected fruit value
     $updateQuery = "UPDATE bill SET status = '$selectedValue' WHERE bill_id = '$bill_no'";
@@ -20,19 +16,16 @@ $currentTime = $currentTime;
         // Database update successful, perform any additional actions or display a success message
         echo "Database update successful. Bill Status updated to: " . $selectedValue; 
         
-    if (isset($_SESSION['id'])) {
-        // Get the user information before destroying the session
-        $userId = $_SESSION['id'];
-        $username = $_SESSION['username'];
-        $role = $_SESSION['role'];
-        // $currentDate = date('Y-m-d');  Taken from dbconfig.php file
-        // $currentTime = date('H:i:s');
-        $action = "Bill Cancel - $stbNo";
-
-        // Insert user Bill Excel downloaded
-        $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$username', '$role', '$action')";
-        mysqli_query($con, $insertSql);
-    }
+        if (isset($_SESSION['id'])) {
+            // Get the user information before destroying the session
+            $userId = $_SESSION['id'];
+            $username = $_SESSION['username'];
+            $role = $_SESSION['role'];
+            $action = "Bill Cancel - $stbNo";
+        
+            // Call the function to insert user activity log
+            logUserActivity($userId, $username, $role, $action);
+        }
     
         ?>
         <center><img src="assets/green-thumbs-up.svg" alt="green-thumbs-up" width="512px" height="512px"></center>

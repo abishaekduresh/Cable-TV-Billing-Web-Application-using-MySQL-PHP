@@ -1,6 +1,7 @@
 <?php
 session_start();
-require 'dbconfig.php';
+require "dbconfig.php";
+require "componenet.php";
 
 
 // Check if the form is submitted
@@ -30,17 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Database update successful, perform any additional actions or display a success message
         // echo "Database update successful. Bill Status updated to: " . $selectedValue; 
         
-    if (isset($_SESSION['id'])) {
-        // Get the user information before destroying the session
-        $userId = $_SESSION['id'];
-        $username = $_SESSION['username'];
-        $role = $_SESSION['role'];
-        $action = "Group Credit Update Successful - $selectedValue";
-
-        // Insert user Bill Excel downloaded
-        $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$username', '$role', '$action')";
-        mysqli_query($con, $insertSql);
-    }
+        if (isset($_SESSION['id'])) {
+            // Get the user information before destroying the session
+            $userId = $_SESSION['id'];
+            $username = $_SESSION['username'];
+            $role = $_SESSION['role'];
+            $action = "Group Credit Update Successful - $selectedValue";
+        
+            // Call the function to insert user activity log
+            logUserActivity($userId, $username, $role, $action);
+        }
     
         ?>
         <center><img src="assets/green-thumbs-up.svg" alt="green-thumbs-up" width="512px" height="512px"></center>
@@ -49,17 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Database update failed, handle the error
         echo "Error updating the database.";
 
-    if (isset($_SESSION['id'])) {
-        // Get the user information before destroying the session
-        $userId = $_SESSION['id'];
-        $username = $_SESSION['username'];
-        $role = $_SESSION['role'];
-        $action = "Group Credit Update Failed - $selectedValue";
-
-        // Insert user Bill Excel downloaded
-        $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$username', '$role', '$action')";
-        mysqli_query($con, $insertSql);
-    }
+        if (isset($_SESSION['id'])) {
+            // Get the user information before destroying the session
+            $userId = $_SESSION['id'];
+            $username = $_SESSION['username'];
+            $role = $_SESSION['role'];
+            $action = "Group Credit Update Failed - $selectedValue";
+        
+            // Call the function to insert user activity log
+            logUserActivity($userId, $username, $role, $action);
+        }
         
         ?>
         <center><img src="assets/red-thumbs-down.svg" alt="green-thumbs-up" width="512px" height="512px"></center>
