@@ -2,6 +2,7 @@
 session_start();
 include "dbconfig.php";
 require 'dbconfig.php';
+require "component.php";
 
 if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
@@ -71,6 +72,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             $discount = mysqli_real_escape_string($con, $_POST["discount"]);
             $phone = mysqli_real_escape_string($con, $_POST["phone"]);
             $groupID = mysqli_real_escape_string($con, $_POST["groupID"]);
+            $groupName = mysqli_real_escape_string($con, $_POST["groupName"]);
             $Rs = $billAmount;
             
             $Rs = $Rs + $oldMonthBal;
@@ -81,8 +83,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             
             
             // Prepare the INSERT query
-            $sql = "INSERT INTO `billgroupdetails` (`billGroupNo`, `date`, `time`, `billBy`, `groupID`, `phone`, `pMode`, `oldMonthBal`, `billAmount`, `discount`, `Rs`, `status`) 
-            VALUES ('$billNo', '$currentDate', '$currentTime', '$session_username', '$groupID', '$phone', '$pMode', '$oldMonthBal', '$billAmount', '$discount', '$Rs', '$status')";
+            $sql = "INSERT INTO `billgroupdetails` (`billGroupNo`, `date`, `time`, `billBy`, `groupID`, `groupName`, `phone`, `pMode`, `oldMonthBal`, `billAmount`, `discount`, `Rs`, `status`) 
+            VALUES ('$billNo', '$currentDate', '$currentTime', '$session_username', '$groupID', '$groupName', '$phone', '$pMode', '$oldMonthBal', '$billAmount', '$discount', '$Rs', '$status')";
             
             // Execute the query
             if ($con->query($sql) === true) {
@@ -206,7 +208,7 @@ $status = 'approve';
                                             <select name="groupID" class="form-select">
                                                 <option value="select" selected disabled>Select</option>
                                                 <?php
-                                                $query = "SELECT * FROM groupinfo WHERE groupName != 'Indiv' AND groupName != 'ALL'";
+                                                $query = "SELECT * FROM groupinfo WHERE id != '1' AND id != '2' LIMIT 100";
                                                 $result = mysqli_query($con, $query);
                                                 $selectedValue = isset($_GET['groupID']) ? $_GET['groupID'] : ''; // Get the selected value from the URL
 

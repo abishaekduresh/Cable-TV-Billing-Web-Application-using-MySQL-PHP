@@ -2,7 +2,7 @@
 //login login
 session_start();
 require "dbconfig.php";
-require "componenet.php";
+require "component.php";
 
 if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role'])) {
 

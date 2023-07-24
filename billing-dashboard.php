@@ -1,7 +1,7 @@
 <?php
 session_start();
 require "dbconfig.php";
-require "componenet.php";
+require "component.php";
 
 if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
@@ -402,7 +402,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                             // $currentYear = $datetime->format('Y');
     
                                             $query = "SELECT * FROM customer 
-                                            WHERE CONCAT(stbno, name, phone) LIKE '%$filtervalues%' AND cusGroup = 'Indiv' LIMIT 300";
+                                            WHERE CONCAT(stbno, name, phone) LIKE '%$filtervalues%' AND cusGroup = '1' LIMIT 300";
     
                                             $query_run = mysqli_query($con, $query);
     

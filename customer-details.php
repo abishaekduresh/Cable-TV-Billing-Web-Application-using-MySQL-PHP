@@ -46,14 +46,14 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                                 <option value="" selected disabled>Select</option>
                                                 <?php
                                                 
-                                                $query = "SELECT id,groupName FROM groupinfo WHERE groupName != 'ALL'";
+                                                $query = "SELECT id,groupName FROM groupinfo WHERE id != '2'";
                                                 $result = mysqli_query($con, $query);
                                                 
                                                 while ($row = mysqli_fetch_assoc($result)) {
                                                     $optionValueID = $row['id'];
                                                     $optionValue = $row['groupName'];
                                                     ?>
-                                                    <option value="<?php echo $optionValueID; ?>"><?php echo $optionValue; ?></option>
+                                                    <option value="<?php echo $optionValueID; ?>"><?php echo $optionValue;?></option>
                                                     <?php
                                                 }
                                                 
@@ -62,8 +62,8 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
     
                     <label for="selectBox" class="form-label">Select an MSO: *</label>
                     <select style="font-weight: bold;" name="mso" class="form-select" required>
-                      <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
-                      <option style="font-weight: bold;" value="VK" selected>VK DIGITAL</option>
+                      <option style="font-weight: bold;" selected disabled>Select ...</option>
+                      <option style="font-weight: bold;" value="VK">VK DIGITAL</option>
                       <option style="font-weight: bold;" value="GTPL">GTPL</option>
                     </select>
 
@@ -119,7 +119,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                                 <option value="" selected disabled>Select</option>
                                                 <?php
                                                 
-                                                $query = "SELECT id,groupName FROM groupinfo WHERE groupName != 'ALL'";
+                                                $query = "SELECT id,groupName FROM groupinfo WHERE id != '2'";
                                                 $result = mysqli_query($con, $query);
                                                 
                                                 while ($row = mysqli_fetch_assoc($result)) {

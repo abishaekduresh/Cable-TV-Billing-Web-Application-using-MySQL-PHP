@@ -17,7 +17,7 @@ $date = $_GET['date'];
 
 
 $query = mysqli_query($con, "SELECT *
-FROM billgroupdetails WHERE groupID = '$groupID' AND date = '$date';
+FROM billgroupdetails WHERE groupID = '$groupID' AND date = '$date' AND status='approve';
 ");
 
 
@@ -67,7 +67,7 @@ if (mysqli_num_rows($query) > 0) {
         $billNo = $row["billGroupNo"];
         $date = $row["date"];
         $time = $row["time"];
-        $billTo = $row["groupID"];
+        $billTo = $row["groupName"];
         $phone = $row["phone"];
         $billAmount= $row["billAmount"];
         $oldMonthBal = $row["oldMonthBal"];

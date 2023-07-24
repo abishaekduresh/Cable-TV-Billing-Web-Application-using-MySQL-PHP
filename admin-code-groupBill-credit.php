@@ -1,7 +1,7 @@
 <?php
 session_start();
 require "dbconfig.php";
-require "componenet.php";
+require "component.php";
 
 
 // Check if the form is submitted

@@ -1,6 +1,7 @@
 <?php 
    session_start();
    include "dbconfig.php";
+   require "component.php";
     if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
         $session_username = $_SESSION['username']; ?>
         

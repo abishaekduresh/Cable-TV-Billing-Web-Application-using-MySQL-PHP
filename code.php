@@ -3,6 +3,7 @@
 <?php
 session_start();
 include('dbconfig.php');
+require "component.php";
 
 require 'vendor/autoload.php';
 
@@ -260,7 +261,7 @@ if(isset($_POST['update_customer']))
 
 if(isset($_POST['save_student']))
 {
-    $cusGroup = mysqli_real_escape_string($con, $_POST['cusGroup']);
+    $cusGroup = mysqli_real_escape_string($con, $_POST['groupName']);
     $mso = mysqli_real_escape_string($con, $_POST['mso']);
     $stbno = mysqli_real_escape_string($con, $_POST['stbno']);
     $name = mysqli_real_escape_string($con, $_POST['name']);

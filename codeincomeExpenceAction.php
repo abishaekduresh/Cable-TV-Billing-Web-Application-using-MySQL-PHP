@@ -2,6 +2,7 @@
 session_start();
 $session_username = $_SESSION['username']; 
 include('dbconfig.php');
+require "component.php";
 
 if(isset($_POST['save_student']))
 {

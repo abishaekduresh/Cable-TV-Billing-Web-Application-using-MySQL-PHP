@@ -1,7 +1,7 @@
 <?php
 session_start();
 include('dbconfig.php');
-require 'componenet.php';
+require "component.php";
 
 require 'vendor/autoload.php';
 $session_username = $_SESSION['username'];
