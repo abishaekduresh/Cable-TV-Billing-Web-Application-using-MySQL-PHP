@@ -16,7 +16,9 @@ $currentTimeA = $datetime->format('h:i:s A');
 $currentTime = $datetime->format('H:i:s');
 $currentDate = $datetime->format('Y-m-d');
 
-$timestamp = $datetime->format('Y-m-d H:i:s');
+$currentDateTime = $datetime->format('Y-m-d H:i:s');
+
+// $timestamp = $datetime->format('Y-m-d H:i:s');
 
 $currentDay = $datetime->format('d');
 $currentMonth = $datetime->format('m');

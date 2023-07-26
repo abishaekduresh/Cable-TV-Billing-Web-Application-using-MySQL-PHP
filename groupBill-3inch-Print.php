@@ -20,8 +20,29 @@ $query = mysqli_query($con, "SELECT *
 FROM billgroupdetails WHERE groupID = '$groupID' AND date = '$date' AND status='approve';
 ");
 
+/// HEADER ///
 
-/////////////////////////////////////////////////////////
+// Perform a SELECT query to fetch data from the database
+$sql = "SELECT * FROM settings"; // Replace 'your_table_name' with your actual table name
+
+$result = $con->query($sql);
+
+// Check if there are any rows returned
+if ($result->num_rows > 0) {
+    // Loop through each row and fetch the data
+    while ($row = $result->fetch_assoc()) {
+        $appName = $row['appName'];
+        $addr1 = $row['addr1'];
+        $addr2 = $row['addr2'];
+        $phone = $row['phone'];
+        $footer1 = $row['prtFooter1'];
+        $footer2 = $row['prtFooter2'];
+    }
+} else {
+    echo "No data found.";
+}
+
+$hidePromotion = ($footer1 != NULL);
 
 ?>
 <html>
@@ -34,6 +55,22 @@ FROM billgroupdetails WHERE groupID = '$groupID' AND date = '$date' AND status='
     th, td {
       border-style: dashed;
     }
+
+
+    .spacer {
+        margin-bottom: 2px; /* Use margin to create vertical spacing */
+    }
+    .spacer2 {
+        margin-bottom: 5px; /* Use margin to create vertical spacing */
+    }
+
+    .container {
+        padding: 5px; /* Use padding to create space inside an element */
+        border: 1px solid #000; /* Add a 1px solid black border around the container */
+        max-width: 300px; /* Optionally set a maximum width for the container */
+        margin: 0 auto; /* Center the container horizontally on the page */
+    }
+
 </style>
 
 </head>
@@ -43,9 +80,9 @@ FROM billgroupdetails WHERE groupID = '$groupID' AND date = '$date' AND status='
       <tr>
         <td>
             <center>
-                <p style="font-family:Arial; font-size:17px"><b>THOOYAVAN PDP CABLE TV</b>
-                    <br>260,Udangudi Road, Thisayanvilai
-                    <br>Phone : +91 9842181951</p>
+                <p style="font-family:Arial; font-size:17px"><b><?= $appName ?></b>
+                    <br><?= $addr1 ?>, <?= $addr2 ?>
+                    <br>Phone : +91 <?= $phone ?></p>
             </center>
         </td>
       </tr>
@@ -85,7 +122,7 @@ if (mysqli_num_rows($query) > 0) {
         $userId = $_SESSION['id'];
         $username = $_SESSION['username'];
         $role = $_SESSION['role'];
-        $action = "Group Bill On Printed - $groupID";
+        $action = "Group Bill Printed - $billTo";
 
         
         $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$username', '$role', '$action')";
@@ -156,7 +193,14 @@ if (mysqli_num_rows($query) > 0) {
                 <td colspan="2"><center>Credit</center></td>
             </tr>
         </table>
-        <br/>
+
+
+<div class="spacer2"></div>
+<div <?php if ($hidePromotion) echo 'class="container"'; ?>>
+    <div align="center"><?= $footer1 ?></div>
+    <div class="spacer"></div> <!-- Use a div with a class for spacing -->
+    <div align="center"><?= $footer2 ?></div>
+
 </body>
 </html>
 <?php

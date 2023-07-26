@@ -153,7 +153,7 @@
                             <tbody>
                                 <?php 
 
-                                    $query = "SELECT * FROM groupinfo WHERE groupName != 'Indiv' AND groupName != 'All'";
+                                    $query = "SELECT * FROM groupinfo WHERE id != '1' AND id != '2'";
                                     $query_run = mysqli_query($con, $query);
 
                                     if(mysqli_num_rows($query_run) > 0)

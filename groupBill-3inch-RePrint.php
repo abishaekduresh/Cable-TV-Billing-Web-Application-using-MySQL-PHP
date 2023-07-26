@@ -85,7 +85,7 @@ if (mysqli_num_rows($query) > 0) {
         $userId = $_SESSION['id'];
         $username = $_SESSION['username'];
         $role = $_SESSION['role'];
-        $action = "Group Bill Re Printed - $groupID";
+        $action = "Group Bill Re Printed - $billTo";
 
         
         $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$username', '$role', '$action')";

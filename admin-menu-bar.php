@@ -104,8 +104,9 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
             </ul>
 
             <form class="form-inline my-3 my-lg-0">
+                <a class="nav-link" href="app-settings.php"><button type="button" class="btn btn-info"><b>App Settings</b></button></a>
                 <a class="nav-link" href="logout.php"><button type="button" class="btn btn-success">Logout</button></a>
-                <a class="nav-link" href="/backup" target="blank"><button type="button" class="btn btn-warning">Backup</button></a>
+                <a class="nav-link" href="backup" target="blank"><button type="button" class="btn btn-warning">Backup</button></a>
             </form>
         </div>
     </nav>

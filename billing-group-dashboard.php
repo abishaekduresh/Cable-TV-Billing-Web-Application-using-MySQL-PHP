@@ -147,7 +147,7 @@ $status = 'approve';
         }
 
         // Usage example
-        $url = "groupBill-3inch-OnPrint.php?groupID=$groupID&date=$currentDate";
+        $url = "groupBill-3inch-Print.php?groupID=$groupID&date=$currentDate";
         redirect($url);
     }
     $groupID = '';  

@@ -78,7 +78,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                     </div>
                     <div class="mb-3">
                         <label for="phone">Phone *</label>
-                        <input style="font-weight: bold;" type="text" name="phone" class="form-control" required />
+                        <input style="font-weight: bold;" type="text" name="phone" class="form-control" pattern="[0-9]{10}" required />
                     </div>
                     <div class="mb-3">
                         <label for="description">Remark</label>
@@ -151,7 +151,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                 </div>
                 <div class="mb-3">
                         <label for="phone">Phone *</label>
-                        <input style="font-weight: bold;" type="text" name="phone" id="phone" class="form-control" required />
+                        <input style="font-weight: bold;" type="text" name="phone" id="phone" class="form-control" pattern="[0-9]{10}" required />
                 </div>
                 <div class="mb-3">
                         <label for="description">Remark</label>

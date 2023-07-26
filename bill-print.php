@@ -16,7 +16,29 @@ if ($con->connect_error) {
 $id = $_GET['id'];
 $query = mysqli_query($con, "SELECT * FROM bill WHERE bill_id = $id");
 
-/////////////////////////////////////////////////////////
+/// HEADER ///
+
+// Perform a SELECT query to fetch data from the database
+$sql = "SELECT * FROM settings"; // Replace 'your_table_name' with your actual table name
+
+$result = $con->query($sql);
+
+// Check if there are any rows returned
+if ($result->num_rows > 0) {
+    // Loop through each row and fetch the data
+    while ($row = $result->fetch_assoc()) {
+        $appName = $row['appName'];
+        $addr1 = $row['addr1'];
+        $addr2 = $row['addr2'];
+        $phone = $row['phone'];
+        $footer1 = $row['prtFooter1'];
+        $footer2 = $row['prtFooter2'];
+    }
+} else {
+    echo "No data found.";
+}
+
+$hidePromotion = ($footer1 != NULL);
 
 ?>
 <html>
@@ -29,6 +51,20 @@ $query = mysqli_query($con, "SELECT * FROM bill WHERE bill_id = $id");
     th, td {
       border-style: dashed;
     }
+
+    .spacer {
+        margin-bottom: 2px; /* Use margin to create vertical spacing */
+    }
+    .spacer2 {
+        margin-bottom: 5px; /* Use margin to create vertical spacing */
+    }
+
+    .container {
+        padding: 5px; /* Use padding to create space inside an element */
+        border: 1px solid #000; /* Add a 1px solid black border around the container */
+        max-width: 300px; /* Optionally set a maximum width for the container */
+        margin: 0 auto; /* Center the container horizontally on the page */
+    }
 </style>
 
     </head>
@@ -38,9 +74,9 @@ $query = mysqli_query($con, "SELECT * FROM bill WHERE bill_id = $id");
       <tr>
         <td>
             <center>
-                <p style="font-family:Arial; font-size:17px"><b>THOOYAVAN PDP CABLE TV</b>
-                    <br>260,Udangudi Road, Thisayanvilai
-                    <br>Phone : +91 9842181951</p>
+                <p style="font-family:Arial; font-size:17px"><b><?= $appName ?></b>
+                    <br><?= $addr1 ?>, <?= $addr2 ?>
+                    <br>Phone : +91 <?= $phone ?></p>
             </center>
         </td>
       </tr>
@@ -49,18 +85,14 @@ $query = mysqli_query($con, "SELECT * FROM bill WHERE bill_id = $id");
 <?php 
 
     
-// Check if any rows are returned
 if (mysqli_num_rows($query) > 0) {
-    // Start the table
     echo "<br><table border='1'>
         <tr>
             <!--th>Header</th-->
             <!--th>Data</th-->
         </tr>";
 
-    // Loop through each row
     while ($row = mysqli_fetch_array($query)) {
-        // Access the data fields of each row
         $billBy = $row["bill_by"];
         $stbNo = $row["stbno"];
         $billNo = $row["billNo"];
@@ -80,13 +112,11 @@ if (mysqli_num_rows($query) > 0) {
         $hideStatusRow = ($pMode === 'cash' || $pMode === 'gpay');
 
         if (isset($_SESSION['id'])) {
-            // Get the user information before destroying the session
             $userId = $_SESSION['id'];
             $username = $_SESSION['username'];
             $role = $_SESSION['role'];
             $action = "Bill Printed - $stbNo";
         
-            // Call the function to insert user activity log
             logUserActivity($userId, $username, $role, $action);
         }
     
@@ -139,6 +169,15 @@ if (mysqli_num_rows($query) > 0) {
                 <td colspan="2"><center>Credit</center></td>
             </tr>
         </table>
+
+<div class="spacer2"></div>
+<div <?php if ($hidePromotion) echo 'class="container"'; ?>>
+    <div align="center"><?= $footer1 ?></div>
+    <div class="spacer"></div> <!-- Use a div with a class for spacing -->
+    <div align="center"><?= $footer2 ?></div>
+</div>
+
+
 </body>
 </html>
 <?php
