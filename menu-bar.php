@@ -85,6 +85,7 @@
         <a class="nav-link" href="logout.php"><button type="button" class="btn btn-success">Logout</button></a>
         </form> -->
         <form class="form-inline my-2 my-lg-0">
+                <a class="nav-link" href="pos/billing-dashboard.php"><button type="button" class="btn btn-primary"><b>POS</b></button></a>
         <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
         <a class="nav-link" href="logout.php"><button type="button" class="btn btn-success">Logout</button></a>
         </form>

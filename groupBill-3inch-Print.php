@@ -12,12 +12,12 @@ if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
 
-$groupID = $_GET['groupID'];
+$billGroupNo = $_GET['billGroupNo'];
 $date = $_GET['date'];
 
 
 $query = mysqli_query($con, "SELECT *
-FROM billgroupdetails WHERE groupID = '$groupID' AND date = '$date' AND status='approve';
+FROM billgroupdetails WHERE billGroupNo = '$billGroupNo' AND date = '$date' AND status='approve';
 ");
 
 /// HEADER ///
@@ -147,8 +147,8 @@ if (mysqli_num_rows($query) > 0) {
                 <td>
                 <?php
                                                 
-                    $query1 = "SELECT stbNo FROM billgroup WHERE groupID = '$groupID' 
-                                AND status = 'approve' AND date = '$date'";
+                    $query1 = "SELECT stbNo FROM billgroup WHERE billNo = '$billGroupNo' 
+                                AND date = '$date' AND status = 'approve'";
                     $result1 = mysqli_query($con, $query1);
                                                 
                         while ($row1 = mysqli_fetch_assoc($result1)) {

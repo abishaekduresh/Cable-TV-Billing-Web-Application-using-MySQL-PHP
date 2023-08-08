@@ -143,7 +143,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                                      <td style="font-weight: bold; font-size: 20px; color: #DD0581;"><?= $row1['discount']; ?></td>
                                                      <td style="font-weight: bold; font-size: 20px; color: #F20000;"><?= $row1['Rs']; ?></td>
                                                      <td>
-                                                         <a href="groupBill-3inch-Print.php?groupID=<?= $row1['groupID']; ?>&date=<?= $row1['date']; ?>" target="blank">
+                                                         <a href="groupBill-3inch-Print.php?billGroupNo=<?= $row1['billGroupNo']; ?>&date=<?= $row1['date']; ?>" target="blank">
                                                              <button type="button" class="btn btn-warning">
                                                                  <i class="bi bi-printer-fill"></i>
                                                              </button>

@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Sanitize and save the form data to variables
     $appName = $_POST['appName'];
+    $appName2 = $_POST['appName2'];
     $email = $_POST['email'];
     $addr1 = $_POST['addr1'];
     $addr2 = $_POST['addr2'];
@@ -71,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Update data in the database
-    $sql = "UPDATE settings SET appName='$appName', email='$email', addr1='$addr1', addr2='$addr2', phone='$phone', prtFooter1='$footer1', prtFooter2='$footer2Value', lastUpdateBy='$session_username', latestUpdate='$currentDateTime'"; // Replace 'your_table_name' with your actual table name and 'id=1' with the appropriate condition
+    $sql = "UPDATE settings SET appName='$appName', appName2='$appName2', email='$email', addr1='$addr1', addr2='$addr2', phone='$phone', prtFooter1='$footer1', prtFooter2='$footer2Value', lastUpdateBy='$session_username', latestUpdate='$currentDateTime'"; // Replace 'your_table_name' with your actual table name and 'id=1' with the appropriate condition
     if ($con->query($sql) === TRUE) {
         // echo "Data updated successfully!";
     } else {
@@ -99,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <form method="post">
                             <div class="row gutters">
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                    <h6 class="mb-2 text-primary">Software Settings</h6>
+                                    <h6 class="mb-2 text-primary">App Settings</h6>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
@@ -109,8 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" readonly class="form-control" id="email" name="email" value="<?= $email ?>">
+                                        <label for="appName2">App Name 2</label>
+                                        <input type="text" readonly class="form-control" id="appName2" name="appName2" value="<?= $appName2 ?>">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -133,8 +134,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label for="website">Website URL</label>
-                                        <input type="url" class="form-control" id="website" name="website" placeholder="Website url">
+                                        <label for="email">Email</label>
+                                        <input type="email" readonly class="form-control" id="email" name="email" value="<?= $email ?>">
                                     </div>
                                 </div>
                             </div>

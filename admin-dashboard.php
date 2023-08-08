@@ -49,8 +49,8 @@ $sumExpense = 0;
 $profit = 0;
 
 $sumIncomeExpense ="SELECT
-  (SELECT SUM(amount) FROM incomeExpence WHERE type = 'Income' AND MONTH(date)='$currentMonth') AS sumIncome,
-  (SELECT SUM(amount) FROM incomeExpence WHERE type = 'Expense' AND MONTH(date)='$currentMonth') AS sumExpense";
+  (SELECT SUM(amount) FROM in_ex WHERE type = 'Income' AND MONTH(date)='$currentMonth') AS sumIncome,
+  (SELECT SUM(amount) FROM in_ex WHERE type = 'Expense' AND MONTH(date)='$currentMonth') AS sumExpense";
 
 $resultsumIncomeExpense = mysqli_query($con, $sumIncomeExpense);
 

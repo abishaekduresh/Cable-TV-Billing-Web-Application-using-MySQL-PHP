@@ -77,8 +77,8 @@ if ($result) {
     
     
     $sumIncomeExpense ="SELECT
-      (SELECT SUM(amount) FROM incomeExpence WHERE date = '$currentDate' AND type = 'Income' AND username = '$session_username') AS sumIncome,
-      (SELECT SUM(amount) FROM incomeExpence WHERE date = '$currentDate' AND type = 'Expense' AND username = '$session_username') AS sumExpense";
+      (SELECT SUM(amount) FROM in_ex WHERE date = '$currentDate' AND type = 'Income' AND username = '$session_username') AS sumIncome,
+      (SELECT SUM(amount) FROM in_ex WHERE date = '$currentDate' AND type = 'Expense' AND username = '$session_username') AS sumExpense";
     
     $resultsumIncomeExpense = mysqli_query($con, $sumIncomeExpense);
     

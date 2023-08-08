@@ -2,6 +2,22 @@
 include "dbconfig.php";
 if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
     $session_user = $_SESSION['name'];
+
+// Perform a SELECT query to fetch data from the database
+$sql = "SELECT appName2 FROM settings"; // Replace 'your_table_name' with your actual table name
+
+$result = $con->query($sql);
+
+// Check if there are any rows returned
+if ($result->num_rows > 0) {
+    // Loop through each row and fetch the data
+    while ($row = $result->fetch_assoc()) {
+        $appName2 = $row['appName2'];
+    }
+} else {
+    echo "No data found.";
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +37,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="admin-dashboard.php"><b>PDP CABLE TV</b></a>
+        <a class="navbar-brand" href="admin-dashboard.php"><b><?= $appName2 ?></b></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -59,6 +75,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                         <a class="dropdown-item" href="admin-income-expense-report.php">Income Expense</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="user-today-collection.php" target="blank">Today Collection</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="rptindivcancelledbill.php" target="blank">Cancelled Bill</a>
                     </div>
                 </li>
 
@@ -104,16 +122,13 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
             </ul>
 
             <form class="form-inline my-3 my-lg-0">
+                <a class="nav-link" href="pos/billing-dashboard.php"><button type="button" class="btn btn-primary"><b>POS Bill</b></button></a>
                 <a class="nav-link" href="app-settings.php"><button type="button" class="btn btn-info"><b>App Settings</b></button></a>
                 <a class="nav-link" href="logout.php"><button type="button" class="btn btn-success">Logout</button></a>
                 <a class="nav-link" href="backup" target="blank"><button type="button" class="btn btn-warning">Backup</button></a>
             </form>
         </div>
     </nav>
-
-
-
-
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

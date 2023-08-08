@@ -21,7 +21,7 @@
 <?php
 
     include 'admin-menu-bar.php';
-    ?><br<?php
+    ?><br><?php
     include 'admin-menu-btn.php';
 
 ?>
@@ -55,18 +55,47 @@
                                       <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label><u>Bill By :</u></label><br>
-                                    <label><input type="checkbox" name="filter[]" value="23A002"> Duresh</label>
-                                    <label><input type="checkbox" name="filter[]" value="23A001"> Baskar Raj</label>
-                                    <label><input type="checkbox" name="filter[]" value="23E001"> Kannika</label>
-                                    <br>
-                                    <label><u>Bill Status :</u></label>
-                                    <br>
-                                    <label><input type="checkbox" name="status_filter[]" value="Income"> Income</label>
-                                    <label><input type="checkbox" name="status_filter[]" value="Expense"> Expense</label>
-                                    <!-- Add more checkboxes for other filter options -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                    <select name="category_id" id="category_id" class="form-select">
+                                        <option value="select" selected disabled>Select Category</option>
+                                        <?php
+                                            $query = "SELECT * FROM in_ex_category";
+                                            $result = mysqli_query($con, $query);
+                                            $selectedValue = isset($_GET['category']) ? $_GET['category'] : ''; // Get the selected value from the URL
+
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                $optionValueID = $row['category_id'];
+                                                $optionValue = $row['category'];
+                                        ?>
+                                        <option value="<?php echo $optionValueID; ?>" <?php if ($optionValue === $selectedValue) echo 'selected'; ?>><?php echo $optionValue; ?></option>
+                                        <?php
+                                            }
+                                        ?>
+                                    </select>
+                                    </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <select class="form-select" name="subCategory" id="show_category">
+                                        <option value="select" selected disabled>Select Sub Category</option>
+                                    </select>
+                                </div>
+                                <script>
+                                    $(document).ready(function(){
+                                        $('#category_id').change(function(){
+                                            var Stdid = $('#category_id').val(); 
+
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: 'fetch.php',
+                                                data: {id: Stdid},  
+                                                success: function(data) {
+                                                    $('#show_category').html(data);
+                                                }
+                                            });
+                                        });
+                                    });
+                                </script>
                             </div>
                         </form>
                     </div>
@@ -99,28 +128,33 @@
                                     $from_date = $_GET['from_date'];
                                     $to_date = $_GET['to_date'];
 
-                                    // Retrieve selected filter options
-                                    $filters = isset($_GET['filter']) ? $_GET['filter'] : array();
-                                    $status_filter = isset($_GET['status_filter']) ? $_GET['status_filter'] : array();
-                                
-                                
+
+                                    $filters = isset($_GET['category_id']) ? $_GET['category_id'] : '';
+                                    $status_filter = isset($_GET['status_filter']) ? $_GET['status_filter'] : '';
+                                    
                                     // Build the filter condition
                                     $filterCondition = '';
                                     $statusFilterCondition = '';
+                                    
                                     if (!empty($filters)) {
-                                        $filterCondition = "AND username IN ('" . implode("','", $filters) . "')";
+                                        $filterIds = explode(',', $filters);
+                                        $filterIds = array_map('intval', $filterIds);
+                                        $filterCondition = "AND category_id IN (" . implode(",", $filterIds) . ")";
                                     }
                                     
                                     if (!empty($status_filter)) {
-                                        if (is_array($status_filter)) {
-                                            $statusFilterCondition = "AND type IN ('" . implode("','", $status_filter) . "')";
+                                        $statusIds = explode(',', $status_filter);
+                                        $statusIds = array_map('intval', $statusIds);
+                                    
+                                        if (count($statusIds) > 1) {
+                                            $statusFilterCondition = "AND subcategory_id IN (" . implode(",", $statusIds) . ")";
                                         } else {
-                                            $statusFilterCondition = "AND type = '$status_filter'";
+                                            $statusFilterCondition = "AND subcategory_id = " . $statusIds[0];
                                         }
                                     }
 
                                 
-                                    $query = "SELECT * FROM incomeExpence WHERE date BETWEEN '$from_date' AND '$to_date' $filterCondition $statusFilterCondition";
+                                    $query = "SELECT * FROM in_ex WHERE date BETWEEN '$from_date' AND '$to_date' $filterCondition $statusFilterCondition";
                                     $query_run = mysqli_query($con, $query);
                                     
 
@@ -137,8 +171,53 @@
                                                 <td style="font-weight: bold;"><?= $incomeExpense['date']; ?></td>
                                                 <td style="font-weight: bold;"><?= $incomeExpense['time']; ?></td>
                                                 <td style="font-weight: bold;"><?= $incomeExpense['username']; ?></td>
-                                                <td style="font-weight: bold;"><?= $incomeExpense['category']; ?></td>
-                                                <td style="font-weight: bold;"><?= $incomeExpense['subCategory']; ?></td>
+                                                <td style="font-weight: bold;">                                                
+                                                <?php
+
+                                                    $CategoryResult = $incomeExpense['category_id'];
+                                                    // SQL query
+                                                    $sql = "SELECT * FROM in_ex_category WHERE category_id='$CategoryResult'";
+
+                                                    // Execute query
+                                                    $result = mysqli_query($con, $sql);
+
+                                                    // Check if there are any rows in the result
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        // Output data of each row
+                                                        while ($row = mysqli_fetch_assoc($result)) {
+                                                            // Process data from each row
+                                                            echo $row["category"];
+                                                        }
+                                                    } else {
+                                                        echo "0 results";
+                                                    }
+
+                                                ?>
+                                                </td>
+                                                <td style="font-weight: bold;">
+                                                
+                                                <?php
+
+                                                    $incomeExpenseResult = $incomeExpense['subcategory_id'];
+                                                    // SQL query
+                                                    $sql = "SELECT * FROM in_ex_subcategory WHERE subcategory_id='$incomeExpenseResult'";
+
+                                                    // Execute query
+                                                    $result = mysqli_query($con, $sql);
+
+                                                    // Check if there are any rows in the result
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        // Output data of each row
+                                                        while ($row = mysqli_fetch_assoc($result)) {
+                                                            // Process data from each row
+                                                            echo $row["subcategory"];
+                                                        }
+                                                    } else {
+                                                        echo "0 results";
+                                                    }
+
+                                                ?>
+                                                </td>
                                                 <td style="font-weight: bold;"><?= $incomeExpense['remark']; ?></td>
                                                 <td style="font-weight: bold;">
                                                     <?php
@@ -162,7 +241,7 @@
                                     }
                                     else
                                     {
-                                        echo "No Record Found";
+                                        ?><h4 align='center'>No Record Found</h4><?php
                                     }
                                 
                                     // Close the database connection

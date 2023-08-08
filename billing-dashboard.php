@@ -169,8 +169,9 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             $printStatus = 0;
             
             // Prepare the SQL statement
-            $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, status, printStatus) VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', '$bill_status', '$printStatus')";
-            
+            $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, status, printStatus) 
+            VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', '$bill_status', '$printStatus')";
+
                 if (isset($_SESSION['id'])) {
                     // Get the user information before destroying the session
                     $userId = $_SESSION['id'];
@@ -191,16 +192,15 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 continue;
             } else {
                 echo "Error inserting data: " . $con->error;
-    // Activity Log
                 if (isset($_SESSION['id'])) {
-                // Get the user information before destroying the session
-                $userId = $_SESSION['id'];
-                $role = $_SESSION['role'];
-                $action = "Bill Faild - $pMode - $stbno";
-            
-                // Insert Bill Faild activity
-                $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$session_username', '$role', '$action')";
-                mysqli_query($con, $insertSql);
+                    // Get the user information before destroying the session
+                    $userId = $_SESSION['id'];
+                    $username = $_SESSION['username'];
+                    $role = $_SESSION['role'];
+                    $action = "Bill Failed - $pMode - $stbno";
+                
+                    // Call the function to insert user activity log
+                    logUserActivity($userId, $username, $role, $action);
                 }
                 ?>
                 <center><img src="assets/red-thumbs-up.svg" alt="green-thumbs-up" width="512px" height="512px"></center>
@@ -500,7 +500,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                     </tbody>
                                 </table>
                                 <div class="text-center">
-                                    <button type="button" class="btn btn-primary" id="confirmButton" data-toggle="modal" data-target="#exampleModal" disabled>
+                                    <button type="button" class="btn btn-primary" id="confirmButton" data-toggle="modal" data-target="#exampleModal">
                                         Confirm
                                     </button>
                                 </div>
@@ -539,20 +539,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-
-
-const checkbox = document.getElementById("myCheckbox");
-const confirmButton = document.getElementById("confirmButton");
-
-checkbox.addEventListener("change", function() {
-  if (checkbox.checked) {
-    confirmButton.disabled = false;
-  } else {
-    confirmButton.disabled = true;
-  }
-});
-
-
 
 
 $(document).on('click', '.editStudentBtn', function () {

@@ -22,7 +22,7 @@
 <?php
 session_start();
 require "dbconfig.php";
-require "componenet.php";
+require "component.php";
 
 if (isset($_SESSION['id'])) {
     // Get the user information before destroying the session

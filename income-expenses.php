@@ -8,7 +8,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
     if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
         include 'admin-menu-bar.php';
-        ?><br<?php
+        ?><br><?php
         include 'admin-menu-btn.php';
         $session_username = $_SESSION['username'];
         
@@ -23,7 +23,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 if(isset($_POST['submitExpense'])) {
   
   // Retrieve form data
-  $date = $_POST['date'];
+//   $date = $_POST['date'];
   $category = $_POST['category'];
   $subCategory = $_POST['subCategory'];
   $remark = $_POST['remark'];
@@ -31,7 +31,7 @@ if(isset($_POST['submitExpense'])) {
   $type = 'Expense';
   
   // Insert data into database
-  $sql = "INSERT INTO incomeExpence (type, date, time, username, category, subCategory, remark, amount) VALUES ('$type', '$date', '$currentTime', '$session_username', '$category', '$subCategory', '$remark', '$amount')";
+  $sql = "INSERT INTO in_ex (type, date, time, username, category_id, subcategory_id, remark, amount) VALUES ('$type', '$currentDate', '$currentTime', '$session_username', '$category', '$subCategory', '$remark', '$amount')";
   if ($con->query($sql) === TRUE) {
     // echo "<div class='container mt-3'>Data stored successfully!</div>";
     
@@ -64,7 +64,7 @@ if(isset($_POST['submitExpense'])) {
 if(isset($_POST['submitIncome'])) {
   
   // Retrieve form data
-  $date = $_POST['date'];
+//   $date = $_POST['date'];
   $category = $_POST['category'];
   $subCategory = $_POST['subCategory'];
   $remark = $_POST['remark'];
@@ -72,7 +72,7 @@ if(isset($_POST['submitIncome'])) {
   $type = 'Income';
   
   // Insert data into database
-  $sql = "INSERT INTO incomeExpence (type, date, time, username, category, subCategory, remark, amount) VALUES ('$type', '$date', '$currentTime', '$session_username', '$category', '$subCategory', '$remark', '$amount')";
+  $sql = "INSERT INTO in_ex (type, date, time, username, category_id, subcategory_id, remark, amount) VALUES ('$type', '$currentDate', '$currentTime', '$session_username', '$category', '$subCategory', '$remark', '$amount')";
   if ($con->query($sql) === TRUE) {
     // echo "<div class='container mt-3'>Data stored successfully!</div>";
     
@@ -111,6 +111,7 @@ if(isset($_POST['submitIncome'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
 <body>
@@ -135,65 +136,43 @@ if(isset($_POST['submitIncome'])) {
         <div class="tab-pane container active" id="Expense">
 <!--Expense-->
             <div class="container">
-              <h2>Expense</h2>
+              <!-- <h2>Expense</h2> -->
               <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-<div class="mb-3">
-  <label for="date" class="form-label">Date</label>
-  <input type="date" id="date" name="date" value="<?php echo $currentDate ?>"class="form-control">
-</div>
                 <div class="mb-3">
-                  <label for="category" class="form-label">Category *</label>
-                      <select id="category" name="category" class="form-select" required>
-                        <option value="" selected disabled>Choose a category</option>
-                        <option value="Petrol">Petrol</option>
-                        <option value="Salary">Salary</option>
-                        <option value="Spliter">Spliter</option>
-                        <option value="Patch Card">Patch Card</option>
-                        <option value="Shop Rent">Shop Rent</option>
-                        <option value="Food">Food</option>
-                        <option value="Wire">Wire</option>
-                        <option value="LCO Recharge">LCO Recharge</option>
-                        <option value="Bike Service">Bike Service</option>
-                        <option value="EB Bill">EB Bill</option>
-                        <option value="Server Rent">Server Rent</option>
-                        <option value="Other">Other</option>
-                      </select>
-                        <!--<select id="category" name="category" class="form-select">-->
-                            <!--<option value="select" selected>Select</option>-->
-                                <?php
-                                    //$query = "SELECT category FROM incomeExpenceinfo WHERE category != 'ALL'";
-                                    //$result = mysqli_query($con, $query);
-                                    //$selectedValue = isset($_GET['category']) ? $_GET['category'] : ''; // Get the selected value from the URL
-                                        //while ($row = mysqli_fetch_assoc($result)) {
-                                            //$optionValueID = $row['id'];
-                                            //$optionValue = $row['category'];
-                                ?>
-                            <!--<option value="<?php //echo $optionValueID; ?>" <?php //if ($optionValue === $selectedValue) echo 'selected'; ?>><?php //echo $optionValue; ?></option>-->
-                                <?php
-                                        //}
-                                ?>
-                        <!--</select>-->
-                </div>
+                  <label for="category" class="form-label">Category</label>
+                    <select class="form-select" name="category" id="categoryID" required>
+                        <option selected disabled>Select Category</option>
+                        <?php
+                        $sql = "SELECT * FROM in_ex_category WHERE in_ex='Expense' OR in_ex='Both'";
+                        $result = mysqli_query($con, $sql);
+                        while($row = mysqli_fetch_assoc($result)) {
+                            echo '<option value="' . $row['category_id'] . '">' . $row['category'] . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>            
                 <div class="mb-3">
-                  <label for="subCategory" class="form-label">Sub Category *</label>
-                  <select id="subCategory" name="subCategory" class="form-select" required>
-                    <option value="" selected disabled>Choose a category</option>
-                    <option value="RF Wire">RF Wire</option>
-                    <option value="Fiber Wire">Fiber Wire</option>
-                    <option value="VKTENTH003">VKTENTH003</option>
-                    <option value="VKTENTH055">VKTENTH055</option>
-                    <option value="Santhanam">Santhanam</option>
-                    <option value="Gladwin">Gladwin</option>
-                    <option value="Kannika">Kannika</option>
-                    <option value="Jeyaraj">Jeyaraj</option>
-                    <option value="Kannan">Kannan</option>
-                    <option value="Baskar Raj">Baskar Raj</option>
-                    <option value="Abishaek">Abishaek</option>
-                    <option value="Nithin">Nithin</option>
-                    <option value="Aruna Kumari">Aruna Kumari</option>
-                    <option value="Other">Other</option>
-                  </select>
+                    <label for="sub" class="form-label">Sub Category</label>
+                    <select class="form-select" name="subCategory" id="show_category">
+                        <option selected disabled>Select Sub Category</option>
+                    </select>
                 </div>
+                <script>
+                    $(document).ready(function(){
+                        $('#categoryID').change(function(){
+                            var Stdid = $('#categoryID').val(); 
+
+                            $.ajax({
+                                type: 'POST',
+                                url: 'fetch.php',
+                                data: {id: Stdid},  
+                                success: function(data) {
+                                    $('#show_category').html(data);
+                                }
+                            });
+                        });
+                    });
+                </script>
                 <div class="mb-3">
                   <label for="remark" class="form-label">Remark</label>
                   <textarea id="remark" name="remark" class="form-control"></textarea>
@@ -235,7 +214,7 @@ if(isset($_POST['submitIncome'])) {
                             <tbody>
                                 <?php 
                                 
-                                    $query = "SELECT * FROM incomeExpence WHERE username = '$session_username' AND type = 'Expense' ORDER BY date DESC LIMIT 10";
+                                    $query = "SELECT * FROM in_ex WHERE username = '$session_username' AND date='$currentDate' AND type = 'Expense' ORDER BY date DESC";
 
                                     $query_run = mysqli_query($con, $query);
 
@@ -251,20 +230,65 @@ if(isset($_POST['submitIncome'])) {
                                                 <td style="font-weight: bold;"><?= $incomeExpense['date']; ?></td>
                                                 <td style="font-weight: bold;"><?= $incomeExpense['time']; ?></td>
                                                 <td style="font-weight: bold;"><?= $incomeExpense['username']; ?></td>
-                                                <td style="font-weight: bold;"><?= $incomeExpense['category']; ?></td>
-                                                <td style="font-weight: bold;"><?= $incomeExpense['subCategory']; ?></td>
+                                                <td style="font-weight: bold;">                                                
+                                                <?php
+
+                                                    $CategoryResult = $incomeExpense['category_id'];
+                                                    // SQL query
+                                                    $sql = "SELECT * FROM in_ex_category WHERE category_id='$CategoryResult'";
+
+                                                    // Execute query
+                                                    $result = mysqli_query($con, $sql);
+
+                                                    // Check if there are any rows in the result
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        // Output data of each row
+                                                        while ($row = mysqli_fetch_assoc($result)) {
+                                                            // Process data from each row
+                                                            echo $row["category"];
+                                                        }
+                                                    } else {
+                                                        echo "0 results";
+                                                    }
+
+                                                ?>
+                                                </td>
+                                                <td style="font-weight: bold;">
+                                                
+                                                <?php
+
+                                                    $incomeExpenseResult = $incomeExpense['subcategory_id'];
+                                                    // SQL query
+                                                    $sql = "SELECT * FROM in_ex_subcategory WHERE subcategory_id='$incomeExpenseResult'";
+
+                                                    // Execute query
+                                                    $result = mysqli_query($con, $sql);
+
+                                                    // Check if there are any rows in the result
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        // Output data of each row
+                                                        while ($row = mysqli_fetch_assoc($result)) {
+                                                            // Process data from each row
+                                                            echo $row["subcategory"];
+                                                        }
+                                                    } else {
+                                                        echo "0 results";
+                                                    }
+
+                                                ?>
+                                                </td>
                                                 <td style="font-weight: bold;"><?= $incomeExpense['remark']; ?></td>
                                                 <td style="font-weight: bold;">
                                                     <?php
                                                         if ($incomeExpense['type'] === 'Income') {
-                                                            echo $incomeExpense['amount'];
+                                                            echo '₹' . $incomeExpense['amount'];
                                                         }
                                                     ?>
                                                 </td>
                                                 <td style="font-weight: bold;">
                                                     <?php
                                                         if ($incomeExpense['type'] === 'Expense') {
-                                                            echo $incomeExpense['amount'];
+                                                            echo '₹' . $incomeExpense['amount'];
                                                         }
                                                     ?>
                                                 </td>
@@ -274,7 +298,7 @@ if(isset($_POST['submitIncome'])) {
                                     }
                                     else
                                     {
-                                        echo "<h5> No Record Found </h5>";
+                                        echo "<h5> Today NoRecord Found </h5>";
                                     }
                                 ?>
                                 
@@ -290,44 +314,42 @@ if(isset($_POST['submitIncome'])) {
     <div class="tab-pane container fade" id="Income">
 <!--Income-->
             <div class="container">
-              <h2>Income</h2>
+              <!-- <h2>Income</h2> -->
               <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
-<div class="mb-3">
-  <label for="date" class="form-label">Date</label>
-  <input type="date" id="date" name="date" value="<?php echo $currentDate ?>"class="form-control">
-</div>
                 <div class="mb-3">
-                  <label for="category" class="form-label">Category *</label>
-                      <select id="category" name="category" class="form-select" required>
-                        <option value="" selected disabled>Choose a category</option>
-                        <option value="Petrol">Petrol</option>
-                        <option value="Salary">Salary</option>
-                        <option value="Wire Coil">Wire Coil</option>
-                        <option value="FiberWire">Fiber Wire</option>
-                        <option value="LCO Recharge">LCO Recharge</option>
-                        <option value="Bike Service">Bike Service</option>
-                        <option value="EB Bill">EB Bill</option>
-                        <option value="Server Rent">Server Rent</option>
-                        <option value="Other">Other</option>
-                      </select>
-                </div>
+                  <label for="category" class="form-label">Category</label>
+                    <select class="form-select" name="category" id="category_ID" required>
+                        <option selected disabled>Select Category</option>
+                        <?php
+                        $sql = "SELECT * FROM in_ex_category WHERE in_ex='Income' OR in_ex='Both'";
+                        $result = mysqli_query($con, $sql);
+                        while($row = mysqli_fetch_assoc($result)) {
+                            echo '<option value="' . $row['category_id'] . '">' . $row['category'] . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>            
                 <div class="mb-3">
-                  <label for="subCategory" class="form-label">Sub Category *</label>
-                      <select id="subCategory" name="subCategory" class="form-select" required>
-                        <option value="" selected disabled>Choose a category</option>
-                        <option value="VKTENTH003">VKTENTH003</option>
-                        <option value="VKTENTH055">VKTENTH055</option>
-                        <option value="Santhanam">Santhanam</option>
-                        <option value="Gladwin">Gladwin</option>
-                        <option value="Kannika">Kannika</option>
-                        <option value="Jeyaraj">Jeyaraj</option>
-                        <option value="Baskar Raj">Baskar Raj</option>
-                        <option value="Abishaek">Abishaek</option>
-                        <option value="Nithin">Nithin</option>
-                        <option value="Aruna Kumari">Aruna Kumari</option>
-                        <option value="Other">Other</option>
-                      </select>
+                    <label for="sub" class="form-label">Sub Category</label>
+                    <select class="form-select" name="subCategory" id="show_subcategory" required>
+                        <option selected disabled>Select Sub Category</option></select>
                 </div>
+                <script>
+                    $(document).ready(function(){
+                        $('#category_ID').change(function(){
+                            var Stdid = $('#category_ID').val(); 
+
+                            $.ajax({
+                                type: 'POST',
+                                url: 'fetch.php',
+                                data: {id: Stdid},  
+                                success: function(data) {
+                                    $('#show_subcategory').html(data);
+                                }
+                            });
+                        });
+                    });
+                </script>
                 <div class="mb-3">
                   <label for="remark" class="form-label">Remark</label>
                   <textarea id="remark" name="remark" class="form-control"></textarea>
@@ -369,7 +391,7 @@ if(isset($_POST['submitIncome'])) {
                             <tbody>
                                 <?php 
                                 
-                                    $query = "SELECT * FROM incomeExpence WHERE username = '$session_username' AND type = 'Income' ORDER BY date DESC LIMIT 10";
+                                    $query = "SELECT * FROM in_ex WHERE username = '$session_username' AND date='$currentDate' AND type = 'Income' ORDER BY date DESC LIMIT 10";
 
                                     $query_run = mysqli_query($con, $query);
 
@@ -385,8 +407,53 @@ if(isset($_POST['submitIncome'])) {
                                                 <td style="font-weight: bold;"><?= $incomeExpense['date']; ?></td>
                                                 <td style="font-weight: bold;"><?= $incomeExpense['time']; ?></td>
                                                 <td style="font-weight: bold;"><?= $incomeExpense['username']; ?></td>
-                                                <td style="font-weight: bold;"><?= $incomeExpense['category']; ?></td>
-                                                <td style="font-weight: bold;"><?= $incomeExpense['subCategory']; ?></td>
+                                                <td style="font-weight: bold;">                                                
+                                                <?php
+
+                                                    $CategoryResult = $incomeExpense['category_id'];
+                                                    // SQL query
+                                                    $sql = "SELECT * FROM in_ex_category WHERE category_id='$CategoryResult'";
+
+                                                    // Execute query
+                                                    $result = mysqli_query($con, $sql);
+
+                                                    // Check if there are any rows in the result
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        // Output data of each row
+                                                        while ($row = mysqli_fetch_assoc($result)) {
+                                                            // Process data from each row
+                                                            echo $row["category"];
+                                                        }
+                                                    } else {
+                                                        echo "0 results";
+                                                    }
+
+                                                ?>
+                                                </td>
+                                                <td style="font-weight: bold;">
+                                                
+                                                <?php
+
+                                                    $incomeExpenseResult = $incomeExpense['subcategory_id'];
+                                                    // SQL query
+                                                    $sql = "SELECT * FROM in_ex_subcategory WHERE subcategory_id='$incomeExpenseResult'";
+
+                                                    // Execute query
+                                                    $result = mysqli_query($con, $sql);
+
+                                                    // Check if there are any rows in the result
+                                                    if (mysqli_num_rows($result) > 0) {
+                                                        // Output data of each row
+                                                        while ($row = mysqli_fetch_assoc($result)) {
+                                                            // Process data from each row
+                                                            echo $row["subcategory"];
+                                                        }
+                                                    } else {
+                                                        echo "0 results";
+                                                    }
+
+                                                ?>
+                                                </td>
                                                 <td style="font-weight: bold;"><?= $incomeExpense['remark']; ?></td>
                                                 <td style="font-weight: bold;">
                                                     <?php
@@ -408,7 +475,7 @@ if(isset($_POST['submitIncome'])) {
                                     }
                                     else
                                     {
-                                        echo "<h5> No Record Found </h5>";
+                                        echo "<h5> Today NoRecord Found </h5>";
                                     }
                                 ?>
                                 
@@ -423,8 +490,7 @@ if(isset($_POST['submitIncome'])) {
         </div>
     </div>
 
-
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
