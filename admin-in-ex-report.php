@@ -76,7 +76,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <select class="form-select" name="subCategory" id="show_category">
+                                    <select class="form-select" name="subcategory_id" id="subcategory_id">
                                         <option value="select" selected disabled>Select Sub Category</option>
                                     </select>
                                 </div>
@@ -87,10 +87,10 @@
 
                                             $.ajax({
                                                 type: 'POST',
-                                                url: 'fetch.php',
+                                                url: 'code-in_ex_cat_sub_fetch.php',
                                                 data: {id: Stdid},  
                                                 success: function(data) {
-                                                    $('#show_category').html(data);
+                                                    $('#subcategory_id').html(data);
                                                 }
                                             });
                                         });
@@ -130,7 +130,7 @@
 
 
                                     $filters = isset($_GET['category_id']) ? $_GET['category_id'] : '';
-                                    $status_filter = isset($_GET['status_filter']) ? $_GET['status_filter'] : '';
+                                    $status_filter = isset($_GET['subcategory_id']) ? $_GET['subcategory_id'] : '';
                                     
                                     // Build the filter condition
                                     $filterCondition = '';
@@ -157,6 +157,8 @@
                                     $query = "SELECT * FROM in_ex WHERE date BETWEEN '$from_date' AND '$to_date' $filterCondition $statusFilterCondition";
                                     $query_run = mysqli_query($con, $query);
                                     
+                                    $in_sum = 0;
+                                    $ex_sum = 0;
 
                                     if(mysqli_num_rows($query_run) > 0)
                                     {   
@@ -222,14 +224,16 @@
                                                 <td style="font-weight: bold;">
                                                     <?php
                                                         if ($incomeExpense['type'] === 'Income') {
-                                                            echo $incomeExpense['amount'];
+                                                            echo '₹' . $incomeExpense['amount'];
+                                                            $in_sum += $incomeExpense['amount'];
                                                         }
                                                     ?>
                                                 </td>
                                                 <td style="font-weight: bold;">
                                                     <?php
                                                         if ($incomeExpense['type'] === 'Expense') {
-                                                            echo $incomeExpense['amount'];
+                                                            echo '₹' . $incomeExpense['amount'];
+                                                            $ex_sum += $incomeExpense['amount'];
                                                         }
                                                     ?>
                                                 </td>
@@ -237,6 +241,9 @@
                                             <!--</form>-->
                                             
                                             <?php
+
+                                             // Add the value to the sum variable
+                                            
                                         }
                                     }
                                     else
@@ -249,6 +256,18 @@
                                 
                                 }
                                     ?>
+                                        <tr>
+                                            <td colspan="6"></td>
+                                            <td style="font-weight: bold; font-size: 20px;">Total:</td>
+                                            <td style="font-size: 20px;">
+                                            <!-- color: #0012C3;  color: #05A210; -->
+                                                <b><?= '₹' . $in_sum ?></b>
+                                            </td>
+                                            <td style="font-size: 20px;">
+                                                <b><?= '₹' . $ex_sum ?></b>
+                                            </td>
+                                            <td></td>
+                                        </tr>
                             </tbody>
                         </table>
                         </div>

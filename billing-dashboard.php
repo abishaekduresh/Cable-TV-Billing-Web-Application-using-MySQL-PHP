@@ -248,11 +248,23 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 <input type="hidden" name="student_id" id="student_id" >
                 
                 <label for="selectBox" class="form-label">Select an Group: *</label>
-                <select style="font-weight: bold;" name="cusGroup" class="form-select" required>
-                  <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
-                  <option style="font-weight: bold;" value="Indiv" selected>Individual</option>
-                  <option style="font-weight: bold;" value="VSR Lodge">VSR Lodge</option>
-                </select>
+                <select style="font-weight: bold;" name="cusGroup" id="cusGroup" class="form-select" required>
+                                                <option value="" selected disabled>Select</option>
+                                                <?php
+                                                
+                                                $query = "SELECT id,groupName FROM groupinfo WHERE id != '2'";
+                                                $result = mysqli_query($con, $query);
+                                                
+                                                while ($row = mysqli_fetch_assoc($result)) {
+                                                    $optionValueID = $row['id'];
+                                                    $optionValue = $row['groupName'];
+                                                    ?>
+                                                    <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
+                                                    <?php
+                                                }
+                                                
+                                                ?>
+                                            </select>
                 
                 <label for="selectBox" class="form-label">Select an MSO: *</label>
                 <select style="font-weight: bold;" name="mso" id="mso" class="form-select" required>
@@ -447,6 +459,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                                 <div class="form-check">
                                                                     <input type="checkbox" id="myCheckbox" name="options[]" value="<?= $customer['id']; ?>" class="form-check-input">
                                                                 </div>
+                                                            <?php else: ?>
+                                                                    <a href="customer-history.php?search=<?= $customer['stbno']; ?>" target="_blank">
+                                                                    <img src="assets/arrow-up-right-from-square-solid.svg" width="20px" height="20px">
+                                                                    </a>
                                                             <?php endif; ?>
                                                         </td>
                                                         <td style="width: 160px; font-weight: bold;">

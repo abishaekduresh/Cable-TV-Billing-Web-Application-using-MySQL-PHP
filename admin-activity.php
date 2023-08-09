@@ -1,6 +1,7 @@
 <?php 
 session_start();
 include "dbconfig.php";
+include "component.php";
 
 if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {    
     $session_username = $_SESSION['username'];
@@ -43,11 +44,11 @@ $result = mysqli_query($con, $query);
                 <?php $serialNumber = 1;?>
                 <?php while ($row = mysqli_fetch_assoc($result)) : ?>
                     <tr>
-                        <td style="width: 18px; font-weight: bold;"><?php echo $serialNumber++?></td>
-                        <td style="width: 150px; font-weight: bold;"><?php echo $row['date']; ?></td>
-                        <td style="width: 100px; font-weight: bold;"><?php echo $row['time']; ?></td>
-                        <td style="width: 100px; font-weight: bold;"><?php echo $row['userName']; ?></td>
-                        <td style="width: 400px; font-weight: bold;"><?php echo $row['action']; ?></td>
+                        <td style="width: 18px; font-weight: bold;"><?= $serialNumber++?></td>
+                        <td style="width: 150px; font-weight: bold;"><?= formatDate($row['date']); ?></td>
+                        <td style="width: 100px; font-weight: bold;"><?= $row['time']; ?></td>
+                        <td style="width: 100px; font-weight: bold;"><?= $row['userName']; ?></td>
+                        <td style="width: 400px; font-weight: bold;"><?= $row['action']; ?></td>
                         <!-- Add more table data columns as needed -->
                     </tr>
                 <?php endwhile; ?>

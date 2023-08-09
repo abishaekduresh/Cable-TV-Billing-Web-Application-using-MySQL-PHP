@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "dbconfig.php";
+include "component.php";
 
 if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
     $session_username = $_SESSION['username'];
@@ -108,7 +109,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                         $discount_sum = '';
                                         $paid_amount_sum = '';
                                         $Rs_sum = '';
-                                        $oldMonthBal = '';
+                                        $oldMonthBal_sum = '';
 
                                         if (isset($_GET['from_date']) && isset($_GET['to_date'])) {
                                             $from_date = $_GET['from_date'];
@@ -134,17 +135,17 @@ $to_time = isset($_GET['to_time']) ? $_GET['to_time'] : '';
                                                 foreach ($query_run as $row) {
                                                     ?>
                                         <tr>
-                                            <td style="width: 18px; font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
-                                            <td style="width: 100px; font-size: 18px; font-weight: bold;"><?= $row['bill_by']; ?></td>
-                                            <td style="width: 240px; font-weight: bold; font-size: 18px; color: #007DC3;"><?= $row['date']; ?></td>
-                                            <td style="width: 40px; font-size: 18px; font-weight: bold;"><?= $row['billNo']; ?></td>
-                                            <td style="width: 40px; font-size: 18px; font-weight: bold;"><?= $row['mso']; ?></td>
-                                            <td style="width: 160px; font-size: 18px; font-weight: bold;"><?= $row['stbno']; ?></td>
-                                            <td style="width: 350px; font-size: 18px; font-weight: bold;"><?= $row['name']; ?></td>
-                                            <td style="width: 110px; font-size: 18px; font-weight: bold;"><?= $row['phone']; ?></td>
-                                            <td style="width: 180px; font-size: 18px; font-weight: bold;"><?= $row['description']; ?></td>
-                                            <td style="width: 40px; font-size: 18px; font-weight: bold;"><?= $row['pMode']; ?></td>
-                                            <td style="width: 50px; font-weight: bold; font-size: 20px; color: #0012C3;">
+                                            <td style="font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
+                                            <td style="font-size: 18px; font-weight: bold;"><?= $row['bill_by']; ?></td>
+                                            <td style="font-weight: bold; font-size: 18px; color: #007DC3;"><?= formatDate($row['date']); ?></td>
+                                            <td style="font-size: 18px; font-weight: bold;"><?= $row['billNo']; ?></td>
+                                            <td style="font-size: 18px; font-weight: bold;"><?= $row['mso']; ?></td>
+                                            <td style="font-size: 18px; font-weight: bold;"><?= $row['stbno']; ?></td>
+                                            <td style="font-size: 18px; font-weight: bold;"><?= $row['name']; ?></td>
+                                            <td style="font-size: 18px; font-weight: bold;"><?= $row['phone']; ?></td>
+                                            <td style="font-size: 18px; font-weight: bold;"><?= $row['description']; ?></td>
+                                            <td style="font-size: 18px; font-weight: bold;"><?= $row['pMode']; ?></td>
+                                            <td style="font-weight: bold; font-size: 20px; color: #0012C3;">
                                                 <?= $row['oldMonthBal']; ?>
                                             </td>
                                             <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;">

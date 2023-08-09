@@ -2,6 +2,8 @@
    session_start();
    include "dbconfig.php";
    require 'dbconfig.php';
+   require "component.php";
+
     if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
         $session_username = $_SESSION['username']; 
 ?>
@@ -258,7 +260,9 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                                 ?>
                                                 <tr>
                                                     <td style="width: 18px; font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
-                                                    <td style="font-size: 18px; font-weight: bold;"><?= $customer['cusGroup']; ?></td>
+                                                    <td style="font-size: 18px; font-weight: bold;">
+                                                        <?= fetchGroupName($customer['cusGroup']); ?>
+                                                    </td>
                                                     <td style="font-size: 18px; font-weight: bold;"><?= $customer['mso']; ?></td>
                                                     <td style="font-size: 18px; font-weight: bold;"><?= $customer['stbno']; ?></td>
                                                     <td style="font-size: 18px; font-weight: bold;"><?= $customer['name']; ?></td>

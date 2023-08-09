@@ -2,6 +2,7 @@
    session_start();
    include "dbconfig.php";
    require 'dbconfig.php';
+   include "component.php";
     if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
         ?>
 
@@ -31,7 +32,6 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
 <body >
 
     <br>
-    <hr class="mt-0 mb-4">
 
 <!---------    last 5 bill print   --------------->
 
@@ -86,7 +86,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                             <tr>
                                                 <td style="width: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
                                                 <td style="width: 40px; font-weight: bold;"><?= $bill['billNo']; ?></td>
-                                                <td style="width: 130px; font-weight: bold;"><?= $bill['date']; ?></td>
+                                                <td style="width: 130px; font-weight: bold;"><?= formatDate($bill['date']); ?></td>
                                                 <td style="width: 70px; font-weight: bold;"><?= $bill['mso']; ?></td>
                                                 <td style="width: 160px; font-weight: bold;"><?= $bill['stbno']; ?></td>
                                                 <td style="width: 350px; font-weight: bold;"><?= $bill['name']; ?></td>

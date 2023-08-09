@@ -1,10 +1,11 @@
 <?php 
    session_start();
    include "dbconfig.php";
+   require "component.php";
    if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
-    $session_username = $_SESSION['username'];?>
+    $session_username = $_SESSION['username'];
+    
 
-<?php
 require 'dbconfig.php';
 
 ?>
@@ -23,7 +24,7 @@ require 'dbconfig.php';
 <?php
 if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
     include 'admin-menu-bar.php';
-    ?><br<?php
+    ?><br><?php
     include 'admin-menu-btn.php';
 } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
     include 'menu-bar.php';
@@ -85,6 +86,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                     if(isset($_GET['search']))
                                     {
                                         $filtervalues = $_GET['search'];
+                                        
                                         $query = "SELECT * FROM bill WHERE CONCAT(stbno, phone) LIKE '%$filtervalues%' ORDER BY bill_id DESC LIMIT 50";
 
                                         $query_run = mysqli_query($con, $query);
@@ -96,7 +98,9 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                                 ?>
                                                 <tr><form action="" method="POST">
                                                     <td style="width: 18px; font-size: 18px; font-weight: bold;"><?= $bill['billNo']; ?></td>
-                                                    <td style="width: 200px; font-weight: bold; font-size: 18px; color: #007DC3;"><?= $bill['date']; ?></td>
+                                                    <td style="width: 200px; font-weight: bold; font-size: 18px; color: #007DC3;">
+                                                        <?= formatDate($bill['date']); ?>
+                                                    </td>
                                                     <td style="width: 100px; font-size: 18px; font-weight: bold;"><?= $bill['time']; ?></td>
                                                     <td style="width: 100px; font-size: 18px; font-weight: bold;"><?= $bill['bill_by']; ?></td>
                                                     <!--<td style="width: 180px; font-size: 18px; font-weight: bold;"><?= $bill['mso']; ?></td>-->
@@ -275,7 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     
-$query1 = "SELECT * FROM bill WHERE CONCAT(stbno, phone) LIKE '%$filtervalues%' LIMIT 1";
+$query1 = "SELECT * FROM bill WHERE CONCAT(stbno, phone) LIKE '%$filtervalues%' AND MONTH('$currentDate')='$currentMonth' LIMIT 1";
 
 $query_run1 = mysqli_query($con, $query1);
 

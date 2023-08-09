@@ -114,10 +114,10 @@ if ($result->num_rows > 0) {
                     <li class="nav-item"><a class="nav-link" href="admin-profile.php">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <li class="nav-item"><a class="nav-link" href="income-expenses.php">Income-Expenses</a>
+                    <li class="nav-item"><a class="nav-link" href="#"><b><?php echo $session_user ?></b></a>
                 </li>
                 <li class="nav-item">
-                    <li class="nav-item"><a class="nav-link" href="#"><b><?php echo $session_user ?></b></a>
+                    <li class="nav-item nav-link" style="color:black; font-weight: bold;"><b><?= $newDate = date("d-m-Y", strtotime($currentDate)); ?></b>
                 </li>
             </ul>
 

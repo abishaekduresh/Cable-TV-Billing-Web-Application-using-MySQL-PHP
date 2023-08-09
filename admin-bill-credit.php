@@ -1,6 +1,7 @@
 <?php 
    session_start();
    include "dbconfig.php";
+   require "component.php";
 //    if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'employee') { 
     if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {    
         $session_username = $_SESSION['username']; 
@@ -21,7 +22,7 @@
 <?php 
 
     include 'admin-menu-bar.php';
-    ?><br<?php
+    ?><br><?php
     include 'admin-menu-btn.php';
 
 ?>
@@ -106,7 +107,7 @@
 $discount_sum = '';
 $paid_amount_sum = '';
 $Rs_sum = '';
-$oldMonthBal = '';
+$oldMonthBal_sum = '';
                                 if(isset($_GET['from_date']) && isset($_GET['to_date']))
                                 {
                                     $from_date = $_GET['from_date'];
@@ -139,7 +140,7 @@ $oldMonthBal = '';
                                     $Rs_sum = 0; 
                                     $discount_sum = 0;
                                     $paid_amount_sum = 0;
-                                    $oldMonthBa_sum = 0;
+                                    $oldMonthBal_sum = 0;
 
                                     if(mysqli_num_rows($query_run) > 0)
                                     {   
@@ -152,7 +153,7 @@ $oldMonthBal = '';
                                             <tr>
                                                     <td style="font-weight: bold;"><?= $serial_number++; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
-                                                    <td style="font-weight: bold; color: #007DC3;"><?= $row['date']; ?></td>
+                                                    <td style="width: 80px; font-weight: bold; color: #007DC3;"><?= formatDate($row['date']); ?></td>
                                                     <td style="font-weight: bold;"><?= $row['billNo']; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['mso']; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['stbno']; ?></td>
@@ -207,7 +208,7 @@ $oldMonthBal = '';
                                 }
                                     ?>
                                             <tr>
-                                                <td colspan="7"></td>
+                                                <td colspan="8"></td>
                                                 <td style="width: 70px; font-weight: bold; font-size: 20px;"> <b>Total :</td>
                                                 <td style="width: 50px; font-weight: bold; font-size: 20px; color: #0012C3;"> <b><?= $oldMonthBal_sum ?></b></td>
                                                 <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;"> <b><?= $paid_amount_sum ?></td>

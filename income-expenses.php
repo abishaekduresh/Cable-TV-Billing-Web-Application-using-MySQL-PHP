@@ -2,6 +2,8 @@
 session_start();
 include "dbconfig.php";
 require 'dbconfig.php';
+require 'component.php';
+
 
 if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
@@ -164,7 +166,7 @@ if(isset($_POST['submitIncome'])) {
 
                             $.ajax({
                                 type: 'POST',
-                                url: 'fetch.php',
+                                url: 'code-in_ex_cat_sub_fetch.php',
                                 data: {id: Stdid},  
                                 success: function(data) {
                                     $('#show_category').html(data);
@@ -207,16 +209,17 @@ if(isset($_POST['submitIncome'])) {
                                     <th>Category</th>
                                     <th>subCategory</th>
                                     <th>Remark</th>
-                                    <th>Income</th>
                                     <th>Expense</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php 
                                 
-                                    $query = "SELECT * FROM in_ex WHERE username = '$session_username' AND date='$currentDate' AND type = 'Expense' ORDER BY date DESC";
+                                    $query = "SELECT * FROM in_ex WHERE username = '$session_username' AND date = '$currentDate' AND type = 'Expense' ORDER BY date DESC";
 
                                     $query_run = mysqli_query($con, $query);
+
+                                    $ex_sum = 0;
 
                                     if(mysqli_num_rows($query_run) > 0)
                                     {
@@ -280,15 +283,9 @@ if(isset($_POST['submitIncome'])) {
                                                 <td style="font-weight: bold;"><?= $incomeExpense['remark']; ?></td>
                                                 <td style="font-weight: bold;">
                                                     <?php
-                                                        if ($incomeExpense['type'] === 'Income') {
-                                                            echo '₹' . $incomeExpense['amount'];
-                                                        }
-                                                    ?>
-                                                </td>
-                                                <td style="font-weight: bold;">
-                                                    <?php
                                                         if ($incomeExpense['type'] === 'Expense') {
                                                             echo '₹' . $incomeExpense['amount'];
+                                                            $ex_sum += $incomeExpense['amount'];
                                                         }
                                                     ?>
                                                 </td>
@@ -301,6 +298,14 @@ if(isset($_POST['submitIncome'])) {
                                         echo "<h5> Today NoRecord Found </h5>";
                                     }
                                 ?>
+                                <tr>
+                                    <td colspan="6"></td>
+                                    <td style="font-weight: bold; font-size: 20px;">Total:</td>
+                                    <td style="font-size: 20px;">
+                                        <b><?= '₹' . $ex_sum ?></b>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 
                             </tbody>
                         </table>
@@ -341,7 +346,7 @@ if(isset($_POST['submitIncome'])) {
 
                             $.ajax({
                                 type: 'POST',
-                                url: 'fetch.php',
+                                url: 'code-in_ex_cat_sub_fetch.php',
                                 data: {id: Stdid},  
                                 success: function(data) {
                                     $('#show_subcategory').html(data);
@@ -385,16 +390,17 @@ if(isset($_POST['submitIncome'])) {
                                     <th>subCategory</th>
                                     <th>Remark</th>
                                     <th>Income</th>
-                                    <th>Expense</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php 
                                 
-                                    $query = "SELECT * FROM in_ex WHERE username = '$session_username' AND date='$currentDate' AND type = 'Income' ORDER BY date DESC LIMIT 10";
+                                    $query = "SELECT * FROM in_ex WHERE username = '$session_username' AND date = '$currentDate' AND type = 'Income' ORDER BY date DESC";
 
                                     $query_run = mysqli_query($con, $query);
 
+                                    $in_sum = 0;
+                                    
                                     if(mysqli_num_rows($query_run) > 0)
                                     {
                                         $serial_number = 1;
@@ -459,13 +465,7 @@ if(isset($_POST['submitIncome'])) {
                                                     <?php
                                                         if ($incomeExpense['type'] === 'Income') {
                                                             echo $incomeExpense['amount'];
-                                                        }
-                                                    ?>
-                                                </td>
-                                                <td style="font-weight: bold;">
-                                                    <?php
-                                                        if ($incomeExpense['type'] === 'Expense') {
-                                                            echo $incomeExpense['amount'];
+                                                            $in_sum += $incomeExpense['amount'];
                                                         }
                                                     ?>
                                                 </td>
@@ -478,6 +478,14 @@ if(isset($_POST['submitIncome'])) {
                                         echo "<h5> Today NoRecord Found </h5>";
                                     }
                                 ?>
+                                <tr>
+                                    <td colspan="6"></td>
+                                    <td style="font-weight: bold; font-size: 20px;">Total:</td>
+                                    <td style="font-size: 20px;">
+                                    <!-- color: #0012C3;  color: #05A210; -->
+                                        <b><?= '₹' . $in_sum ?></b>
+                                    </td>
+                                </tr>
                                 
                             </tbody>
                         </table>

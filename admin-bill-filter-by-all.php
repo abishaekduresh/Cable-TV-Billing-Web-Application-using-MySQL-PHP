@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "dbconfig.php";
+require "component.php";
 
 if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
     $session_username = $_SESSION['username'];
@@ -29,7 +30,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 <?php
 
     include 'admin-menu-bar.php';
-    ?><br<?php
+    ?><br><?php
     include 'admin-menu-btn.php';
 
 ?>
@@ -224,7 +225,7 @@ if (!empty($from_time) && !empty($to_time)) {
                                         <tr>
                                             <td style="width: 18px; font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
                                             <td style="width: 100px; font-size: 18px; font-weight: bold;"><?= $row['bill_by']; ?></td>
-                                            <td style="width: 240px; font-weight: bold; font-size: 18px; color: #007DC3;"><?= $row['date']; ?></td>
+                                            <td style="width: 240px; font-weight: bold; font-size: 18px; color: #007DC3;"><?= formatDate($row['date']); ?></td>
                                             <td style="width: 40px; font-size: 18px; font-weight: bold;"><?= $row['billNo']; ?></td>
                                             <td style="width: 40px; font-size: 18px; font-weight: bold;"><?= $row['mso']; ?></td>
                                             <td style="width: 160px; font-size: 18px; font-weight: bold;"><?= $row['stbno']; ?></td>

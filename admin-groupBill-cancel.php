@@ -2,6 +2,7 @@
 session_start();
 include "dbconfig.php";
 require 'dbconfig.php';
+require 'component.php';
 
 if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
     $session_username = $_SESSION['username'];
@@ -134,7 +135,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                                 <form action="admin-code-groupBill-cancel.php" method="POST">
                                                  <tr>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
-                                                     <td style="font-weight: bold; font-size: 18px; color: #007DC3;"><?= $row1['date']; ?></td>
+                                                     <td style="font-weight: bold; font-size: 18px; color: #007DC3;"><?= formatDate($row1['date']); ?></td>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $row1['billGroupNo']; ?></td>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $row1['billBy']; ?></td>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $row1['groupName']; ?></td>

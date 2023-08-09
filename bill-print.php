@@ -143,7 +143,7 @@ if (mysqli_num_rows($query) > 0) {
             </tr>
             <tr>
                 <th>Date</th>
-                <td><?php echo $date; ?>/<?php echo $time; ?></td>
+                <td><?= formatDate($date); ?>/<?php echo $time; ?></td>
             </tr>
             <tr>
                 <th>BillAmt</th>

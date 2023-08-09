@@ -267,7 +267,7 @@ $status = 'approve';
                                             $name = '';
                                             $phone = '';
                                             
-                                            $query = "SELECT * FROM customer WHERE cusGroup = '$filtervalues' LIMIT 300";
+                                            $query = "SELECT * FROM customer WHERE cusGroup = '$filtervalues' AND cusGroup!='1' LIMIT 300";
     
                                             $query_run = mysqli_query($con, $query);
     
