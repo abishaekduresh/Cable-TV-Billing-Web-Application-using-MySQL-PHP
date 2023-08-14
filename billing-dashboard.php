@@ -246,17 +246,23 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 <div id="errorMessageUpdate" class="alert alert-warning d-none"></div>
 
                 <input type="hidden" name="student_id" id="student_id" >
+
+                <!-- <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
+                <select style="font-weight: bold;" name="rc_dc" id="rc_dc" class="form-select" required>
+                  <option style="font-weight: bold;" value="1" selected>RC</option>
+                  <option style="font-weight: bold;" value="0">DC</option>
+                </select> -->
                 
                 <label for="selectBox" class="form-label">Select an Group: *</label>
                 <select style="font-weight: bold;" name="cusGroup" id="cusGroup" class="form-select" required>
                                                 <option value="" selected disabled>Select</option>
                                                 <?php
                                                 
-                                                $query = "SELECT id,groupName FROM groupinfo WHERE id != '2'";
+                                                $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
                                                 $result = mysqli_query($con, $query);
                                                 
                                                 while ($row = mysqli_fetch_assoc($result)) {
-                                                    $optionValueID = $row['id'];
+                                                    $optionValueID = $row['group_id'];
                                                     $optionValue = $row['groupName'];
                                                     ?>
                                                     <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
@@ -414,7 +420,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                             // $currentYear = $datetime->format('Y');
     
                                             $query = "SELECT * FROM customer 
-                                            WHERE CONCAT(stbno, name, phone) LIKE '%$filtervalues%' AND cusGroup = '1' LIMIT 300";
+                                            WHERE CONCAT(stbno, name, phone) LIKE '%$filtervalues%' AND rc_dc='1' AND cusGroup = '1' LIMIT 300";
     
                                             $query_run = mysqli_query($con, $query);
     

@@ -1,6 +1,7 @@
 <?php 
    session_start();
    include "dbconfig.php";
+   require "component.php";
    if (isset($_SESSION['username']) && isset($_SESSION['id'])) {  
        $session_username = $_SESSION['username'];
        $session_name = $_SESSION['name'];
@@ -164,7 +165,9 @@ if (!empty($from_time) && !empty($to_time)) {
                     <button type="submit" class="btn btn-primary">Search</button>
                 </form>
         
-                <?php if (isset($result) && $result->num_rows > 0) { ?>
+                <?php if (isset($result) && $result->num_rows > 0) { 
+                ?><b>From Date :<?= formatDate($fromDate); ?><br/>To Date:<?= 
+                formatDate($endDate);?></b>
                     <br>
                     <a href="<?php echo $filename ?>" class="btn btn-primary" download>Download Data</a>
                 <?php } ?>

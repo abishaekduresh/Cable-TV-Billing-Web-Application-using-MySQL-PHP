@@ -163,7 +163,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                                  <tr>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
                                                      <td style=" font-weight: bold; font-size: 18px; color: #007DC3;"><?= formatDate($row1['date']); ?></td>
-                                                     <td style=" font-size: 18px; font-weight: bold;"><?= $row1['billGroupNo']; ?></td>
+                                                     <td style=" font-size: 18px; font-weight: bold;"><?= $row1['billNo']; ?></td>
                                                      <td style=" font-size: 18px; font-weight: bold;"><?= $row1['billBy']; ?></td>
                                                      <td style=" font-size: 18px; font-weight: bold;"><?= $row1['groupName']; ?></td>
                                                      <td style=" font-size: 18px; font-weight: bold;"><?= $row1['pMode']; ?></td>
@@ -182,13 +182,34 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                                     <td>
                                                         <!--<input type="hidden" name="billNo" value="<?= $row1['billNo']; ?>">-->
                                                         <input type="hidden" name="date" value="<?= $row1['date']; ?>">
-                                                        <input type="hidden" name="groupID" value="<?= $row1['groupID']; ?>">
+                                                        <input type="hidden" name="group_id" value="<?= $row1['group_id']; ?>">
                                                         <!-- Assign 'bill_id' value to the hidden input field for 'bill_no' -->
-                                                        <button type="submit" class="btn btn-danger btn-sm" style="font-weight: bold;">
+                                                        <button type="button" class="btn btn-primary btn-sm" style="font-weight: bold;" data-toggle="modal" data-target="#exampleModal">
                                                             Submit
                                                         </button>
                                                     </td>
                                                  </tr>
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Confirm</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>Are you sure to make changes on Credit Bill ?</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-danger">Submit</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </form>
                                         <?php
                                                 

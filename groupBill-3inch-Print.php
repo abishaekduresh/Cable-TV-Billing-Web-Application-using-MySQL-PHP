@@ -12,12 +12,12 @@ if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
 }
 
-$billGroupNo = $_GET['billGroupNo'];
+$group_id = $_GET['group_id'];
 $date = $_GET['date'];
-
+    
 
 $query = mysqli_query($con, "SELECT *
-FROM billgroupdetails WHERE billGroupNo = '$billGroupNo' AND date = '$date' AND status='approve';
+FROM billgroupdetails WHERE group_id = '$group_id' AND date = '$date' AND status='approve';
 ");
 
 /// HEADER ///
@@ -101,7 +101,7 @@ if (mysqli_num_rows($query) > 0) {
 
     $row = mysqli_fetch_array($query);
         $billBy = $row["billBy"];
-        $billNo = $row["billGroupNo"];
+        $billNo = $row["billNo"];
         $date = $row["date"];
         $time = $row["time"];
         $billTo = $row["groupName"];
@@ -147,7 +147,7 @@ if (mysqli_num_rows($query) > 0) {
                 <td>
                 <?php
                                                 
-                    $query1 = "SELECT stbNo FROM billgroup WHERE billNo = '$billGroupNo' 
+                    $query1 = "SELECT stbNo FROM billgroup WHERE group_id = '$group_id' 
                                 AND date = '$date' AND status = 'approve'";
                     $result1 = mysqli_query($con, $query1);
                                                 
@@ -241,7 +241,7 @@ if (mysqli_num_rows($query) > 0) {
         }
 
         
-        $url = "billing-group-dashboard.php?groupID=select";
+        $url = "billing-group-dashboard.php?group_id=select";
         redirect($url);
 
 $con->close();

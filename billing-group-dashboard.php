@@ -24,7 +24,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             /// THIS CODE https://chat.openai.com/share/59162802-39b4-4187-8f8c-b6ceb6bc0258
             if ($currentDay === '01') {
                 // Check if there is any bill entry for the next month
-                $checkNextMonthQuery = "SELECT billNo FROM billgroup WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT(DATE_ADD('$currentDate', INTERVAL 1 MONTH), '%Y-%m') LIMIT 1";
+                $checkNextMonthQuery = "SELECT billNo FROM billgroupdetails WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT(DATE_ADD('$currentDate', INTERVAL 1 MONTH), '%Y-%m') LIMIT 1";
                 $result = $con->query($checkNextMonthQuery);
             
                 if ($result->num_rows > 0) {
@@ -32,7 +32,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     $billNo = 1;
                 } else {
                     // Retrieve the maximum billNo for the current month and year
-                    $getMaxBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM billgroup WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
+                    $getMaxBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM billgroupdetails WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
                     $result = $con->query($getMaxBillNoQuery);
             
                     if ($result->num_rows > 0) {
@@ -49,7 +49,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 }
             } else {
                 // Retrieve the next billNo for the current month and year
-                $getBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM billgroup WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
+                $getBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM billgroupdetails WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
                 $result = $con->query($getBillNoQuery);
             
                 if ($result->num_rows > 0) {
@@ -60,7 +60,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 }
             }
             
-            // $billGroupNo = 1;
+            // $billNo = 1;
             
 ///////        Insert Data into billGroupDetails    ////////////
 
@@ -71,19 +71,19 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             $billAmount = mysqli_real_escape_string($con, $_POST["billAmt"]);
             $discount = mysqli_real_escape_string($con, $_POST["discount"]);
             $phone = mysqli_real_escape_string($con, $_POST["phone"]);
-            $groupID = mysqli_real_escape_string($con, $_POST["groupID"]);
+            $groupID = mysqli_real_escape_string($con, $_POST["group_id"]);
             $groupName = mysqli_real_escape_string($con, $_POST["groupName"]);
             $Rs = $billAmount;
             
             $Rs = $Rs + $oldMonthBal;
-            // bill Group Details - Error: Cannot add or update a child row: a foreign key constraint fails (`ctv.pdpgroups`.`billGroupDetails`, CONSTRAINT `billGroupDetails_ibfk_1` FOREIGN KEY (`billGroupNo`) REFERENCES `billGroup` (`id`))
+            // bill Group Details - Error: Cannot add or update a child row: a foreign key constraint fails (`ctv.pdpgroups`.`billGroupDetails`, CONSTRAINT `billGroupDetails_ibfk_1` FOREIGN KEY (`billNo`) REFERENCES `billGroup` (`id`))
             $Rs = $Rs - $discount;
             
             $status = 'approve';
             
             
             // Prepare the INSERT query
-            $sql = "INSERT INTO `billgroupdetails` (`billGroupNo`, `date`, `time`, `billBy`, `groupID`, `groupName`, `phone`, `pMode`, `oldMonthBal`, `billAmount`, `discount`, `Rs`, `status`) 
+            $sql = "INSERT INTO `billgroupdetails` (`billNo`, `date`, `time`, `billBy`, `group_id`, `groupName`, `phone`, `pMode`, `oldMonthBal`, `billAmount`, `discount`, `Rs`, `status`) 
             VALUES ('$billNo', '$currentDate', '$currentTime', '$session_username', '$groupID', '$groupName', '$phone', '$pMode', '$oldMonthBal', '$billAmount', '$discount', '$Rs', '$status')";
             
             // Execute the query
@@ -109,7 +109,7 @@ foreach ($checkboxValues as $customerId) {
 
 $status = 'approve';
     // Prepare the SQL statement
-    $sql = "INSERT INTO billgroup (billNo, date, time, groupID, mso, stbNo, name, remark,status)
+    $sql = "INSERT INTO billgroup (billNo, date, time, group_id, mso, stbNo, name, remark,status)
         VALUES ('$billNo', '$currentDate', '$currentTime', '$groupID1', '$mso', '$stbNo', '$cusName', '$remark','$status')";
 
            
@@ -147,10 +147,11 @@ $status = 'approve';
         }
 
         // Usage example
-        $url = "groupBill-3inch-Print.php?groupID=$groupID&date=$currentDate";
+        $url = "groupBill-3inch-Print.php?group_id=$groupID&date=$currentDate";
         redirect($url);
     }
-    $groupID = '';  
+    $group_id = ''; 
+    $phone = '';
 ?>
 
 
@@ -205,15 +206,15 @@ $status = 'approve';
                                     
                                     <form action="" method="GET">
                                         <div class="input-group mb-3">
-                                            <select name="groupID" class="form-select">
+                                            <select name="group_id" class="form-select">
                                                 <option value="select" selected disabled>Select</option>
                                                 <?php
-                                                $query = "SELECT * FROM groupinfo WHERE id != '1' AND id != '2' LIMIT 100";
+                                                $query = "SELECT * FROM groupinfo WHERE group_id != '1' AND group_id != '2' LIMIT 100";
                                                 $result = mysqli_query($con, $query);
-                                                $selectedValue = isset($_GET['groupID']) ? $_GET['groupID'] : ''; // Get the selected value from the URL
+                                                $selectedValue = isset($_GET['group_id']) ? $_GET['group_id'] : ''; // Get the selected value from the URL
 
                                                 while ($row = mysqli_fetch_assoc($result)) {
-                                                    $optionValueID = $row['id'];
+                                                    $optionValueID = $row['group_id'];
                                                     $optionValue = $row['groupName'];
                                                     ?>
                                                     <option value="<?php echo $optionValueID; ?>" <?php if ($optionValue === $selectedValue) echo 'selected'; ?>><?php echo $optionValue; ?></option>
@@ -259,15 +260,15 @@ $status = 'approve';
                                     </thead>
                                     <tbody>
                                         <?php
-                                        if (isset($_GET['groupID'])) {
+                                        if (isset($_GET['group_id'])) {
                                             // $filtervalues = '';
                                             // $filtervalues = 0;
-                                            $filtervalues = $_GET['groupID'];
+                                            $group_id = $_GET['group_id'];
     
                                             $name = '';
                                             $phone = '';
                                             
-                                            $query = "SELECT * FROM customer WHERE cusGroup = '$filtervalues' AND cusGroup!='1' LIMIT 300";
+                                            $query = "SELECT * FROM customer WHERE cusGroup = '$group_id' AND rc_dc='1' AND cusGroup!='1' LIMIT 300";
     
                                             $query_run = mysqli_query($con, $query);
     
@@ -284,8 +285,8 @@ $status = 'approve';
 
                                                     $nestedQuery = "SELECT *
                 FROM billgroup
-                JOIN billgroupdetails ON billgroup.groupID = billgroupdetails.groupID
-                WHERE billgroupdetails.groupID = '$cusGroupID'
+                JOIN billgroupdetails ON billgroup.group_id = billgroupdetails.group_id
+                WHERE billgroupdetails.group_id = '$cusGroupID'
                 AND billgroupdetails.status = 'approve'
                 AND billgroup.status = 'approve'
                 AND MONTH(billgroupdetails.`date`) = '$currentMonth'
@@ -313,7 +314,15 @@ $status = 'approve';
                                                             <?php endif; ?>
                                                         </td>
                                                         <td style="width: 160px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="groupID1[<?= $customer['id']; ?>]" value="<?= $customer['cusGroup']; ?>" style="width: 200px;">
+                                                                <input readonly class="form-control fw-bold" type="hidden" name="groupID1[<?= $customer['id']; ?>]" value="<?= $customer['cusGroup']; ?>" style="width: 200px;">
+                                                                <input readonly class="form-control fw-bold" type="text" value="<?php
+                                                                    $group__id=$customer['cusGroup'];
+                                                                    $groupname="SELECT groupName FROM groupinfo WHERE group_id='$group__id'";
+                                                                    $result1 = mysqli_query($con, $groupname);
+                                                                    while ($row1 = mysqli_fetch_assoc($result1)) {
+                                                                        echo $optionValue = $row1['groupName'];
+                                                                    }
+                                                                     ?>" style="width: 200px;">
                                                         </td>
                                                         <td style="width: 160px; font-weight: bold;">
                                                                 <input readonly class="form-control fw-bold" type="text" name="mso[<?= $customer['id']; ?>]" value="<?= $customer['mso']; ?>" style="width: 70px;">
@@ -365,13 +374,13 @@ $status = 'approve';
                 <div class="col">
                 <?php
                  
-                    $sql = "SELECT id,groupName,phone FROM groupinfo WHERE id = '$filtervalues'";
+                    $sql = "SELECT group_id,groupName,phone FROM groupinfo WHERE group_id = '$group_id'";
                     $result = $con->query($sql);
 
                     if ($result->num_rows > 0) {
                         
                         $row = $result->fetch_assoc();
-                        $groupID = $row["id"];
+                        $groupID = $row["group_id"];
                         $groupName = $row["groupName"];
                         $phone = $row["phone"];
                     } else {
@@ -382,8 +391,8 @@ $status = 'approve';
 
                     $nestedQuery1 = "SELECT *
                     FROM billgroup
-                    JOIN billgroupdetails ON billgroup.groupID = billgroupdetails.groupID
-                    WHERE billgroupdetails.groupID = '$groupID'
+                    JOIN billgroupdetails ON billgroup.group_id = billgroupdetails.group_id
+                    WHERE billgroupdetails.group_id = '$group_id'
                     AND billgroupdetails.status = 'approve'
                     AND billgroup.status = 'approve'
                     AND MONTH(billgroupdetails.`date`) = '$currentMonth'
@@ -402,7 +411,7 @@ $status = 'approve';
                 ?>
 
                     <label>
-                        <input readonly type="hidden" name="groupID" value="<?php echo $groupID; ?>" class="form-control fw-bold" style="width: 220px; font-weight: bold; font-size: 18px; color: #F20000;">
+                        <input readonly type="hidden" name="group_id" value="<?php echo $group_id; ?>" class="form-control fw-bold" style="width: 220px; font-weight: bold; font-size: 18px; color: #F20000;">
                         <input readonly type="text" name="groupName" value="<?php echo $groupName; ?>" class="form-control fw-bold" style="width: 220px; font-weight: bold; font-size: 18px; color: #F20000;">
                     </label>
                 </div>
@@ -433,7 +442,7 @@ $status = 'approve';
             <td>
                 <div class="col">
                     <?php
-                    $sql = "SELECT billAmt FROM groupinfo WHERE id = '$filtervalues'";
+                    $sql = "SELECT billAmt FROM groupinfo WHERE group_id = '$group_id'";
                     $result = $con->query($sql);
                     // Check if any data is returned
                     if ($result->num_rows > 0) {
@@ -507,57 +516,32 @@ $status = 'approve';
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-
-    // // JavaScript code to handle checkbox functionality
-    // const checkAllCheckbox = document.getElementById('checkAll');
-    // const checkboxes = document.querySelectorAll('input[name="options[]"]');
     
-    // function updateCheckAllCheckbox() {
-    //     let allChecked = true;
-    //     checkboxes.forEach(function(checkbox) {
-    //         if (!checkbox.checked) {
-    //             allChecked = false;
-    //             return;
-    //         }
-    //     });
-    
-    //     checkAllCheckbox.checked = allChecked;
-    // }
-    
-    // checkAllCheckbox.addEventListener('change', function() {
-    //     checkboxes.forEach(function(checkbox) {
-    //         checkbox.checked = checkAllCheckbox.checked;
-    //     });
-    // });
-    
-    // checkboxes.forEach(function(checkbox) {
-    //     checkbox.addEventListener('change', function() {
-    //         updateCheckAllCheckbox();
-    //     });
-    // });
-    
-const checkAllCheckbox = document.getElementById('checkAll');
+    const checkAllCheckbox = document.getElementById('checkAll');
 const checkboxes = document.querySelectorAll('input[name="options[]"]');
 const confirmButton = document.getElementById('confirmButton');
 
 function updateCheckAllCheckbox() {
   let allChecked = true;
+  let anyChecked = false; // New variable to track if any child checkbox is checked
+
   checkboxes.forEach(function(checkbox) {
     if (!checkbox.checked) {
       allChecked = false;
-      return;
+    } else {
+      anyChecked = true; // Set anyChecked to true if at least one checkbox is checked
     }
   });
 
   checkAllCheckbox.checked = allChecked;
-  confirmButton.disabled = !allChecked; // Disable/enable the confirm button based on allChecked value
+  confirmButton.disabled = !anyChecked; // Disable the confirm button if no checkboxes are checked
 }
 
 checkAllCheckbox.addEventListener('change', function() {
   checkboxes.forEach(function(checkbox) {
     checkbox.checked = checkAllCheckbox.checked;
   });
-  updateCheckAllCheckbox(); // Update the confirm button status when 'Check All' checkbox is changed
+  updateCheckAllCheckbox();
 });
 
 checkboxes.forEach(function(checkbox) {
@@ -570,6 +554,7 @@ checkboxes.forEach(function(checkbox) {
 updateCheckAllCheckbox();
 
 
+
 </script><?php include 'footer.php'?>
 </body>
 </html>
@@ -579,4 +564,3 @@ updateCheckAllCheckbox();
 <?php } else{
 	header("Location: index.php");
 } ?>
-

@@ -1,6 +1,7 @@
 <?php 
    session_start();
    include "dbconfig.php";
+   require "component.php";
    if (isset($_SESSION['username']) && isset($_SESSION['id'])) {  
        $session_username = $_SESSION['username'];
        $session_name = $_SESSION['name'];
@@ -19,16 +20,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Download Group Bill Data</title>
+    <title>Download Bill Data</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+
+<h1 align="center">Group Bill Download</h1>
 
 <br>
 
     <div class="container">
         <div class="d-flex justify-content-end">
-            <button type="click" class="btn btn-danger justify-content-end" onclick="closeWindow()"><i class="fa-solid fa-circle-xmark"></i>Close</button>
+            <button type="click" class="btn btn-warning btn-lg justify-content-end" onclick="goBack()"><img src="assets/arrow-left-solid.svg" 
+            width="20" height="20"> &nbsp;Back </button>
         </div>
     </div>
 
@@ -36,8 +40,8 @@
 <div class="container">
   <div class="row">
     <div class="col">
-        <form method="POST" action="code-bill-group-export.php">
-            <h2><u>Export Group Bill as Excel</u></h2><br>
+        <form method="POST" action="code-bill-export.php">
+            <h2><u>Export Bill as Excel</u></h2><br>
             <div class="form-group">
                 <label for="start_date">Start Date</label>
                 <input type="date" class="form-control" id="start_date" name="start_date" value="<?php echo $currentDate?>" required>
@@ -75,46 +79,62 @@
                     $fromDate = $_POST["from_date"];
                     $endDate = $_POST["end_date"];
                     
-$from_time = isset($_POST['from_time']) ? $_POST['from_time'] : '';
-$to_time = isset($_POST['to_time']) ? $_POST['to_time'] : '';
-$timeFilterCondition = '';
+                    $from_time = isset($_POST['from_time']) ? $_POST['from_time'] : '';
+                    $to_time = isset($_POST['to_time']) ? $_POST['to_time'] : '';
+                    $timeFilterCondition = '';
 
-if (!empty($from_time) && !empty($to_time)) {
-    $timeFilterCondition = "AND time BETWEEN '$from_time' AND '$to_time'";
-}
+                    if (!empty($from_time) && !empty($to_time)) {
+                        $timeFilterCondition = "AND time BETWEEN '$from_time' AND '$to_time'";
+                    }
 
-                
                     // Fetch data from the MySQL database based on the date range
                     $sql = "SELECT stbno FROM billgroup WHERE date BETWEEN '$fromDate' AND '$endDate' AND status = 'approve' $timeFilterCondition";
                     $result = $con->query($sql);
                 
-                    if ($result && $result->num_rows > 0) {
-                        // Create a file for writing the data
-                        $filename = "GroupBill_data_" . $session_username . "_" . $currentDate . ".txt";
-                        $file = fopen($filename, "w");
+                    // if ($result && $result->num_rows > 0) {
+                    //     // Create a file for writing the data
+                    //     $filename = "group_bill_data_" . $from_time . "-" . $to_time . "_" . $session_username . ".txt";
+                    //     $file = fopen($filename, "w");
                 
+                    //     // Loop through each row of data
+                    //     while ($row = $result->fetch_assoc()) {
+                    //         // Write each data entry to the file, separated by a comma
+                    //         fwrite($file, implode(",", $row) . ",\n");
+                    //     }
+                
+
+                    // Store file on folder
+                    if ($result && $result->num_rows > 0) {
+                        // Specify the desired path to save the file
+                        $filePath = "group-bill-txt-downloaded-files/";
+                    
+                        // Create a file for writing the data
+                        $filename = $filePath . "group_bill_data_" . $session_username . "_" . $currentDate . ".txt";
+                        $file = fopen($filename, "w");
+                    
                         // Loop through each row of data
                         while ($row = $result->fetch_assoc()) {
                             // Write each data entry to the file, separated by a comma
                             fwrite($file, implode(",", $row) . ",\n");
-                        }
+                        }   
+                    
+                    //     // Close the file
+                    //     fclose($file);
+
+                if (isset($_SESSION['id'])) {
+                    // Get the user information before destroying the session
+                    $userId = $_SESSION['id'];
+                    $username = $_SESSION['username'];
+                    $role = $_SESSION['role'];
+                    $action = "Text Group Bill Exported - $from_time--$to_time / $session_name";
                 
+                    // Call the function to insert user activity log
+                    logUserActivity($userId, $username, $role, $action);
+                }
+
                         // Close the file
                         fclose($file);
-                        
-                // Activity Log
-                if (isset($_SESSION['id'])) {
-                // Get the user information before destroying the session
-                $userId = $_SESSION['id'];
-                $role = $_SESSION['role'];
-                $action = "Group Bill Text file Exported by $session_name";
-            
-                // Insert user logout activity
-                $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$session_username', '$role', '$action')";
-                mysqli_query($con, $insertSql);
-                }
-                
-                        
+
                     } else {
                         echo "No data found.";
                     }
@@ -144,8 +164,10 @@ if (!empty($from_time) && !empty($to_time)) {
                     </div>
                     <button type="submit" class="btn btn-primary">Search</button>
                 </form>
-        
-                <?php if (isset($result) && $result->num_rows > 0) { ?>
+                
+                <?php if (isset($result) && $result->num_rows > 0) { 
+                ?><b>From Date :<?= formatDate($fromDate); ?><br/>To Date:<?= 
+                formatDate($endDate);?></b>
                     <br>
                     <a href="<?php echo $filename ?>" class="btn btn-primary" download>Download Data</a>
                 <?php } ?>
@@ -155,7 +177,7 @@ if (!empty($from_time) && !empty($to_time)) {
 </div>
 
 
-    <script>
+    <!-- <script>
         function closeWindow() {
             window.close();
         }
@@ -163,9 +185,14 @@ if (!empty($from_time) && !empty($to_time)) {
     <script>
         setTimeout(function() {
             window.close();
-        }, 3000000000000);
-    </script>
-
+        }, 30000);
+    </script> -->
+<script>
+    function goBack() {
+        window.history.back();
+    }
+    
+</script>
 </body>
 </html>
 

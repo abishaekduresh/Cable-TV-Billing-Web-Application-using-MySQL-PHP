@@ -164,6 +164,7 @@ if(isset($_POST['update_customer']))
     $customer_id = mysqli_real_escape_string($con, $_POST['customer_id']);
 
     $cusGroup = mysqli_real_escape_string($con, $_POST['cusGroup']);
+    $rc_dc = mysqli_real_escape_string($con, $_POST['rc_dc']);
     $mso = mysqli_real_escape_string($con, $_POST['mso']);
     $stbno = mysqli_real_escape_string($con, $_POST['stbno']);
     $name = mysqli_real_escape_string($con, $_POST['name']);
@@ -171,7 +172,7 @@ if(isset($_POST['update_customer']))
     $description = mysqli_real_escape_string($con, $_POST['description']);
     $amount = mysqli_real_escape_string($con, $_POST['amount']);
 
-    $query = "UPDATE customer SET cusGroup='$cusGroup', mso='$mso', stbno='$stbno', name='$name', phone='$phone', description='$description', amount='$amount' WHERE id='$customer_id' ";
+    $query = "UPDATE customer SET cusGroup='$cusGroup', mso='$mso', stbno='$stbno', name='$name', phone='$phone', description='$description', amount='$amount', rc_dc='$rc_dc' WHERE id='$customer_id' ";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)
@@ -279,7 +280,7 @@ if(isset($_POST['save_student']))
     //     return;
     // }
 
-    $query = "INSERT INTO customer (cusGroup, mso, stbno, name, phone, description, amount) VALUES ('$cusGroup', '$mso', '$stbno', '$name', '$phone', '$description', '$amount')";
+    $query = "INSERT INTO customer (cusGroup, mso, stbno, name, phone, description, amount, rc_dc) VALUES ('$cusGroup', '$mso', '$stbno', '$name', '$phone', '$description', '$amount', '1')";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)
@@ -366,6 +367,7 @@ if(isset($_POST['update_student']))
     $student_id = mysqli_real_escape_string($con, $_POST['student_id']);
 
     $cusGroup = mysqli_real_escape_string($con, $_POST['cusGroup']);
+    $rc_dc = mysqli_real_escape_string($con, $_POST['rc_dc']);
     $mso = mysqli_real_escape_string($con, $_POST['mso']);
     $stbno = mysqli_real_escape_string($con, $_POST['stbno']);
     $name = mysqli_real_escape_string($con, $_POST['name']);
@@ -383,7 +385,7 @@ if(isset($_POST['update_student']))
         return;
     }
  
-    $query = "UPDATE customer SET cusGroup='$cusGroup', mso='$mso', stbno='$stbno', name='$name', phone='$phone', description='$description', amount='$amount' WHERE id='$student_id'";
+    $query = "UPDATE customer SET cusGroup='$cusGroup', mso='$mso', stbno='$stbno', name='$name', phone='$phone', description='$description', amount='$amount', rc_dc='$rc_dc' WHERE id='$student_id'";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)

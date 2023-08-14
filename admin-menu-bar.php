@@ -76,7 +76,7 @@ if ($result->num_rows > 0) {
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="user-today-collection.php" target="blank">Today Collection</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="rptindivcancelledbill.php" target="blank">Cancelled Bill</a>
+                        <a class="dropdown-item" href="rptindivcancelledbill.php" target="blank">Cancelled Indiv Bill</a>
                     </div>
                 </li>
 
@@ -90,7 +90,9 @@ if ($result->num_rows > 0) {
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <!--<a class="dropdown-item" href="bill-export.php">Download Bill Report</a>-->
-                        <a class="dropdown-item" onclick="openBill_Export()">Download Bill Report</a>
+                        <a class="dropdown-item" onclick="openBill_Export()">Download Indiv Bill</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="bill-group-export.php">Download Group Bill</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="admin-excel-downloaded-files.php">Downloaded Files</a>
                     </div>
@@ -139,7 +141,12 @@ if ($result->num_rows > 0) {
     window.open('bill-export.php', '_blank', 'width=2000, height=750');
 }
 </script>
-
+<script>
+    function goBack() {
+        window.history.back();
+    }
+    
+</script>
 </body>
 </html>
 

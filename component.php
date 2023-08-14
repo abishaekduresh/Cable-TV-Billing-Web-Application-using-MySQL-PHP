@@ -11,7 +11,7 @@ function logUserActivity($userId, $username, $role, $action) {
 function fetchGroupName($groupid) {
     include 'dbconfig.php';
 
-    $query = "SELECT groupName FROM groupinfo WHERE id != '2' AND id='$groupid'";
+    $query = "SELECT groupName FROM groupinfo WHERE group_id != '2' AND group_id='$groupid'";
     $result=mysqli_query($con, $query);
 
     while ($row = $result->fetch_assoc()) {

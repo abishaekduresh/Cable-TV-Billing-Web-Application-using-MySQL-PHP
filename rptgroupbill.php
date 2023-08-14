@@ -93,7 +93,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                             <th>#</th>
                                             <th>Date</th>
                                             <th>B.No</th>
-                                            <th>G.ID</th>
+                                            <th>Group Name</th>
                                             <th>Bill By</th>
                                             <th>P.Mode</th>
                                             <th>OldBal</th>
@@ -134,7 +134,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                                  <tr>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
                                                      <td style="font-weight: bold; font-size: 18px; color: #007DC3;"><?= $row1['date']; ?></td>
-                                                     <td style="font-size: 18px; font-weight: bold;"><?= $row1['billGroupNo']; ?></td>
+                                                     <td style="font-size: 18px; font-weight: bold;"><?= $row1['billNo']; ?></td>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $row1['groupName']; ?></td>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $row1['billBy']; ?></td>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $row1['pMode']; ?></td>
@@ -143,7 +143,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                                      <td style="font-weight: bold; font-size: 20px; color: #DD0581;"><?= $row1['discount']; ?></td>
                                                      <td style="font-weight: bold; font-size: 20px; color: #F20000;"><?= $row1['Rs']; ?></td>
                                                      <td>
-                                                         <a href="groupBill-3inch-Print.php?billGroupNo=<?= $row1['billGroupNo']; ?>&date=<?= $row1['date']; ?>" target="blank">
+                                                         <a href="groupBill-3inch-Print.php?group_id=<?= $row1['group_id']; ?>&date=<?= $row1['date']; ?>" target="blank">
                                                              <button type="button" class="btn btn-warning">
                                                                  <i class="bi bi-printer-fill"></i>
                                                              </button>

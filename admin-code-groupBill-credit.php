@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the selected fruit value from the form
     $selectedValue = $_POST['selectedValue'];
     $date = $_POST['date'];
-    $groupID = $_POST['groupID'];
+    $group_id = $_POST['group_id'];
 // $currentDate = $currentDate;
 // $currentTime = $currentTime;
     // Perform any necessary validation or sanitization of the input data
@@ -17,13 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Connect to the database (assuming you have a database connection established)
 
     // Update the table with the selected fruit value
-    $updateQuery = "UPDATE billgroupdetails SET pMode = '$selectedValue' WHERE groupID = '$groupID' AND date='$date'";
+    $updateQuery = "UPDATE billgroupdetails SET pMode = '$selectedValue' WHERE group_id = '$group_id' AND date='$date'";
 
     // $updateQuery = "UPDATE billgroup bg
-    //             JOIN billgroupdetails bgd ON bg.groupID = bgd.groupID
+    //             JOIN billgroupdetails bgd ON bg.group_id = bgd.group_id
     //             SET bg.status = '$selectedValue',
     //                 bgd.column_name = '$new_value'
-    //             WHERE bg.groupID = '$groupID'";
+    //             WHERE bg.group_id = '$group_id'";
 
     $updateResult = mysqli_query($con, $updateQuery);
 

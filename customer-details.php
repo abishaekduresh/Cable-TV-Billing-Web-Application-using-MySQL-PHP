@@ -48,11 +48,11 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                                 <option value="" selected disabled>Select</option>
                                                 <?php
                                                 
-                                                $query = "SELECT id,groupName FROM groupinfo WHERE id != '2'";
+                                                $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
                                                 $result = mysqli_query($con, $query);
                                                 
                                                 while ($row = mysqli_fetch_assoc($result)) {
-                                                    $optionValueID = $row['id'];
+                                                    $optionValueID = $row['group_id'];
                                                     $optionValue = $row['groupName'];
                                                     ?>
                                                     <option value="<?php echo $optionValueID; ?>"><?php echo $optionValue;?></option>
@@ -116,16 +116,23 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
 
                 <input type="hidden" name="student_id" id="student_id" >
 
-                <label for="selectBox" class="form-label">Select an Group: *</label>
+                <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
+                <select style="font-weight: bold;" name="rc_dc" id="rc_dc" class="form-select" required>
+                  <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
+                  <option style="font-weight: bold;" value="1" selected>RC</option>
+                  <option style="font-weight: bold;" value="0">DC</option>
+                </select>
+
+                <label for="selectBox" class="form-label">Select Group: *</label>
                 <select style="font-weight: bold;" name="cusGroup" id="cusGroup" class="form-select" required>
                                                 <option value="" selected disabled>Select</option>
                                                 <?php
                                                 
-                                                $query = "SELECT id,groupName FROM groupinfo WHERE id != '2'";
+                                                $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
                                                 $result = mysqli_query($con, $query);
                                                 
                                                 while ($row = mysqli_fetch_assoc($result)) {
-                                                    $optionValueID = $row['id'];
+                                                    $optionValueID = $row['group_id'];
                                                     $optionValue = $row['groupName'];
                                                     ?>
                                                     <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
@@ -135,7 +142,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                                 ?>
                                             </select>
 
-                <label for="selectBox" class="form-label">Select an MSO: *</label>
+                <label for="selectBox" class="form-label">Select MSO: *</label>
                 <select style="font-weight: bold;" name="mso" id="mso" class="form-select" required>
                   <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
                   <option style="font-weight: bold;" value="VK" selected>VK DIGITAL</option>
@@ -232,6 +239,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                 <tr>
                                     <th>S.No.</th>
                                     <th>Group</th>
+                                    <th>RC/DC</th>
                                     <th>MSO</th>
                                     <th>STB No</th>
                                     <th>Name</th>
@@ -257,11 +265,22 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
 
                                             foreach($query_run as $customer)
                                             {
+                                                
                                                 ?>
                                                 <tr>
                                                     <td style="width: 18px; font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
                                                     <td style="font-size: 18px; font-weight: bold;">
                                                         <?= fetchGroupName($customer['cusGroup']); ?>
+                                                    </td>
+                                                    <td style="font-size: 18px; font-weight: bold;">
+                                                    <?php
+                                                        $rc_dc_status = $customer['rc_dc'];
+                                                        if($rc_dc_status == 1){
+                                                            echo 'RC';
+                                                        }else{
+                                                            echo 'DC';
+                                                        }
+                                                    ?>
                                                     </td>
                                                     <td style="font-size: 18px; font-weight: bold;"><?= $customer['mso']; ?></td>
                                                     <td style="font-size: 18px; font-weight: bold;"><?= $customer['stbno']; ?></td>
@@ -394,6 +413,7 @@ $(document).on('click', '.editStudentBtn', function () {
             } else if (res.status == 200) {
                 $('#student_id').val(res.data.id);
                 $('#cusGroup').val(res.data.cusGroup);
+                $('#rc_dc').val(res.data.rc_dc);
                 $('#mso').val(res.data.mso);
                 $('#stbno').val(res.data.stbno);
                 $('#name').val(res.data.name);

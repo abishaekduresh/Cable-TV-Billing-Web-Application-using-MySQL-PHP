@@ -153,7 +153,7 @@
                             <tbody>
                                 <?php 
 
-                                    $query = "SELECT * FROM groupinfo WHERE id != '1' AND id != '2'";
+                                    $query = "SELECT * FROM groupinfo WHERE group_id != '1' AND group_id != '2'";
                                     $query_run = mysqli_query($con, $query);
 
                                     if(mysqli_num_rows($query_run) > 0)
@@ -166,14 +166,14 @@
                                             <tr>
                                                 <td style="width: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
                                                 <td style="width: 350px; font-weight: bold;"><?= $group['groupName']; ?></td>
-                                                <td style="width: 100px; font-weight: bold;"><center><?= $group['id']; ?></center></td>
+                                                <td style="width: 100px; font-weight: bold;"><center><?= $group['group_id']; ?></center></td>
                                                 <td style="width: 110px; font-weight: bold;"><center><?= $group['phone']; ?></center></td>
                                                 <td style="width: 180px; font-weight: bold;"><center><?= $group['billAmt']; ?></center></td>
                                                 <td><center>
-                                                    <button type="button" value="<?=$group['id'];?>" class="editStudentBtn btn btn-success btn-sm">Edit</button>
-                                                        <form action="codegroupaction.php" method="POST" class="d-inline">
-                                                            <!--<button type="submit" name="delete_customer" value="<?=$group['id'];?>" class="deleteStudentBtn btn btn-danger btn-sm" -->
-                                                            <button type="submit" name="delete_customer" value="<?=$group['id'];?>" class="deleteStudentBtn btn btn-danger btn-sm disabled" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                    <button type="button" value="<?=$group['group_id'];?>" class="editStudentBtn btn btn-success btn-sm">Edit</button>
+                                                        <form action="code-group-action.php" method="POST" class="d-inline">
+                                                            <!--<button type="submit" name="delete_customer" value="<?=$group['group_id'];?>" class="deleteStudentBtn btn btn-danger btn-sm" -->
+                                                            <button type="submit" name="delete_customer" value="<?=$group['group_id'];?>" class="deleteStudentBtn btn btn-danger btn-sm disabled" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                                             Delete
                                                     </button>
                                                         </form></center>
@@ -209,7 +209,7 @@ $(document).on('submit', '#saveStudent', function (e) {
 
             $.ajax({
                 type: "POST",
-                url: "codegroupaction.php",
+                url: "code-group-action.php",
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -250,7 +250,7 @@ var student_id = $(this).val();
 
 $.ajax({
     type: "GET",
-    url: "codegroupaction.php?student_id=" + student_id,
+    url: "code-group-action.php?student_id=" + student_id,
     success: function (response) {
 
         var res = jQuery.parseJSON(response);
@@ -259,7 +259,7 @@ $.ajax({
             alert(res.message);
         }else if(res.status == 200){
 
-            $('#student_id').val(res.data.id);
+            $('#student_id').val(res.data.group_id);
             $('#groupName').val(res.data.groupName);
             $('#phone').val(res.data.phone);
             $('#billAmt').val(res.data.billAmt);
@@ -280,7 +280,7 @@ formData.append("update_group", true);
 
 $.ajax({
     type: "POST",
-    url: "codegroupaction.php",
+    url: "code-group-action.php",
     data: formData,
     processData: false,
     contentType: false,
@@ -328,7 +328,7 @@ $(document).on('click', '.deleteStudentBtn', function (e) {
               // Send the AJAX request to delete the student
               $.ajax({
                 type: "POST",
-                url: "codegroupaction.php",
+                url: "code--group-action.php",
                 data: {
                   'delete_group': true,
                   'student_id': student_id

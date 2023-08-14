@@ -47,7 +47,7 @@ if(isset($_POST['update_group']))
 
 
     $query = "UPDATE groupinfo SET groupName='$groupName', phone='$phone', billAmt='$billAmt' 
-                WHERE id='$student_id'";
+                WHERE group_id='$student_id'";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)
@@ -75,7 +75,7 @@ if(isset($_GET['student_id']))
 {
     $student_id = mysqli_real_escape_string($con, $_GET['student_id']);
 
-    $query = "SELECT * FROM groupinfo WHERE id='$student_id'";
+    $query = "SELECT * FROM groupinfo WHERE group_id='$student_id'";
     $query_run = mysqli_query($con, $query);
 
     if(mysqli_num_rows($query_run) == 1)
@@ -106,7 +106,7 @@ if(isset($_POST['delete_group']))
 {
     $student_id = mysqli_real_escape_string($con, $_POST['student_id']);
 
-    $query = "DELETE FROM groupinfo WHERE id='$student_id'";
+    $query = "DELETE FROM groupinfo WHERE group_id='$student_id'";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)

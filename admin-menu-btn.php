@@ -23,7 +23,7 @@
         <!--<img src="https://research.mgu.ac.in/wp-content/uploads/2021/07/new-icon-gif-9.gif" width="150" height="100">-->
   <div class="row">
     <div class="col">
-      <a href="billing-group-dashboard.php?groupID=select"><button type="button" class="btn btn-primary"><b>New Group Bill</b>
+      <a href="billing-group-dashboard.php?group_id=select"><button type="button" class="btn btn-primary"><b>New Group Bill</b>
       </button></a>
     </div>
     <!--<div class="col">-->

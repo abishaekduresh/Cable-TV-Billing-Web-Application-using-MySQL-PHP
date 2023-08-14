@@ -12,6 +12,12 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
     include 'menu-bar.php';
     $session_username = $_SESSION['username'];
 }
+
+$Rs_sum = ''; //////////
+$discount_sum = '';
+$paid_amount_sum = '';
+$oldMonthBal_sum = '';
+
 ?>
 
 <!DOCTYPE html>

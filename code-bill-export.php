@@ -82,6 +82,27 @@ if (isset($_POST['submit'])) {
         $row++;
     }
 
+    // // Auto adjust column width
+    // foreach ($sheet->getColumnIterator() as $column) {
+    //     $sheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
+    // }
+
+    // $writer = new Xls($spreadsheet);
+    // $filename = 'Bill_Data_' . $session_username . '_' . $currentDate . '_' . $currentTime . '.xls';
+    // $filepath = 'bill-excel-downloaded-files/' . $filename; // Folder path + filename
+
+    // // Save the Excel file in the specified folder
+    // $writer->save($filepath);
+
+    // // Set the appropriate headers for downloading the file
+    // header('Content-Type: application/vnd.ms-excel');
+    // header('Content-Disposition: attachment; filename="' . $filename . '"');
+    // header('Cache-Control: max-age=0');
+    // header('Content-Length: ' . filesize($filepath));
+
+    // // Read and output the file contents
+    // readfile($filepath);
+
     // Auto adjust column width
     foreach ($sheet->getColumnIterator() as $column) {
         $sheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
@@ -89,19 +110,15 @@ if (isset($_POST['submit'])) {
 
     $writer = new Xls($spreadsheet);
     $filename = 'Bill_Data_' . $session_username . '_' . $currentDate . '_' . $currentTime . '.xls';
-    $filepath = 'bill-excel-downloaded-files/' . $filename; // Folder path + filename
-
-    // Save the Excel file in the specified folder
-    $writer->save($filepath);
 
     // Set the appropriate headers for downloading the file
     header('Content-Type: application/vnd.ms-excel');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Cache-Control: max-age=0');
-    header('Content-Length: ' . filesize($filepath));
 
-    // Read and output the file contents
-    readfile($filepath);
+    // Output the file directly to the browser
+    $writer->save('php://output');
+
 
     exit();
 }
