@@ -167,7 +167,7 @@
                                         foreach($query_run as $row)
                                         {
                                             ?>
-                                            <form action="admin-code-bill-cancel.php" method="POST">
+                                            <!-- <form action="admin-code-bill-cancel.php" method="POST"> -->
                                             <tr>
                                                     <td style="font-weight: bold;"><?= $serial_number++; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
@@ -183,25 +183,22 @@
                                                     <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;"><?= $row['paid_amount']; ?></td>
                                                     <td style="width: 50px; font-weight: bold; font-size: 20px; color: #DD0581;"><?= $row['discount']; ?></td>
                                                     <td style="width: 70px; font-weight: bold; font-size: 20px; color: #F20000;"><?= $row['Rs']; ?></td>
+                                                <form action="admin-code-bill-cancel.php" method="POST">
                                                     <td>
-                                                        <!--<select name="selectedValue" class="p-1 mb-0 bg-warning text-dark ">-->
-                                                        <!--    <option value="approve" <?php if ($row['status'] === 'approve') { echo 'selected'; } ?>>Approve</option>-->
-                                                        <!--    <option value="cancel" <?php if ($row['status'] === 'cancel') { echo 'selected'; } ?>>Cancel</option>-->
-                                                        <!--</select>-->
-<select style="font-weight: bold;" name="selectedValue" class="form-select bg-warning text-dark">
-  <option style="font-weight: bold;" value="approve" <?php if ($row['status'] === 'approve') { echo 'selected'; } ?>>Approve</option>
-  <option style="font-weight: bold;" value="cancel" <?php if ($row['status'] === 'cancel') { echo 'selected'; } ?>>Cancel</option>
-</select>
-
+                                                        <select style="font-weight: bold;" name="selectedValue" class="form-select bg-warning text-dark">
+                                                            <option style="font-weight: bold;" value="approve" <?php if ($row['status'] === 'approve') { echo 'selected'; } ?>>Approve</option>
+                                                            <option style="font-weight: bold;" value="cancel" <?php if ($row['status'] === 'cancel') { echo 'selected'; } ?>>Cancel</option>
+                                                        </select>
                                                     </td>
                                                     <td>
                                                         <input type="hidden" name="bill_no" value="<?= $row['bill_id']; ?>">
+                                                        <input type="hidden" name="date" value="<?= $row['date']; ?>">
                                                         <input type="hidden" name="stbno" value="<?= $row['stbno']; ?>">
                                                         <!-- Assign 'bill_id' value to the hidden input field for 'bill_no' -->
                                                         <button type="submit" class="btn btn-danger btn-sm" style="font-weight: bold;">Submit</button>
                                                     </td>
+                                                </form>
                                             </tr>
-                                            </form>
                                             <?php 
                                             
                                             $Rs_sum += $row['Rs']; // Add the value to the sum variable
@@ -243,6 +240,7 @@
             </div>
         </div>
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>

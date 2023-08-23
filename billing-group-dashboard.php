@@ -117,7 +117,26 @@ $status = 'approve';
             // Execute the SQL statement
             if ($con->query($sql) === TRUE) {
                 // Data inserted successfully
-                
+
+                // Calculate sum of billAmount for the current date
+                $sqlSum = "SELECT SUM(billAmount) AS total_paid FROM billgroupdetails WHERE date = '$currentDate' AND status = 'approve'";
+                $result = $con->query($sqlSum);
+                $row = $result->fetch_assoc();
+                $sumPaidAmount = $row["total_paid"];
+
+                // Check if a record exists in in_ex table
+                $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 36";
+                $resultCheck = $con->query($sqlCheck);
+
+                if ($resultCheck->num_rows > 0) {
+                    // Update existing record
+                    $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = 12, subcategory_id = 36, remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 36";
+                    $con->query($sqlUpdate);
+                } else {
+                    // Insert new record
+                    $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', 12, 36,'', $sumPaidAmount)";
+                    $con->query($sqlInsert);
+                }
 
                 continue;
             } else {

@@ -25,5 +25,57 @@ function formatDate($formatdate) {
     echo date("d-m-Y", strtotime($formatdate));
 }
 
+function convertTo12HourFormat($time24Hour) {
+    // Create a DateTime object from the input time
+    $timeObj = DateTime::createFromFormat('H:i:s', $time24Hour);
+
+    // Convert to 12-hour format
+    $time12Hour = $timeObj->format('h:i A');
+
+    return $time12Hour;
+}
+
+function customDelay($seconds) {
+    sleep($seconds);
+}
+
+function getCategoryName($con, $categoryId) {
+    // SQL query
+    $sql = "SELECT * FROM in_ex_category WHERE category_id='$categoryId'";
+
+    // Execute query
+    $result = mysqli_query($con, $sql);
+
+    // Check if there are any rows in the result
+    if (mysqli_num_rows($result) > 0) {
+        // Fetch the first row
+        $row = mysqli_fetch_assoc($result);
+        // Return the category name
+        return $row["category"];
+    } else {
+        return "Category not found";
+    }
+}
+
+function getSubCategoryName($con, $subcategoryId) {
+    // SQL query
+    $sql = "SELECT * FROM in_ex_subcategory WHERE subcategory_id='$subcategoryId'";
+
+    // Execute query
+    $result = mysqli_query($con, $sql);
+
+    // Check if there are any rows in the result
+    if (mysqli_num_rows($result) > 0) {
+        // Fetch the first row
+        $row = mysqli_fetch_assoc($result);
+        // Return the category name
+        return $row["subcategory"];
+    } else {
+        return "SubCategory not found";
+    }
+}
+
+
+
 
 ?>

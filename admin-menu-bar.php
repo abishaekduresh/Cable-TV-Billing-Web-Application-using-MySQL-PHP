@@ -72,7 +72,7 @@ if ($result->num_rows > 0) {
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="admin-bill-filter-by-all.php">Bill by All</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="admin-income-expense-report.php">Income Expense</a>
+                        <a class="dropdown-item" href="admin-in-ex-report.php">Income Expense</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="user-today-collection.php" target="blank">Today Collection</a>
                         <div class="dropdown-divider"></div>

@@ -29,6 +29,9 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
 } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
     include 'menu-bar.php';
 }
+
+$filtervalues ='';
+
 ?>
 
 
@@ -47,7 +50,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
 
                                 <form action="" method="GET">
                                     <div class="input-group mb-3">
-                                        <input type="text" name="search" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="STB No, Phone">
+                                        <input type="text" name="search" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Phone">
                                         <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
                                 </form>
@@ -101,7 +104,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                                     <td style="width: 200px; font-weight: bold; font-size: 18px; color: #007DC3;">
                                                         <?= formatDate($bill['date']); ?>
                                                     </td>
-                                                    <td style="width: 100px; font-size: 18px; font-weight: bold;"><?= $bill['time']; ?></td>
+                                                    <td style="width: 100px; font-size: 17px; font-weight: bold;"><?= convertTo12HourFormat($bill['time']); ?></td>
                                                     <td style="width: 100px; font-size: 18px; font-weight: bold;"><?= $bill['bill_by']; ?></td>
                                                     <!--<td style="width: 180px; font-size: 18px; font-weight: bold;"><?= $bill['mso']; ?></td>-->
                                                     <td style="width: 180px; font-size: 18px; font-weight: bold;"><?= $bill['stbno']; ?></td>
@@ -284,8 +287,8 @@ $query1 = "SELECT * FROM bill WHERE CONCAT(stbno, phone) LIKE '%$filtervalues%' 
 $query_run1 = mysqli_query($con, $query1);
 
 if(mysqli_num_rows($query_run1) > 0)
-
 {
+    $bill = mysqli_fetch_assoc($query_run1);
 ?>
 
     <div class="container">

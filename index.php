@@ -12,9 +12,12 @@
       	      action="check-login.php" 
       	      method="post" 
       	      style="width: 450px;">
-      	      <h1 class="text-center p-3">PDP CABLE TV
+			  <div align="center">
+			  	<img src="assets/login_img.png" alt="login_img" width="150" height="150">
+			  </div>				
+      	      <!-- <h1 class="text-center p-3">PDP CABLE TV -->
       	      <br>
-      	      <h4 class="text-center">Billing Software</h4>
+      	      <h4 class="text-center">CABLE TV Billing Software</h4>
       	      </h1>
       	      <?php if (isset($_GET['error'])) { ?>
       	      <div class="alert alert-danger" role="alert">
@@ -46,9 +49,8 @@
 			  <option selected value="employee">Employee</option>
 			  <option value="admin">Admin</option>
 		  </select>
-		 
 		  <button type="submit" 
-		          class="btn btn-primary">LOGIN</button>
+		          class="btn btn-primary"><img src="assets/lock-solid-white.svg" alt="lock_icon" width="20" height="20">LOGIN</button>
 		          <br>
 		          <center><h6>Developed by</h6><a href ="https://www.linkedin.com/in/abishaekduresh/" target="_blank"><h6>Abishaek Duresh</h6></a></center>
 		</form>

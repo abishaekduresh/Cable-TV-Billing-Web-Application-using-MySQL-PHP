@@ -187,9 +187,30 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             // Execute the SQL statement
             if ($con->query($sql) === TRUE) {
                 // Data inserted successfully
-                
+            //  $q= "SELECT date,sum(paid_amount) TotAmt FROM `bill` where date='2023-06-01' group by date";
+            
+                // Calculate sum of paid_amount for the current date
+                $sqlSum = "SELECT SUM(paid_amount) AS total_paid FROM bill WHERE date = '$currentDate' AND status = 'approve'";
+                $result = $con->query($sqlSum);
+                $row = $result->fetch_assoc();
+                $sumPaidAmount = $row["total_paid"];
+
+                // Check if a record exists in in_ex table
+                $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35";
+                $resultCheck = $con->query($sqlCheck);
+
+                if ($resultCheck->num_rows > 0) {
+                    // Update existing record
+                    $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = '12', subcategory_id = '35', remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35";
+                    $con->query($sqlUpdate);
+                } else {
+                    // Insert new record
+                    $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', '12', '35','', $sumPaidAmount)";
+                    $con->query($sqlInsert);
+                }
 
                 continue;
+
             } else {
                 echo "Error inserting data: " . $con->error;
                 if (isset($_SESSION['id'])) {
@@ -247,11 +268,11 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
                 <input type="hidden" name="student_id" id="student_id" >
 
-                <!-- <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
+                <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
                 <select style="font-weight: bold;" name="rc_dc" id="rc_dc" class="form-select" required>
                   <option style="font-weight: bold;" value="1" selected>RC</option>
-                  <option style="font-weight: bold;" value="0">DC</option>
-                </select> -->
+                  <!-- <option style="font-weight: bold;" value="0">DC</option> -->
+                </select>
                 
                 <label for="selectBox" class="form-label">Select an Group: *</label>
                 <select style="font-weight: bold;" name="cusGroup" id="cusGroup" class="form-select" required>
@@ -360,7 +381,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                             <div class="col-md-7">
                                 <form action="" method="GET">
                                     <div class="input-group mb-3">
-                                        <input type="text" name="search" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="STB No, Name, Phone" >                                      
+                                        <input type="text" name="search" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Name, Phone" >                                      
                                         <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
                                 </form>
@@ -580,6 +601,7 @@ $.ajax({
 
             $('#student_id').val(res.data.id);
             $('#cusGroup').val(res.data.cusGroup);
+            $('#rc_dc').val(res.data.rc_dc);
             $('#mso').val(res.data.mso);
             $('#name').val(res.data.name);
             $('#stbno').val(res.data.stbno);

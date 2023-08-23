@@ -10,11 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $selectedValue = $_POST['selectedValue'];
     $bill_no = $_POST['bill_no'];
     $stbNo = $_POST['stbno'];
-// $currentDate = $currentDate;
-// $currentTime = $currentTime;
-    // Perform any necessary validation or sanitization of the input data
-
-    // Connect to the database (assuming you have a database connection established)
+    $date = $_POST['date'];
 
     // Update the table with the selected fruit value
     $updateQuery = "UPDATE bill SET status = '$selectedValue' WHERE bill_id = '$bill_no'";
@@ -23,7 +19,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($updateResult) {
         // Database update successful, perform any additional actions or display a success message
         echo "Database update successful. Bill Status updated to: " . $selectedValue; 
-        
+
+                // Calculate sum of paid_amount for the current date
+                $sqlSum = "SELECT SUM(paid_amount) AS total_paid FROM bill WHERE date = '$date' AND status = 'approve'";
+                $result = $con->query($sqlSum);
+                $row = $result->fetch_assoc();
+                $sumPaidAmount = $row["total_paid"];
+
+                // Check if a record exists in in_ex table
+                $sqlCheck = "SELECT * FROM in_ex WHERE date = '$date' AND category_id = 12 AND subcategory_id = 35";
+                $resultCheck = $con->query($sqlCheck);
+
+                if ($resultCheck->num_rows > 0) {
+                    // Update existing record
+                    $sqlUpdate = "UPDATE in_ex SET type='Income', date='$date', time = '$currentTime',username='Auto',category_id = '12', subcategory_id = '35', remark='', amount = $sumPaidAmount WHERE date = '$date' AND category_id = 12 AND subcategory_id = 35";
+                    $con->query($sqlUpdate);
+                } else {
+                    // Insert new record
+                    $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$date', '$currentTime','Auto', '12', '35','', $sumPaidAmount)";
+                    $con->query($sqlInsert);
+                }
+
         if (isset($_SESSION['id'])) {
             // Get the user information before destroying the session
             $userId = $_SESSION['id'];

@@ -135,7 +135,11 @@ if (mysqli_num_rows($query) > 0) {
             </tr>
             <tr>
                 <th>STB</th>
-                <td><?php echo $stbNo; ?></td>
+                <td><?php //echo $stbNo; ?>
+                    <!-- <iframe align="center" src="barcode128.php?id=<?=$stbNo?>" width="220px" height="70px" frameborder="0"></iframe> -->
+                    <!-- <iframe align="center" src="qrcode-v2/barcode.php?f=svg&ts=10&s=code-39&d=<?=$stbNo?>&w=180&h=90" width="100%" height="10%" frameborder="0"></iframe> -->
+                    <?= $stbNo; ?>
+                </td>
             </tr>
             <tr>
                 <th>Phone</th>
@@ -143,7 +147,7 @@ if (mysqli_num_rows($query) > 0) {
             </tr>
             <tr>
                 <th>Date</th>
-                <td><?= formatDate($date); ?>/<?php echo $time; ?></td>
+                <td><?= formatDate($date); ?>&nbsp;/&nbsp;<?= convertTo12HourFormat($time); ?></td>
             </tr>
             <tr>
                 <th>BillAmt</th>
@@ -176,6 +180,12 @@ if (mysqli_num_rows($query) > 0) {
     <div class="spacer"></div> <!-- Use a div with a class for spacing -->
     <div align="center"><?= $footer2 ?></div>
 </div>
+
+<!-- <br/> -->
+
+<!-- <img align="center" src="barcode128?id=00008317000ABCDd" width="290px" height="80px"> -->
+
+<!-- <iframe align="center" src="barcode128?id=<?=$stbNo?>" width="290px" height="80px" frameborder="0"></iframe> -->
 
 
 </body>

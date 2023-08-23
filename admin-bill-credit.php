@@ -149,7 +149,6 @@ $oldMonthBal_sum = '';
                                         foreach($query_run as $row)
                                         {
                                             ?>
-                                            <form action="admin-code-bill-credit.php" method="POST">
                                             <tr>
                                                     <td style="font-weight: bold;"><?= $serial_number++; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
@@ -166,23 +165,26 @@ $oldMonthBal_sum = '';
                                                     <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;"><?= $row['paid_amount']; ?></td>
                                                     <td style="width: 50px; font-weight: bold; font-size: 20px; color: #DD0581;"><?= $row['discount']; ?></td>
                                                     <td style="width: 70px; font-weight: bold; font-size: 20px; color: #F20000;"><?= $row['Rs']; ?></td>
-                                                    <td>
-                                                        
-<div style="width:80px" class="input-group">
-    <select class="form-select p-1 mb-0 bg-warning text-dark" name="selectedValue">
-        <option value="cash" <?php if ($row['pMode'] === 'cash') { echo 'selected'; } ?>>Cash</option>
-        <option value="gpay" <?php if ($row['pMode'] === 'gpay') { echo 'selected'; } ?>>G Pay</option>
-        <option value="credit" <?php if ($row['pMode'] === 'credit') { echo 'selected'; } ?>>Credit</option>
-    </select>
-</div>
+                                                <form action="admin-code-bill-credit.php" method="POST">
+                                                    <td>                                                        
+                                                        <div style="width:80px" class="input-group">
+                                                            <select class="form-select p-1 mb-0 bg-warning text-dark" name="selectedValue">
+                                                                <option value="cash" <?php if ($row['pMode'] === 'cash') { echo 'selected'; } ?>>Cash</option>
+                                                                <option value="gpay" <?php if ($row['pMode'] === 'gpay') { echo 'selected'; } ?>>G Pay</option>
+                                                                <option value="credit" <?php if ($row['pMode'] === 'credit') { echo 'selected'; } ?>>Credit</option>
+                                                            </select>
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         <input type="hidden" name="bill_no" value="<?= $row['bill_id']; ?>">
                                                         <input type="hidden" name="stbno" value="<?= $row['stbno']; ?>">
                                                         <!-- Assign 'bill_id' value to the hidden input field for 'bill_no' -->
-                                                        <button type="submit" class="btn btn-danger btn-sm">Submit</button>
+                                                        <button type="submit" class="btn btn-danger btn-sm" style="font-weight: bold;" >
+                                                            Submit
+                                                        </button>
                                                     </td>
-                                            </tr>
+                                                 </tr>
+
                                             </form>
                                             <?php 
                                             
@@ -224,6 +226,8 @@ $oldMonthBal_sum = '';
             </div>
         </div>
     </div>
+</div>
+<br/>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>

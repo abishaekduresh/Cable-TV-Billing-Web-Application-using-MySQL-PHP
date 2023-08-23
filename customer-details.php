@@ -220,8 +220,8 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
 
                                 <form action="" method="GET">
                                     <div class="input-group mb-3">
-                                        <input type="text" name="search" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="STB No, Name, Phone">
-                                        <button type="submit" class="btn btn-primary">Search</button>
+                                    <input type="text" name="search" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Name, Phone">
+                                    <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
                                 </form>
                             </div>

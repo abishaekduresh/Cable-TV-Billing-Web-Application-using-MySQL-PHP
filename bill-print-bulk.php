@@ -30,7 +30,7 @@ if ($result->num_rows > 0) {
         $appName = $row['appName'];
         $addr1 = $row['addr1'];
         $addr2 = $row['addr2'];
-        $phone = $row['phone'];
+        $phonesys = $row['phone'];
         $footer1 = $row['prtFooter1'];
         $footer2 = $row['prtFooter2'];
     }
@@ -132,7 +132,7 @@ if (mysqli_num_rows($query) > 0) {
                 <center>
                     <p style="font-family:Arial; font-size:17px"><b><?= $appName ?></b>
                         <br><?= $addr1 ?>, <?= $addr2 ?>
-                        <br>Phone : +91 <?= $phone ?></p>
+                        <br>Phone : +91 <?= $phonesys ?></p>
                 </center>
             </td>
           </tr>
@@ -160,7 +160,7 @@ if (mysqli_num_rows($query) > 0) {
             </tr>
             <tr>
                 <th>Date</th>
-                <td><?php echo $date; ?>/<?php echo $time; ?></td>
+                <td><?= formatDate($date); ?>&nbsp;/&nbsp;<?= convertTo12HourFormat($time); ?></td>
             </tr>
             <tr <?php if ($hidebillAmountRow) echo 'style="display: none;"'; ?>>
                 <th>BillAmt</th>

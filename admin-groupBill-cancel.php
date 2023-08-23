@@ -152,36 +152,16 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 
                                                     </td>
                                                     <td>
-                                                        <!--<input type="hidden" name="billNo" value="<?= $row1['billNo']; ?>">-->
+                                                        <input type="hidden" name="billNo" value="<?= $row1['billNo']; ?>">
                                                         <input type="hidden" name="date" value="<?= $row1['date']; ?>">
                                                         <input type="hidden" name="group_id" value="<?= $row1['group_id']; ?>">
+                                                        <input type="hidden" name="Rs" value="<?= $row1['Rs']; ?>">
                                                         <!-- Assign 'bill_id' value to the hidden input field for 'bill_no' -->
-                                                        <button type="button" class="btn btn-primary btn-sm" style="font-weight: bold;" data-toggle="modal" data-target="#exampleModal">
+                                                        <button type="submit" class="btn btn-danger btn-sm" style="font-weight: bold;" >
                                                             Submit
                                                         </button>
                                                     </td>
                                                  </tr>
-
-                                                <!-- Modal -->
-                                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">Confirm</h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <p>Are you sure to cancel the Bill ?</p>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-danger">Submit</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </form>
                                         <?php
                                                 

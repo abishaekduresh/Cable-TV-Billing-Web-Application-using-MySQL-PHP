@@ -1,10 +1,12 @@
 <?php 
    session_start();
    include "dbconfig.php";
+   require "component.php";
 //    if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'employee') { 
     if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {    
-        $session_username = $_SESSION['username']; 
-        ?>
+        $session_username = $_SESSION['username'];
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -52,9 +54,40 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <!--<label>Click to Filter</label>--> <br>
-                                      <button type="submit" class="btn btn-primary">Search</button>
+                                        <button type="submit" class="btn btn-primary">Search</button>
+                                        <?php if (isset($_GET['from_date']) && isset($_GET['to_date'])) { ?>
+                                        <a href="rpt-in-ex-pdf-download.php?from_date=<?= isset($_GET['from_date']) ? $_GET['from_date'] : '' ?>&to_date=<?= isset($_GET['to_date']) ? $_GET['to_date'] : '' ?>&category_id=<?= isset($_GET['category_id']) ? $_GET['category_id'] : '' ?>&subcategory_id=<?= isset($_GET['subcategory_id']) ? $_GET['subcategory_id'] : '' ?>" target="_blank" class="float-right">
+                                            <button type="button" class="btn btn-info">
+                                                <img src="assets/file-pdf-solid.svg" width="20" height="20" alt="PDF" class="mr-2">
+                                                Download
+                                                <img src="assets/download-solid.svg" width="20" height="20" alt="Download" class="mr-2">
+                                            </button>
+                                        </a>
+                                        <?php } ?>
+                                    </div>
+                                </div>                                
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                    <select name="category_id" class="form-select">
+                                        <option value="select" selected disabled>Select Category Alone</option>
+                                        <?php
+                                            $query = "SELECT * FROM in_ex_category";
+                                            $result = mysqli_query($con, $query);
+                                            $selectedValue = isset($_GET['category']) ? $_GET['category'] : ''; // Get the selected value from the URL
+
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                $optionValueID = $row['category_id'];
+                                                $optionValue = $row['category'];
+                                        ?>
+                                        <option value="<?php echo $optionValueID; ?>" <?php if ($optionValue === $selectedValue) echo 'selected'; ?>><?php echo $optionValue; ?></option>
+                                        <?php
+                                            }
+                                        ?>
+                                    </select>
                                     </div>
                                 </div>
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <select name="category_id" id="category_id" class="form-select">
@@ -75,6 +108,7 @@
                                     </select>
                                     </div>
                                 </div>
+
                                 <div class="col-md-4">
                                     <select class="form-select" name="subcategory_id" id="subcategory_id">
                                         <option value="select" selected disabled>Select Sub Category</option>
@@ -100,7 +134,7 @@
                         </form>
                     </div>
                 </div>
-
+                
                 <div class="card mt-4">
                     <div class="card-body">
                         <div class="table-responsive">
@@ -122,7 +156,8 @@
                             
                             <?php 
                                 require 'dbconfig.php';
-
+                                $in_sum = '';
+                                $ex_sum = '';
                                 if(isset($_GET['from_date']) && isset($_GET['to_date']))
                                 {
                                     $from_date = $_GET['from_date'];
@@ -170,8 +205,8 @@
                                             <tr>
                                                 <td style="font-weight: bold;"><?= $serial_number++; ?></td>
                                                 <!--<td style="font-weight: bold;"><?= $incomeExpense['type']; ?></td>-->
-                                                <td style="font-weight: bold;"><?= $incomeExpense['date']; ?></td>
-                                                <td style="font-weight: bold;"><?= $incomeExpense['time']; ?></td>
+                                                <td style="font-weight: bold;"><?= formatDate($incomeExpense['date']); ?></td>
+                                                <td style="font-weight: bold;"><?= convertTo12HourFormat($incomeExpense['time']); ?></td>
                                                 <td style="font-weight: bold;"><?= $incomeExpense['username']; ?></td>
                                                 <td style="font-weight: bold;">                                                
                                                 <?php
@@ -277,7 +312,7 @@
             </div>
         </div>
     </div>
-
+<br/>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
