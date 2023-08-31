@@ -21,10 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Database update successful. Bill Status updated to: " . $selectedValue; 
 
                 // Calculate sum of paid_amount for the current date
-                $sqlSum = "SELECT SUM(paid_amount) AS total_paid FROM bill WHERE date = '$date' AND status = 'approve'";
+                $sqlSum = "SELECT SUM(Rs) AS total_Rs FROM bill WHERE date = '$date' AND status = 'approve'";
                 $result = $con->query($sqlSum);
                 $row = $result->fetch_assoc();
-                $sumPaidAmount = $row["total_paid"];
+                $sumPaidAmount = $row["total_Rs"];
 
                 // Check if a record exists in in_ex table
                 $sqlCheck = "SELECT * FROM in_ex WHERE date = '$date' AND category_id = 12 AND subcategory_id = 35";

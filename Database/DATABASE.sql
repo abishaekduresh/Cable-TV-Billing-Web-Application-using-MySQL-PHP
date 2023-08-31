@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Aug 23, 2023 at 05:46 AM
+-- Generation Time: Aug 31, 2023 at 07:02 PM
 -- Server version: 10.10.2-MariaDB
 -- PHP Version: 8.0.26
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `ctv`
+-- Database: `ctv.new`
 --
 
 -- --------------------------------------------------------
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `billgroup` (
   `remark` varchar(60) NOT NULL,
   `status` varchar(7) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `billgroupdetails` (
   `Rs` int(2) NOT NULL,
   `status` varchar(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
@@ -106,17 +106,16 @@ CREATE TABLE IF NOT EXISTS `customer` (
   `id` int(5) NOT NULL AUTO_INCREMENT,
   `date` date NOT NULL DEFAULT current_timestamp(),
   `time` time NOT NULL DEFAULT current_timestamp(),
-  `cusGroup` int(5) NOT NULL,
+  `cusGroup` varchar(15) NOT NULL,
   `mso` varchar(10) NOT NULL,
   `stbno` varchar(20) NOT NULL,
   `name` varchar(60) NOT NULL,
   `phone` varchar(12) NOT NULL,
   `description` varchar(100) NOT NULL,
   `amount` int(5) NOT NULL,
-  `rc_dc` int(2) NOT NULL COMMENT 'rc=1,dc=0',
+  `rc_dc` int(2) NOT NULL COMMENT 'rc=1;dc=0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `stbno` (`stbno`),
-  KEY `fk_groupinfo` (`cusGroup`)
+  UNIQUE KEY `stbno` (`stbno`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -224,7 +223,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `addr1` varchar(25) NOT NULL,
   `addr2` varchar(25) NOT NULL,
   `phone` bigint(1) NOT NULL,
-  `prtFooter1` varchar(30) NOT NULL,
+  `prtFooter1` varchar(25) NOT NULL,
   `prtFooter2` varchar(30) NOT NULL,
   `lastUpdateBy` varchar(20) NOT NULL,
   `latestUpdate` datetime NOT NULL,
@@ -262,19 +261,13 @@ CREATE TABLE IF NOT EXISTS `user_activity` (
   `time` time NOT NULL,
   `userName` varchar(20) NOT NULL,
   `role` varchar(10) NOT NULL,
-  `action` varchar(100) NOT NULL,
+  `action` varchar(60) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `customer`
---
-ALTER TABLE `customer`
-  ADD CONSTRAINT `fk_groupinfo` FOREIGN KEY (`cusGroup`) REFERENCES `groupinfo` (`group_id`);
 
 --
 -- Constraints for table `in_ex`

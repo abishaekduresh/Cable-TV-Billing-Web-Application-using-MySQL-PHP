@@ -59,42 +59,38 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     $billNo = 1;
                 }
             }
-            
-            // $billNo = 1;
-            
-///////        Insert Data into billGroupDetails    ////////////
-
-            $Rs =0;
-            
-            $pMode = mysqli_real_escape_string($con, $_POST["pMode"]);
-            $oldMonthBal = mysqli_real_escape_string($con, $_POST["oldMonthBal"]);
-            $billAmount = mysqli_real_escape_string($con, $_POST["billAmt"]);
-            $discount = mysqli_real_escape_string($con, $_POST["discount"]);
-            $phone = mysqli_real_escape_string($con, $_POST["phone"]);
-            $groupID = mysqli_real_escape_string($con, $_POST["group_id"]);
-            $groupName = mysqli_real_escape_string($con, $_POST["groupName"]);
-            $Rs = $billAmount;
-            
-            $Rs = $Rs + $oldMonthBal;
-            // bill Group Details - Error: Cannot add or update a child row: a foreign key constraint fails (`ctv.pdpgroups`.`billGroupDetails`, CONSTRAINT `billGroupDetails_ibfk_1` FOREIGN KEY (`billNo`) REFERENCES `billGroup` (`id`))
-            $Rs = $Rs - $discount;
-            
-            $status = 'approve';
-            
-            
-            // Prepare the INSERT query
-            $sql = "INSERT INTO `billgroupdetails` (`billNo`, `date`, `time`, `billBy`, `group_id`, `groupName`, `phone`, `pMode`, `oldMonthBal`, `billAmount`, `discount`, `Rs`, `status`) 
-            VALUES ('$billNo', '$currentDate', '$currentTime', '$session_username', '$groupID', '$groupName', '$phone', '$pMode', '$oldMonthBal', '$billAmount', '$discount', '$Rs', '$status')";
-            
-            // Execute the query
-            if ($con->query($sql) === true) {
-                // echo "Record inserted in bill Group Details successfully.";
-            } else {
-                echo "bill Group Details - Error: " . $con->error;
-            }
-
     
-    
+                ///////        Insert Data into billGroupDetails    ////////////
+
+                $Rs =0;
+                            
+                $pMode = mysqli_real_escape_string($con, $_POST["pMode"]);
+                $oldMonthBal = mysqli_real_escape_string($con, $_POST["oldMonthBal"]);
+                $billAmount = mysqli_real_escape_string($con, $_POST["billAmt"]);
+                $discount = mysqli_real_escape_string($con, $_POST["discount"]);
+                $phone = mysqli_real_escape_string($con, $_POST["phone"]);
+                $groupID = mysqli_real_escape_string($con, $_POST["group_id"]);
+                $groupName = mysqli_real_escape_string($con, $_POST["groupName"]);
+                $Rs = $billAmount;
+
+                $Rs = $Rs + $oldMonthBal;
+                // bill Group Details - Error: Cannot add or update a child row: a foreign key constraint fails (`ctv.pdpgroups`.`billGroupDetails`, CONSTRAINT `billGroupDetails_ibfk_1` FOREIGN KEY (`billNo`) REFERENCES `billGroup` (`id`))
+                $Rs = $Rs - $discount;
+
+                $status = 'approve';
+
+
+                // Prepare the INSERT query
+                $sql = "INSERT INTO `billgroupdetails` (`billNo`, `date`, `time`, `billBy`, `group_id`, `groupName`, `phone`, `pMode`, `oldMonthBal`, `billAmount`, `discount`, `Rs`, `status`) 
+                VALUES ('$billNo', '$currentDate', '$currentTime', '$session_username', '$groupID', '$groupName', '$phone', '$pMode', '$oldMonthBal', '$billAmount', '$discount', '$Rs', '$status')";
+
+                // Execute the query
+                if ($con->query($sql) === true) {
+                    // echo "Record inserted in bill Group Details successfully.";
+                } else {
+                    echo "bill Group Details - Error: " . $con->error;
+                }
+                
         // Retrieve checkbox values
 $checkboxValues = isset($_POST["options"]) ? $_POST["options"] : [];
 
@@ -119,10 +115,10 @@ $status = 'approve';
                 // Data inserted successfully
 
                 // Calculate sum of billAmount for the current date
-                $sqlSum = "SELECT SUM(billAmount) AS total_paid FROM billgroupdetails WHERE date = '$currentDate' AND status = 'approve'";
+                $sqlSum = "SELECT SUM(Rs) AS total_Rs FROM billgroupdetails WHERE date = '$currentDate' AND status = 'approve'";
                 $result = $con->query($sqlSum);
                 $row = $result->fetch_assoc();
-                $sumPaidAmount = $row["total_paid"];
+                $sumPaidAmount = $row["total_Rs"];
 
                 // Check if a record exists in in_ex table
                 $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 36";
@@ -139,6 +135,10 @@ $status = 'approve';
                 }
 
                 continue;
+
+
+
+
             } else {
                 echo "Error inserting data: " . $con->error;
 
@@ -150,12 +150,10 @@ $status = 'approve';
             }
         }
 
-        // Redirect after processing
         ?>
-        <!--<center><img src="assets/green-thumbs-up.svg" alt="green-thumbs-up" width="100px" height="100px"></center>-->
+        
         <?php
 
-        // Redirect function
         function redirect($url)
         {
             echo "<script>
@@ -165,8 +163,7 @@ $status = 'approve';
         </script>";
         }
 
-        // Usage example
-        $url = "groupBill-3inch-Print.php?group_id=$groupID&date=$currentDate";
+        $url = "prtgroupbilldash.php?group_id=$groupID1&date=$currentDate";
         redirect($url);
     }
     $group_id = ''; 
@@ -189,7 +186,6 @@ $status = 'approve';
         max-width: 90%;
     }
     
-/* Define the styles for odd and even rows */
 .creditBill {
     background-color: yellow; /* Light gray for odd rows */
 }
@@ -201,9 +197,6 @@ $status = 'approve';
 </style>
 </head>
 <body>
-    
-    <br>
-    <!--<hr class="mt-0 mb-4">-->
 
     <div class="container custom-container">
         <div class="row" style="width: 100%;">

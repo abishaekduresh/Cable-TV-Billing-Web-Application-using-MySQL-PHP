@@ -34,6 +34,9 @@
                         <h4>Credit Bill Dashboard
                             <a href="creditBill-3inch-print.php" target="blank"><button type="button" class="btn btn-primary float-end" >
                                 <b>Print Pending Credit Bill</b>
+                            </button></a> &nbsp;
+                            <a href="prt-indiv-credit-list.php" target="blank"><button type="button" class="btn btn-dark float-end" >
+                                <b>Print Pending Credit Bill List</b>
                             </button></a>
                         </h4>
                     </div>

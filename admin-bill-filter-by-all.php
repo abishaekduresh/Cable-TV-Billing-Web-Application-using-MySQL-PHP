@@ -246,7 +246,11 @@ if (!empty($from_time) && !empty($to_time)) {
                                                 <?= $row['Rs']; ?>
                                             </td>
                                             <td>
-                                                <a href="bill-print.php?id=<?= $row['bill_id']; ?>"
+                                                <!-- <a href="bill-print.php?id=<?= $row['bill_id']; ?>"
+                                                    target="blank"><button type="button"
+                                                        class="btn btn-warning"><i
+                                                            class="bi bi-printer-fill"></i></button></a> -->
+                                                <a href="prtindivbillrpt.php?billid=<?= $row['bill_id']; ?>"
                                                     target="blank"><button type="button"
                                                         class="btn btn-warning"><i
                                                             class="bi bi-printer-fill"></i></button></a>

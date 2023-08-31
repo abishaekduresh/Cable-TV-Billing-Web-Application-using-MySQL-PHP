@@ -72,7 +72,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     </tr>
                 </tbody>
             </table>
-            <div align="center">
+            <div align="right">
                 <button type="button" class="btn btn-secondary mb-3" id="add-row-btn">Add Row</button>
             </div>
             <br>

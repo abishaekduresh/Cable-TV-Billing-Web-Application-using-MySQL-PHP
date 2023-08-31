@@ -190,10 +190,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             //  $q= "SELECT date,sum(paid_amount) TotAmt FROM `bill` where date='2023-06-01' group by date";
             
                 // Calculate sum of paid_amount for the current date
-                $sqlSum = "SELECT SUM(paid_amount) AS total_paid FROM bill WHERE date = '$currentDate' AND status = 'approve'";
+                $sqlSum = "SELECT SUM(Rs) AS total_Rs FROM bill WHERE date = '$currentDate' AND status = 'approve'";
                 $result = $con->query($sqlSum);
                 $row = $result->fetch_assoc();
-                $sumPaidAmount = $row["total_paid"];
+                $sumPaidAmount = $row["total_Rs"];
 
                 // Check if a record exists in in_ex table
                 $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35";
@@ -246,7 +246,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
         }
 
         // Usage example
-        $url = "bill-print-bulk.php"; // Replace with your desired URL bill-print-bulk.php
+        $url = "prtindivbulkbilldash.php"; // Replace with your desired URL bill-print-bulk.php
         redirect($url);
     }
 
@@ -341,7 +341,12 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     <title>Individual Billing Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles.css">
-    
+
+
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>   -->
+           <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
+
+
 <style>
     .custom-container {
         max-width: 90%;
@@ -356,11 +361,15 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     background-color: red; /* Slightly darker gray for even rows */
 }
 
+
+.list-group-item-action:hover {
+    background-color: #023199;
+    color: white; /* Add this line to change font color on hover */
+}
 </style>
 </head>
 <body>
     
-    <br>
     <!--<hr class="mt-0 mb-4">-->
 
     <div class="container custom-container">
@@ -381,32 +390,15 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                             <div class="col-md-7">
                                 <form action="" method="GET">
                                     <div class="input-group mb-3">
-                                        <input type="text" name="search" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Name, Phone" >                                      
+                                        <input type="text" name="search" id="search" autocomplete="off" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Name, Phone" >                                      
                                         <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
                                 </form>
+                                <div id="searchList"></div> 
                             </div>
-                        </div><h6><b>மஞ்சள் கலர்</b> முந்தை மாத Credit Bill நிலுவையில் உள்ளதை குறிக்கும்.<h6>
-                    </div>
+                        </div>
+                    </div>      
 
-                    <!--<div class="card-body">-->
-                    <!--    <div class="row">-->
-                    <!--        <div class="col-md-7">-->
-                    <!--            <form action="" method="GET">-->
-                    <!--                <div class="input-group mb-3">-->
-                    <!--                    <select name="search" class="form-control">-->
-                    <!--                        <option selected>Select</option>-->
-                    <!--                        <option value="VSR Lodge">VSR Lodge</option>-->
-                    <!--                        <option value="Name">Name</option>-->
-                    <!--                        <option value="Phone">Phone</option>-->
-                    <!--                    </select>                                      -->
-                    <!--                    <button type="submit" class="btn btn-primary">Search</button>-->
-                    <!--                </div>-->
-                    <!--            </form>-->
-                    <!--        </div>-->
-                    <!--    </div>-->
-                    <!--</div>-->
-                    
                 </div><br/>
             </div>
 
@@ -436,10 +428,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                         <?php
                                         if (isset($_GET['search'])) {
                                             $filtervalues = $_GET['search'];
-    
-                                            // $currentMonth = $datetime->format('m');
-                                            // $currentYear = $datetime->format('Y');
-    
+        
                                             $query = "SELECT * FROM customer 
                                             WHERE CONCAT(stbno, name, phone) LIKE '%$filtervalues%' AND rc_dc='1' AND cusGroup = '1' LIMIT 300";
     
@@ -576,13 +565,37 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             </div>
         </div>
     </div>
+</div>
 
 
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Autosearch List -->
+<script>  
+ $(document).ready(function(){  
+      $('#search').keyup(function(){  
+           var query = $(this).val();  
+           if(query != '')  
+           {  
+                $.ajax({  
+                     url:"code-fecth-billing-dashboard.php",  
+                     method:"POST",  
+                     data:{query:query},  
+                     success:function(data)  
+                     {  
+                          $('#searchList').fadeIn();  
+                          $('#searchList').html(data);  
+                     }  
+                });  
+           }  
+      });  
+      $(document).on('click', 'li', function(){  
+           $('#search').val($(this).text());  
+           $('#searchList').fadeOut();  
+      });  
+ });
+</script>
 <script>
-
 
 $(document).on('click', '.editStudentBtn', function () {
 

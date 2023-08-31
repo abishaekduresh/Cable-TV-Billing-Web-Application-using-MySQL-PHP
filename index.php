@@ -52,7 +52,7 @@
 		  <button type="submit" 
 		          class="btn btn-primary"><img src="assets/lock-solid-white.svg" alt="lock_icon" width="20" height="20">LOGIN</button>
 		          <br>
-		          <center><h6>Developed by</h6><a href ="https://www.linkedin.com/in/abishaekduresh/" target="_blank"><h6>Abishaek Duresh</h6></a></center>
+		          <center><h6>Developed by</h6><a href ="https://www.linkedin.com/in/abishaekduresh/" target="_blank"><h6>Abishaek Duresh</h6></a></center><p align="center">8th-Commit</p>
 		</form>
       </div>
 </body>

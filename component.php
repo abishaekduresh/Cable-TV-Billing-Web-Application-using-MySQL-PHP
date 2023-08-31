@@ -75,6 +75,31 @@ function getSubCategoryName($con, $subcategoryId) {
     }
 }
 
+function printClose(){
+    
+    include 'dbconfig.php';
+
+        echo "<script type='text/javascript'>
+        window.onload = function() {
+            window.print();
+        }
+    </script>";
+
+            // Tab Close function
+            function closeTab() {
+                echo "<script>
+                setTimeout(function(){
+                    window.close();
+                }, 200);
+                </script>";
+    }
+    
+        // Close the database connection
+        $con->close();
+        
+    // Usage example
+    closeTab();
+}
 
 
 

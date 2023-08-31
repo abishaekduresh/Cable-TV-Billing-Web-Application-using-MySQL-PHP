@@ -120,7 +120,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                                 <td style="width: 50px; font-weight: bold; font-size: 20px; color: #DD0581;"><?= $row['discount']; ?></td>
                                                 <td style="width: 70px; font-weight: bold; font-size: 20px; color: #F20000;"><?= $row['Rs']; ?></td>
                                                 <td>
-                                                    <a href="bill-print.php?id=<?= $row['bill_id']; ?>" target="blank"><button type="button" class="btn btn-warning"><i class="bi bi-printer-fill"></i></button></a>
+                                                    <a href="prtindivbillrpt.php?billid=<?= $row['bill_id']; ?>" target="blank"><button type="button" class="btn btn-warning"><i class="bi bi-printer-fill"></i></button></a>
                                                 </td>
                                             </tr>
                                             <?php 

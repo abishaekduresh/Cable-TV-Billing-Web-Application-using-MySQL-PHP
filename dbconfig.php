@@ -1,6 +1,5 @@
 <?php
-
-$con = mysqli_connect("localhost:3307", "root", "", "ctv");
+$con = mysqli_connect("localhost:3307", "root", "", "ctv.new");
 
 // Check connection
 if (mysqli_connect_errno()) {
@@ -25,6 +24,5 @@ $currentDay = $datetime->format('d');
 $currentMonth = $datetime->format('m');
 $currentYear = $datetime->format('Y');
 
-    
 
 ?>
