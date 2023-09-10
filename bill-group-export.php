@@ -2,26 +2,29 @@
    session_start();
    include "dbconfig.php";
    require "component.php";
-   if (isset($_SESSION['username']) && isset($_SESSION['id'])) {  
-       $session_username = $_SESSION['username'];
-       $session_name = $_SESSION['name'];
-?>
+//   $session_username = $_SESSION['name'];
+if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
+    
+    if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
+        include 'admin-menu-bar.php';
+        $session_username = $_SESSION['username'];
+        ?><br><?php
+        include 'admin-menu-btn.php';
+    } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
+        include 'menu-bar.php';
+        $session_username = $_SESSION['username'];
+        ?><br><?php
+        include 'sub-menu-btn.php';
+    }
 
-<?php
-// if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
-//     include 'admin-menu-bar.php'; 
-//     ?> <br> <?php
-//     include 'admin-menu-btn.php';
-// } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
-//     include 'menu-bar.php';
-// }
-// ?>
+
+
+?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Download Bill Data</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
 
@@ -73,6 +76,9 @@
             <div class="container mt-4">
                 
                 <?php
+                    $fromDate = "";
+                    $endDate = "";
+                    $filename = "";
 
                 // Check if the form has been submitted
                 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -126,7 +132,7 @@
                     $userId = $_SESSION['id'];
                     $username = $_SESSION['username'];
                     $role = $_SESSION['role'];
-                    $action = "Text Group Bill Exported - $from_time--$to_time / $session_name";
+                    $action = "Text Group Bill Exported - $from_time--$to_time /$session_username";
                 
                     // Call the function to insert user activity log
                     logUserActivity($userId, $username, $role, $action);

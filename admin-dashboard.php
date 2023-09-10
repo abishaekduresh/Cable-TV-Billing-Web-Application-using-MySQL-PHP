@@ -6,7 +6,7 @@
         ?>
 <?php
 
-// Initialize variables with default values or null
+
 $sumBillAmt = 0;
 $sumDiscount = 0;
 $sumRs = 0;
@@ -21,29 +21,28 @@ $sumQuery ="SELECT
 
 $result = mysqli_query($con, $sumQuery);
 
-// Check if the query executed successfully
+
 if ($result) {
-    // Fetch the result row
+  
     $row = mysqli_fetch_assoc($result);
 
-    // Assign the sum value to the variables if available
+    
     if ($row) {
         $sumBillAmt = $row['sumBillAmt'];
         $sumDiscount = $row['sumDiscount'];
         $sumRs = $row['sumRs'];
     }
 
-    // Use the sum values as needed
-    // echo "The sum of the column is: " . $sumBillAmt;
+    
 } else {
-    // Query execution failed
+  
     echo "Error executing the query: " . mysqli_error($con);
 }
 ?>
 
 <?php
 
-// Initialize variables with default values or null
+
 $sumIncome = 0;
 $sumExpense = 0;
 $profit = 0;
@@ -54,34 +53,26 @@ $sumIncomeExpense ="SELECT
 
 $resultsumIncomeExpense = mysqli_query($con, $sumIncomeExpense);
 
-// Check if the query executed successfully
+
 if ($resultsumIncomeExpense) {
-    // Fetch the result rowToday Collection (Rs)
+  
     $row = mysqli_fetch_assoc($resultsumIncomeExpense);
 
-    // Assign the sum value to the variables if available
+    
     if ($row) {
         $sumIncome = $row['sumIncome'];
         $sumExpense = $row['sumExpense'];
     }
 
-    // Calculate the profit
-    // echo $sumIncome;
-    // echo $sumExpense;
-    // echo $profit = $sumIncome - $sumExpense;
-    
-    
-    // Use the sum values as needed
-    // echo "The sum of the column is: " . $sumBillAmt;
 } else {
-    // Query execution failed
+  
     echo "Error executing the query: " . mysqli_error($con);
 }
 ?>
 
 <?php
 
-// Initialize variables with default values or null
+
 $sumMonthBillAmt = 0;
 $sumMonthDiscount = 0;
 $sumMonthRs = 0;
@@ -96,12 +87,12 @@ $sumMonth ="SELECT
 
 $resultMonth = mysqli_query($con, $sumMonth);
 
-// Check if the query executed successfully
+
 if ($resultMonth) {
-    // Fetch the result row
+  
     $row = mysqli_fetch_assoc($resultMonth);
 
-    // Assign the sum value to the variables if available
+    
     if ($row) {
         $sumMonthBillAmt = $row['sumMonthBillAmt'];
         $sumMonthDiscount = $row['sumMonthDiscount'];
@@ -112,16 +103,13 @@ $formattedSumMonthBillAmt = number_format($sumMonthBillAmt, 0, ',', ',');
 $formattedSumMonthDiscount = number_format($sumMonthDiscount, 0, ',', ',');
 $formattedSumMonthRs = number_format($sumMonthRs, 0, ',', ',');
 
-    // Use the sum values as needed
-    // echo "The sum of the column is: " . $sumBillAmt;
+
 } else {
-    // Query execution failed
+  
     echo "Error executing the query: " . mysqli_error($con);
 }
 
 
-// Close the database connection
-// mysqli_close($con);
 ?>
 <?php
 $todayCount = 0;
@@ -138,12 +126,12 @@ $countQuery="SELECT
 
 $countresult = mysqli_query($con, $countQuery);
 
-// Check if the query executed successfully
+
 if ($countresult) {
-    // Fetch the result row
+  
     $row = mysqli_fetch_assoc($countresult);
 
-    // Assign the sum value to the variables if available
+    
     if ($row) {
         $todayCount = $row['todayCount'];
         $todayCancel = $row['todayCancel'];
@@ -151,10 +139,8 @@ if ($countresult) {
         $totalOnlineCount = $row['totalOnlineCount'];
     }
 
-    // Use the sum values as needed
-    // echo "The sum of the column is: " . $sumBillAmt;
 } else {
-    // Query execution failed
+  
     echo "Error executing the query: " . mysqli_error($con);
 }
 
@@ -172,25 +158,24 @@ FROM bill";
 
 $result2 = mysqli_query($con, $sql);
 
-// Check if the query executed successfully
+
 if ($result2) {
-    // Fetch the result row
+  
     $row = mysqli_fetch_assoc($result2);
 
-    // Assign the sum value to the variables if available
+    
     if ($row) {
         $totalCreditCount = $row['totalCreditCount'];
         $totalCreditRsSum = $row['totalCreditRsSum'];
     }
 
-    // Use the sum values as needed
-    // echo "The sum of the column is: " . $sumBillAmt;
+    
 } else {
-    // Query execution failed
+  
     echo "Error executing the query: " . mysqli_error($con);
 }
 
-// Close the database connection
+
 mysqli_close($con);
 
 
@@ -358,7 +343,7 @@ color:#69707a;
                 <div class="card-body">
                     <div style="font-weight: bold;" class="small text-muted">Current Month Income</div>
                     <div class="h3">₹
-                      <span id="CurrentMonthIncome" data-value="<?php $income = $sumIncome+$sumMonthRs; echo $income ?>">****</span>
+                      <span id="CurrentMonthIncome" data-value="<?php echo $sumIncome ?>">****</span>
                       <i class="bi bi-eye-slash" id="toggleCurrentMonthIncome"></i>
                     </div>
                 </div>
@@ -382,7 +367,7 @@ color:#69707a;
                 <div class="card-body">
                     <div style="font-weight: bold;" class="small text-muted">Current Month Profit</div>
                     <div class="h3">₹
-                      <span id="CurrentMonthProfit" data-value="<?php $profit = $income - $sumExpense; echo $profit; ?>">****</span>
+                      <span id="CurrentMonthProfit" data-value="<?php $profit = $sumIncome - $sumExpense; echo $profit; ?>">****</span>
                       <i class="bi bi-eye-slash" id="toggleCurrentMonthProfit"></i>
                     </div>
                 </div>

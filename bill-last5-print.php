@@ -46,7 +46,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                         <h4>Latest 10 Bill by <b><?php echo $session_username?></b>
                             <a href="billing-dashboard.php"><button class="btn btn-primary float-end" accesskey="n">Billing Dashboard</button></a>
                             <br/>
-                            <a href="bill-print-bulk.php"><button class="btn btn-primary float-end" accesskey="n">Bulk Print</button></a>
+                            <a href="prtindivbulkbilldash.php"><button class="btn btn-primary float-end" accesskey="n">Bulk Print</button></a>
                         </h4>
                     </div>
                     <div class="card-body">
@@ -106,7 +106,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                                     <?= $bill['Rs']; ?>
                                                 </td>
                                                 <td>
-                                                    <a href="bill-print.php?id=<?= $bill['bill_id']; ?>" target="blank">
+                                                    <a href="prtindivbillrpt.php?billid=<?= $bill['bill_id']; ?>" target="blank">
                                                     <button type="button" class="btn btn-warning btn-lg"><i class="bi bi-printer-fill"></i></button></a>
                                                 </td>
                                             </tr>

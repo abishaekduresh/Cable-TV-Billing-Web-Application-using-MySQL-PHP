@@ -14,6 +14,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
         
     } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
         include 'menu-bar.php';
+        ?><br><?php
+        include 'sub-menu-btn.php';
         $session_username = $_SESSION['username'];
     }
 

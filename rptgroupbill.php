@@ -1,10 +1,21 @@
 <?php
 session_start();
 include "dbconfig.php";
-require 'dbconfig.php';
+require "component.php";
 
-if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
-    $session_username = $_SESSION['username'];
+if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
+    
+    if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
+        include 'admin-menu-bar.php';
+        $session_username = $_SESSION['username'];
+        ?><br><?php
+        include 'admin-menu-btn.php';
+    } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
+        include 'menu-bar.php';
+        $session_username = $_SESSION['username'];
+        ?><br><?php
+        include 'sub-menu-btn.php';
+    }
     ?>
 
     <!DOCTYPE html>
@@ -26,14 +37,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
     </head>
 
     <body>
-
-<?php
-
-    include 'admin-menu-bar.php';
-    ?><br/><?php
-    include 'admin-menu-btn.php';
-
-?>
 
         <div class="container">
             <div class="row justify-content-center">
@@ -111,14 +114,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                             
                                             $from_date = $_GET['from_date'];
                                             $to_date = $_GET['to_date'];
-
-                                            // $query1 = "SELECT *
-                                            // FROM billgroupdetails
-                                            // JOIN billgroup ON billgroup.billNo = billgroupdetails.billgroupNo
-                                            // WHERE billgroup.date BETWEEN '$from_date' AND '$to_date'
-                                            //   AND billgroupdetails.date BETWEEN '$from_date' AND '$to_date'
-                                            //   AND billgroup.groupName = '$groupName';
-                                            // "; 
                                                   
                                             $query1 = "SELECT *
                                             FROM billgroupdetails WHERE date BETWEEN '$from_date' AND '$to_date' AND status = 'approve' ;

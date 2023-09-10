@@ -1,24 +1,3 @@
-// <?php
-// session_start(); // Start the session
-// include "dbconfig.php";
-// session_unset(); // Unset all session variables
-// session_destroy(); // Destroy the session
-
-// // Insert user login activity
-// $userId = $row['id'];
-// $userName = $row['username'];
-// $role = $row['role'];
-// $currentDate = $currentDate;
-// $currentTime = $currentTime;
-// $action = 'logged out';
-// $insertSql = "INSERT INTO activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$userName', '$role', '$action')";
-// mysqli_query($con, $insertSql);
-                
-// // Redirect to a different page after session termination
-// header("Location: index.php");
-// exit();
-// ?>
-
 <?php
 session_start();
 require "dbconfig.php";

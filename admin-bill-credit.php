@@ -32,10 +32,10 @@
                 <div class="card mt-5">
                     <div class="card-header">
                         <h4>Credit Bill Dashboard
-                            <a href="creditBill-3inch-print.php" target="blank"><button type="button" class="btn btn-primary float-end" >
+                            <a href="prtindivcreditbillbulk.php" target="blank"><button type="button" class="btn btn-primary float-end" >
                                 <b>Print Pending Credit Bill</b>
                             </button></a> &nbsp;
-                            <a href="prt-indiv-credit-list.php" target="blank"><button type="button" class="btn btn-dark float-end" >
+                            <a href="prtindivcreditbilllist.php" target="blank"><button type="button" class="btn btn-dark float-end" >
                                 <b>Print Pending Credit Bill List</b>
                             </button></a>
                         </h4>

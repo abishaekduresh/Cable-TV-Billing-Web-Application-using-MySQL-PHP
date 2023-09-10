@@ -1,7 +1,22 @@
 <?php 
    include "dbconfig.php";
    if (isset($_SESSION['username']) && isset($_SESSION['id'])) {  
-    $session_username = $_SESSION['name']; ?>
+    $session_username = $_SESSION['name']; 
+// Perform a SELECT query to fetch data from the database
+$sql = "SELECT appName2 FROM settings"; // Replace 'your_table_name' with your actual table name
+
+$result = $con->query($sql);
+
+// Check if there are any rows returned
+if ($result->num_rows > 0) {
+    // Loop through each row and fetch the data
+    while ($row = $result->fetch_assoc()) {
+        $appName2 = $row['appName2'];
+    }
+} else {
+    echo "No data found.";
+}
+?>
    
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +36,7 @@
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="employee-dashboard.php">PDP CABLE TV</a>
+    <a class="navbar-brand" href="employee-dashboard.php"><b><?= $appName2 ?></b></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -55,7 +70,9 @@
             Report
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="bill-filter-by-all.php">Bill by All</a>
+            <a class="dropdown-item" href="bill-filter-by-all.php">Indiv Bill by All</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="rptgroupbill.php">Group Bill</a>
              <!--<a class="dropdown-item" href="#">Billing Dashboard</a> -->
              <div class="dropdown-divider"></div>
              <a class="dropdown-item" href="bill-filter-by-user.php">Bill by You</a>
@@ -70,13 +87,15 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <!--<a class="dropdown-item" href="bill-export.php">Download Bill Report</a>-->
             <a class="dropdown-item" onclick="openBill_Export()">Download Bill Report</a>
-            <!--<div class="dropdown-divider"></div>-->
-        </li>
-        <li class="nav-item">
-            <li class="nav-item"><a class="nav-link" href="income-expenses.php">Income-Expense</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="bill-group-export.php">Download Group Bill</a>
+            <div class="dropdown-divider"></div>
         </li>
         <li class="nav-item">
             <li class="nav-item"><a class="nav-link" href="#"><b><?php echo $session_username ?></b></a>
+        </li>
+        <li class="nav-item">
+            <li class="nav-item nav-link" style="color:black; font-weight: bold;"><b><?= $newDate = date("d-m-Y", strtotime($currentDate)); ?></b>
         </li>
         </ul>
         
@@ -85,7 +104,7 @@
         <a class="nav-link" href="logout.php"><button type="button" class="btn btn-success">Logout</button></a>
         </form> -->
         <form class="form-inline my-2 my-lg-0">
-                <a class="nav-link" href="pos/billing-dashboard.php"><button type="button" class="btn btn-primary"><b>POS</b></button></a>
+                <!-- <a class="nav-link" href="pos/billing-dashboard.php"><button type="button" class="btn btn-primary"><b>POS</b></button></a> -->
         <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
         <a class="nav-link" href="logout.php"><button type="button" class="btn btn-success">Logout</button></a>
         </form>

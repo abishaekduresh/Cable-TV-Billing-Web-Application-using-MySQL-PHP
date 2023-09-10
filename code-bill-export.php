@@ -3,7 +3,7 @@ session_start();
 include('dbconfig.php');
 require "component.php";
 
-require 'vendor/autoload.php';
+require 'excel_lib/vendor/autoload.php';
 $session_username = $_SESSION['username'];
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;

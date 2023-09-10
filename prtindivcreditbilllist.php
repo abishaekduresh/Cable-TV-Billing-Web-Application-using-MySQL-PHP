@@ -140,7 +140,7 @@ if (mysqli_num_rows($query) > 0) {
             $userId = $_SESSION['id'];
             $username = $_SESSION['username'];
             $role = $_SESSION['role'];
-            $action = "prt-indiv-credit-list-printed - $session_userid";
+            $action = "Indiv Credit Bill - List Printed";
         
             logUserActivity($userId, $username, $role, $action);
         }

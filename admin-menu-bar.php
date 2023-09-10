@@ -70,7 +70,7 @@ if ($result->num_rows > 0) {
                         Report
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="admin-bill-filter-by-all.php">Bill by All</a>
+                        <a class="dropdown-item" href="admin-bill-filter-by-all.php">Indiv Bill by All</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="admin-in-ex-report.php">Income Expense</a>
                         <div class="dropdown-divider"></div>
@@ -124,7 +124,7 @@ if ($result->num_rows > 0) {
             </ul>
 
             <form class="form-inline my-3 my-lg-0">
-                <a class="nav-link" href="pos/billing-dashboard.php"><button type="button" class="btn btn-primary"><b>POS Bill</b></button></a>
+                <!-- <a class="nav-link" href="pos/billing-dashboard.php"><button type="button" class="btn btn-primary"><b>POS Bill</b></button></a> -->
                 <a class="nav-link" href="app-settings.php"><button type="button" class="btn btn-info"><b>App Settings</b></button></a>
                 <a class="nav-link" href="logout.php"><button type="button" class="btn btn-success">Logout</button></a>
                 <a class="nav-link" href="backup" target="blank"><button type="button" class="btn btn-warning">Backup</button></a>

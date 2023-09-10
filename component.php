@@ -1,4 +1,26 @@
 <?php
+// session_timeout.php
+
+// Start or resume the session
+// session_start();
+
+// Set the session timeout period to 3 minutes (180 seconds)
+$timeout = 1800;
+
+// Check if the user is logged in
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeout)) {
+    // If the user has been inactive for more than 3 minutes, destroy the session and redirect to login
+    session_unset();
+    session_destroy();
+    header("Location: index.php?error=Session timed out");
+    exit;
+}
+
+// Update the last activity timestamp
+$_SESSION['last_activity'] = time();
+?>
+
+<?php
 
 function logUserActivity($userId, $username, $role, $action) {
 
@@ -104,3 +126,4 @@ function printClose(){
 
 
 ?>
+

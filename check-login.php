@@ -4,7 +4,7 @@ session_start();
 require "dbconfig.php";
 require "component.php";
 
-if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role'])) {
+if (isset($_POST['username']) && isset($_POST['password'])) {
 
     function test_input($data)
     {
@@ -16,7 +16,6 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role
 
     $username = test_input($_POST['username']);
     $password = test_input($_POST['password']);
-    $role = test_input($_POST['role']);
 
     if (empty($username)) {
         header("Location: index.php?error=User Name is Required");
@@ -29,28 +28,24 @@ if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['role
 
         $sql = "SELECT * FROM user WHERE username='$username' AND password='$password'";
         $result = mysqli_query($con, $sql);
-        
-
-	
-	/////////////////////////////////////////////////
 
         if (mysqli_num_rows($result) === 1) {
 
             $row = mysqli_fetch_assoc($result);
-            if ($row['password'] === $password && $row['role'] == $role && $row['status'] == '1') {
+            if ($row['password'] === $password && $row['status'] == '1') {
                 $_SESSION['name'] = $row['name'];
                 $_SESSION['id'] = $row['id'];
                 $_SESSION['role'] = $row['role'];
                 $_SESSION['username'] = $row['username'];
 
-                    // Get the user information before destroying the session
-                    $userId = $_SESSION['id'];
-                    $username = $_SESSION['username'];
-                    $role = $_SESSION['role'];
-                    $action = "Logged in";
+                // Get the user information before destroying the session
+                $userId = $_SESSION['id'];
+                $username = $_SESSION['username'];
+                $role = $_SESSION['role'];
+                $action = "Logged in";
                 
-                    // Call the function to insert user activity log
-                    logUserActivity($userId, $username, $role, $action);
+                // Call the function to insert user activity log
+                logUserActivity($userId, $username, $role, $action);
 
                 header("Location: redirect-login.php");
                 exit(); // Terminate the script to prevent further execution

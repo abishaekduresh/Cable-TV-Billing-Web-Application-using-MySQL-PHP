@@ -138,13 +138,11 @@ $hidePromotion = ($footer1 == NULL);
 
 <?php
     
-    $query = mysqli_query($con, "SELECT * FROM bill WHERE status = 'approve' AND printStatus = 0");
+    $query = mysqli_query($con, "SELECT * FROM bill WHERE status = 'approve' AND pMode = 'credit'");
     
-if (mysqli_num_rows($query) > 0) {
-    
+    if (mysqli_num_rows($query) > 0) {
         while ($row = mysqli_fetch_array($query)) {
-
-            $billId = $row["bill_id"];
+            // Access the data fields of each row
             $billBy = $row["bill_by"];
             $stbNo = $row["stbno"];
             $billNo = $row["billNo"];
@@ -153,27 +151,15 @@ if (mysqli_num_rows($query) > 0) {
             $billTo = $row["name"];
             $cusphone = $row["phone"];
             $billAmount= $row["paid_amount"];
-            $hidebillAmountRow = ($billAmount == 0);
             $discount = $row["discount"];
-            $hideDiscountRow = ($discount == 0); // Determine if the discount row should be hidden
+            //$hideDiscountRow = ($discount == 0); // Determine if the discount row should be hidden
             $Rs = $row["Rs"];
-            $hideRsRow = ($Rs < 0); // Determine if the discount row should be hidden
+            //$hideRsRow = ($discount == 0); // Determine if the discount row should be hidden
             $pMode = $row["pMode"];
             $oldMonthBal = $row["oldMonthBal"];
             $hideoldMonthBalRow = ($oldMonthBal == 0);
             
             $hideStatusRow = ($pMode === 'cash' || $pMode === 'gpay');
-
-            mysqli_query($con, "UPDATE bill SET printStatus = 1");
-
-            if (isset($_SESSION['id'])) {
-                $userId = $_SESSION['id'];
-                $username = $_SESSION['username'];
-                $role = $_SESSION['role'];
-                $action = "Indiv-Single Bill Printed - Bill ID : $billId";
-            
-                logUserActivity($userId, $username, $role, $action);
-            }
 ?>
 
 <div class="page">
@@ -194,7 +180,6 @@ if (mysqli_num_rows($query) > 0) {
                 <td style="border:1px; border-left-style:solid;">B.No</td>
                 <td align="left" colspan="2" style="border:1.5px; border-right-style:solid;"><b><?= $billNo ?></b></td>
             </tr>
-            <tr>
             
             <tr>
                 <td style="border:1px; border-left-style:solid;">Date</td>
@@ -259,7 +244,14 @@ if (mysqli_num_rows($query) > 0) {
     
     <?php 
     }
-
+            if (isset($_SESSION['id'])) {
+                $userId = $_SESSION['id'];
+                $username = $_SESSION['username'];
+                $role = $_SESSION['role'];
+                $action = "Indiv-Credit - Bill Printed";
+            
+                logUserActivity($userId, $username, $role, $action);
+            }
     // Auto print using JavaScript
     echo "<script type='text/javascript'>
         window.onload = function() {
@@ -278,7 +270,7 @@ if (mysqli_num_rows($query) > 0) {
         }
 
         // Usage example
-        $url = "billing-dashboard.php"; // Replace with your desired URL
+        $url = "admin-bill-credit.php"; // Replace with your desired URL
         redirect($url);
         
 } else {
@@ -293,7 +285,7 @@ if (mysqli_num_rows($query) > 0) {
         </script>";
     }
 
-    $url = "billing-dashboard.php"; // Replace with your desired URL
+    $url = "admin-bill-credit.php"; // Replace with your desired URL
     redirect($url);
     
     function closeTab() {

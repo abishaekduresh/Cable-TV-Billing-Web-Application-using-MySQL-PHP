@@ -3,10 +3,18 @@
    include "dbconfig.php";
    require "component.php";
    if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
-    $session_username = $_SESSION['username'];
     
-
-require 'dbconfig.php';
+    if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
+        include 'admin-menu-bar.php';
+        $session_username = $_SESSION['username'];
+        ?><br><?php
+        include 'admin-menu-btn.php';
+    } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
+        include 'menu-bar.php';
+        $session_username = $_SESSION['username'];
+        ?><br><?php
+        include 'sub-menu-btn.php';
+    }
 
 ?>
 
@@ -22,13 +30,7 @@ require 'dbconfig.php';
 <body>
     
 <?php
-if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
-    include 'admin-menu-bar.php';
-    ?><br><?php
-    include 'admin-menu-btn.php';
-} elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
-    include 'menu-bar.php';
-}
+
 
 $filtervalues ='';
 
@@ -160,20 +162,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // $mso = $_POST["mso"];
             $name = $_POST["name"];
             $phone = $_POST["phone"];
+            $mso = $_POST["mso"];
             $description = $_POST["description"];
             $pMode = $_POST["pMode"];
             // $oldMonthBal = $_POST["oldMonthBal"];
-            $Rs = $_POST["paid_amount"];
+            $paid_amount = $_POST["paid_amount"];
             // $discount = $_POST["discount"];
             $bill_status = 'approve';
  
             $discount = 0;
 
-            $paid_amount = 0;
+            $Rs = 0;
+
+            $Rs = $paid_amount - $Rs;
 
             $oldMonthBal = 0;
-            
-            $mso = $_POST["mso"];
             
             // $paid_amount = 0;
 
@@ -238,7 +241,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Execute the SQL statement
             if ($con->query($sql) === TRUE) {
                 // Data inserted successfully
-                
+            //  $q= "SELECT date,sum(paid_amount) TotAmt FROM `bill` where date='2023-06-01' group by date";
+            
+                // Calculate sum of paid_amount for the current date
+                $sqlSum = "SELECT SUM(Rs) AS total_Rs FROM bill WHERE date = '$currentDate' AND status = 'approve'";
+                $result = $con->query($sqlSum);
+                $row = $result->fetch_assoc();
+                $sumPaidAmount = $row["total_Rs"];
+
+                // Check if a record exists in in_ex table
+                $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35";
+                $resultCheck = $con->query($sqlCheck);
+
+                if ($resultCheck->num_rows > 0) {
+                    // Update existing record
+                    $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = '12', subcategory_id = '35', remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35";
+                    $con->query($sqlUpdate);
+                } else {
+                    // Insert new record
+                    $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', '12', '35','', $sumPaidAmount)";
+                    $con->query($sqlInsert);
+                }
         // Redirect function
         function redirect($url)
         {
@@ -250,7 +273,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Usage example
-        $url = "bill-print-bulk.php"; // Replace with your desired URL bill-print-bulk.php
+        $url = "prtindivbulkbilldash.php"; // Replace with your desired URL bill-print-bulk.php
         redirect($url);
 
             } else {
@@ -282,13 +305,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     
-$query1 = "SELECT * FROM bill WHERE CONCAT(stbno, phone) LIKE '%$filtervalues%' AND MONTH('$currentDate')='$currentMonth' LIMIT 1";
+$query1 = "SELECT * FROM bill WHERE CONCAT(stbno, phone) LIKE '%$filtervalues%' AND MONTH('$currentDate')='$currentMonth' AND YEAR('$currentDate')='$currentYear'";
 
 $query_run1 = mysqli_query($con, $query1);
 
 if(mysqli_num_rows($query_run1) > 0)
 {
-    $bill = mysqli_fetch_assoc($query_run1);
+    $row = mysqli_fetch_assoc($query_run1);
 ?>
 
     <div class="container">
@@ -303,19 +326,19 @@ if(mysqli_num_rows($query_run1) > 0)
                             
                             <div class="mb-3">
                                 <label for="mso" class="form-label">MSO :</label>
-                                <input readonly type="text" name="mso" value="<?= $bill['mso']; ?>" class="form-control" required>
+                                <input readonly type="text" name="mso" value="<?= $row['mso']; ?>" class="form-control" required>
                             </div>
                             <div class="mb-3">
                                 <label for="stbno" class="form-label">STB No:</label>
-                                <input readonly type="text" name="stbno" value="<?= $bill['stbno']; ?>" class="form-control" required>
+                                <input readonly type="text" name="stbno" value="<?= $row['stbno']; ?>" class="form-control" required>
                             </div>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name :</label>
-                                <input readonly type="text" name="name" value="<?= $bill['name']; ?>" class="form-control" required>
+                                <input readonly type="text" name="name" value="<?= $row['name']; ?>" class="form-control" required>
                             </div>
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone :</label>
-                                <input readonly type="text" name="phone" value="<?= $bill['phone']; ?>" class="form-control" required>
+                                <input readonly type="text" name="phone" value="<?= $row['phone']; ?>" class="form-control" required>
                             </div>
                             <div class="mb-3">
                                 <label for="pMode" class="form-label">pMode :</label>

@@ -170,9 +170,10 @@ $hidePromotion = ($footer1 == NULL);
                 <td style="border:1px; border-left-style:solid;">B.No</td>
                 <td align="left" colspan="2" style="border:1.5px; border-right-style:solid;"><b><?= $billNo ?></b></td>
             </tr>
+            
             <tr>
                 <td style="border:1px; border-left-style:solid;">Date</td>
-                <td align="left" colspan="2" style="border:1.5px; border-right-style:solid;"><?= formatDate($date) ?></td>
+                <td align="left" colspan="2" style="border:1.5px; border-right-style:solid;"><?= formatDate($date) ?>&nbsp;&nbsp;<?= convertTo12HourFormat($time) ?></td>
             </tr>
             
             <tr>
@@ -216,7 +217,7 @@ $hidePromotion = ($footer1 == NULL);
     
             <tr <?php if ($hideoldMonthBalRow) echo 'style="display: none;"'; ?>>
                 <td colspan="2" align="right" style="padding-right:20px;border:1px;border-left-style:solid;"><b>Old Balance</b></td>
-                <td align="right" style="padding-right:20px;  border:1px; border-left-style:solid;border-right-style:solid;"><b><?= $discount ?></b></td>
+                <td align="right" style="padding-right:20px;  border:1px; border-left-style:solid;border-right-style:solid;"><b><?= $oldMonthBal ?></b></td>
             </tr>
     
             <tr>

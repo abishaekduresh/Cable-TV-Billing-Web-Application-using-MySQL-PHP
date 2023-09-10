@@ -1,8 +1,24 @@
 <?php 
    session_start();
    include "dbconfig.php";
-   if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
-            $session_username = $_SESSION['username'];?>
+   if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
+    
+
+    if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
+        include 'admin-menu-bar.php';
+        ?><br><?php
+        include 'admin-menu-btn.php';
+        $session_username = $_SESSION['username'];
+        
+    } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
+        include 'menu-bar.php';
+        ?><br><?php
+        include 'sub-menu-btn.php';
+        $session_username = $_SESSION['username'];
+    }
+
+?>
+            
 
 <?php
 
@@ -40,10 +56,6 @@ if ($result) {
     echo "Error executing the query: " . mysqli_error($con);
 }
 
-// Close the database connection
-// mysqli_close($con);
-?>
-<?php
 $todayCount = 0;
 $todayCancel = 0;
 $totalCashCount = 0;
@@ -77,10 +89,6 @@ if ($countresult) {
     // Query execution failed
     echo "Error executing the query: " . mysqli_error($con);
 }
-
-?>
-
-<?php 
 
 $totalCreditCount = 0;
 $totalCreditRsSum = 0;
@@ -126,11 +134,7 @@ mysqli_close($con);
     <title>Employee Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
-<style>
-    body{margin-top:20px;
-background-color:#f2f6fc;
-color:#69707a;
-}
+ <style>
 .img-account-profile {
     height: 10rem;
 }
@@ -220,11 +224,9 @@ color:#69707a;
 }
 
 </style>
+
 </head>
 <body >
-    
-    <?php include 'menu-bar.php'?>
-<br>
 
         
       

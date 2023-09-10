@@ -1,16 +1,21 @@
 <?php 
    session_start();
    include "dbconfig.php";
-//    if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'employee') { 
-    if (isset($_SESSION['username']) && isset($_SESSION['id'])) {    
-        $session_username = $_SESSION['username']; ?>
 
-<?php
-if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
-    include 'admin-menu-bar.php';
-} elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
-    include 'menu-bar.php';
-}
+   if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
+    
+    if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
+        include 'admin-menu-bar.php';
+        $session_username = $_SESSION['username'];
+        ?><br><?php
+        include 'admin-menu-btn.php';
+    } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
+        include 'menu-bar.php';
+        $session_username = $_SESSION['username'];
+        ?><br><?php
+        include 'sub-menu-btn.php';
+    }
+    
 ?>
 
 

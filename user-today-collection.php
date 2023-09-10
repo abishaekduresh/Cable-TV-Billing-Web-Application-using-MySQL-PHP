@@ -23,15 +23,18 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     include "dbconfig.php";
 
 
+    $totalBill = 0;
+    $totalBillAmount = 0;
+    $totalDiscount = 0;
+    $totalRs = 0;
+    $groupTotalBillAmount = 0;
+    $groupTotalDiscount = 0;
+    $groupTotalRs = 0;
     
 // Query to count the number of items
     $sql = "SELECT COUNT(*) AS count FROM bill WHERE date = '$currentDate' AND bill_by = '$session_username' AND status = 'approve'";
     $result = $con->query($sql);
 
-    $totalBill = 0;
-    $totalBillAmount = 0;
-    $totalDiscount = 0;
-    $totalRs = 0;
 
 // Check if the query was successful
 if ($result) {
@@ -43,6 +46,7 @@ if ($result) {
 } else {
     echo "Error executing the query: " . $con->error;
 }
+
 
 // Query to fetch all values from table
 $sql = "SELECT * FROM bill WHERE date = '$currentDate' AND bill_by = '$session_username' AND status = 'approve'";
@@ -67,6 +71,46 @@ if ($result) {
 } else {
     echo "Error executing the query: " . $con->error;
 }
+
+$sql = "SELECT COUNT(*) AS groupBillCount FROM billgroupdetails WHERE date = '$currentDate' AND billBy = '$session_username' AND status = 'approve'";
+$result = $con->query($sql);
+
+
+// Check if the query was successful
+if ($result) {
+// Fetch the count from the result
+$row = $result->fetch_assoc();
+
+// Store the count in a variable
+$totalGroupBillCount = $row['groupBillCount'];
+} else {
+echo "Error executing the query: " . $con->error;
+}
+
+// Query to fetch all values from table
+$sql = "SELECT * FROM billgroupdetails WHERE date = '$currentDate' AND billBy = '$session_username' AND status = 'approve'";
+
+// Execute the query
+$result = $con->query($sql);
+
+// Check if the query was successful
+if ($result) {
+    // Fetch each row and calculate the sum
+    while ($row = $result->fetch_assoc()) {
+        if (isset($row['billAmount'])) {
+            $groupTotalBillAmount += $row['billAmount'];
+        }
+        if (isset($row['discount'])) {
+            $groupTotalDiscount += $row['discount'];
+        }
+        if (isset($row['Rs'])) {
+            $groupTotalRs += $row['Rs'];
+        }
+    }
+} else {
+    echo "Error executing the query: " . $con->error;
+}
+
 ?>
 
 <?php
@@ -112,8 +156,8 @@ if ($result) {
         <td><?php echo $session_username; ?></td>
     </tr>
     <tr>
-        <th>Bill Count</th>
-        <td><?php echo $totalBill; ?></td>
+        <th>Indiv & Group</th>
+        <td><?php echo $totalBill; ?>&nbsp;&&nbsp;<?= $totalGroupBillCount ?></td>
     </tr>
     <tr>
         <th>Date</th>
@@ -123,17 +167,29 @@ if ($result) {
         <th>Time</th>
         <td><?php echo $currentTimeA; ?></td>
     </tr>
-    <tr>
-        <th>Total Bill Amount</th>
-        <td><?php echo $totalBillAmount; ?></td>
+    <!-- <tr>
+        <th>Indiv Bill Amount</th>
+        <td><?php //echo $totalBillAmount; ?></td>
     </tr>
     <tr>
-        <th>Total Discount</th>
-        <td><?php echo $totalDiscount; ?></td>
-    </tr>
+        <th>Indiv Discount</th>
+        <td><?php //echo $totalDiscount; ?></td>
+    </tr> -->
     <tr>
-        <th>Total Rs.</th>
+        <th>Indiv Rs.</th>
         <td><?php echo $totalRs; ?></td>
+    </tr>
+    <!-- <tr>
+        <th>Group Bill Amount</th>
+        <td><?php //echo $groupTotalBillAmount; ?></td>
+    </tr>
+    <tr>
+        <th>Group Discount</th>
+        <td><?php //echo $groupTotalDiscount; ?></td>
+    </tr> -->
+    <tr>
+        <th>Group Rs.</th>
+        <td><?php echo $groupTotalRs; ?></td>
     </tr>
     <tr>
         <th>Income</th>
@@ -145,7 +201,7 @@ if ($result) {
     </tr>
     <tr>
         <th>Balance</th>
-        <td style="font-weight: bold;"><?php echo $totalRs+$sumIncome-$sumExpense; ?></td>
+        <td style="font-weight: bold;"><?php echo $groupTotalRs+$totalRs+$sumIncome-$sumExpense; ?></td>
     </tr>
 </table>
 

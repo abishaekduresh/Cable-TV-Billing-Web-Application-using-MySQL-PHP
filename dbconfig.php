@@ -1,5 +1,5 @@
 <?php
-$con = mysqli_connect("localhost:3307", "root", "", "ctv.new");
+$con = mysqli_connect("localhost:3307", "root", "", "ctv.pdpgroups");
 
 // Check connection
 if (mysqli_connect_errno()) {

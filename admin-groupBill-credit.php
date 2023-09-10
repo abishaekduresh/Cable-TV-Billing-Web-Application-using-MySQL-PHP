@@ -111,14 +111,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                             
                                             $from_date = $_GET['from_date'];
                                             $to_date = $_GET['to_date'];
-
-                                            // $query1 = "SELECT *
-                                            // FROM billgroupdetails
-                                            // JOIN billgroup ON billgroup.billNo = billgroupdetails.billgroupNo
-                                            // WHERE billgroup.date BETWEEN '$from_date' AND '$to_date'
-                                            //   AND billgroupdetails.date BETWEEN '$from_date' AND '$to_date'
-                                            //   AND billgroup.groupName = '$groupName';
-                                            // "; 
                                                   
                                             $query1 = "SELECT *
                                             FROM billgroupdetails WHERE date BETWEEN '$from_date' AND '$to_date'
@@ -127,31 +119,9 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 
                                             $query_run1 = mysqli_query($con, $query1);
 
-                                            // if (mysqli_num_rows($query_run1) > 0) {
-                                            //     $row1 = mysqli_fetch_assoc($query_run1); // Fetch the first row
-                                                
-                                            //     $serial_number = 1; // Initialize the serial number
-                                            //     ?>
-                                            <!-- //     <tr>
-                                            //         <td style=" font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
-                                            //         <td style=" font-size: 18px; font-weight: bold;"><?= $row1['pMode']; ?></td>
-                                            //         <td style=" font-weight: bold; font-size: 20px; color: #0012C3;"><?= $row1['oldMonthBal']; ?></td>
-                                            //         <td style=" font-weight: bold; font-size: 20px; color: #05A210;"><?= $row1['billAmount']; ?></td>
-                                            //         <td style=" font-weight: bold; font-size: 20px; color: #DD0581;"><?= $row1['discount']; ?></td>
-                                            //         <td style=" font-weight: bold; font-size: 20px; color: #F20000;"><?= $row1['Rs']; ?></td>
-                                            //         <td>
-                                            //             <a href="../print/groupBill-3inch-print.php?groupName=<?= $row1['groupName']; ?>&from_date=<?= $from_date ?>&to_date=<?= $to_date ?>" target="blank">
-                                            //                 <button type="button" class="btn btn-warning">
-                                            //                     <i class="bi bi-printer-fill"></i>
-                                            //                 </button>
-                                            //             </a>
-                                            //         </td>
-                                            //     </tr> -->
+                                         ?>
 
                                                  <?php
-                                            // } else {
-                                            //     echo "No Record Found";
-                                            // }
                                             
 
                                             if (mysqli_num_rows($query_run1) > 0) {

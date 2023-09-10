@@ -4,18 +4,18 @@ include "dbconfig.php";
 require 'dbconfig.php';
 require "component.php";
 
-if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
+if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
     
-
     if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
         include 'admin-menu-bar.php';
+        $session_username = $_SESSION['username'];
         ?><br><?php
         include 'admin-menu-btn.php';
-        $session_username = $_SESSION['username'];
-        
     } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
         include 'menu-bar.php';
         $session_username = $_SESSION['username'];
+        ?><br><?php
+        include 'sub-menu-btn.php';
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
