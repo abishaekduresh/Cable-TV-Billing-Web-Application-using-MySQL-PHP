@@ -10,11 +10,13 @@
             $session_username = $_SESSION['username'];
             ?><br><?php
             include 'admin-menu-btn.php';
+            $session_role = 'admin';
         } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
             include 'menu-bar.php';
             $session_username = $_SESSION['username'];
             ?><br><?php
             include 'sub-menu-btn.php';
+            $session_role = 'employee';
         }
 ?>
 

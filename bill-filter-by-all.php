@@ -99,7 +99,7 @@
                                     $from_date = $_GET['from_date'];
                                     $to_date = $_GET['to_date'];
 
-                                    $query = "SELECT * FROM bill WHERE date BETWEEN '$from_date' AND '$to_date'";
+                                    $query = "SELECT * FROM bill WHERE date BETWEEN '$from_date' AND '$to_date' AND status = 'approve'";
                                     $query_run = mysqli_query($con, $query);
                                     $total_sum = 0; //////////
                                     $discount_sum = 0;

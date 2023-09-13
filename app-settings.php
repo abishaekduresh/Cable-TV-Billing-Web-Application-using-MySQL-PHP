@@ -105,37 +105,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="appName">App Name *</label>
-                                        <input type="text" readonly class="form-control" id="appName" name="appName" value="<?= $appName ?>">
+                                        <input type="text" class="form-control" id="appName" name="appName" value="<?= $appName ?>">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="appName2">App Name 2</label>
-                                        <input type="text" readonly class="form-control" id="appName2" name="appName2" value="<?= $appName2 ?>">
+                                        <input type="text" class="form-control" id="appName2" name="appName2" value="<?= $appName2 ?>">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="addr1">Address 1 *</label>
-                                        <input type="text" readonly class="form-control" id="add1" name="addr1" value="<?= $addr1 ?>">
+                                        <input type="text" class="form-control" id="add1" name="addr1" value="<?= $addr1 ?>">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="addr2">Address 2 *</label>
-                                        <input type="text" readonly class="form-control" id="addr2" name="addr2" value="<?= $addr2 ?>">
+                                        <input type="text" class="form-control" id="addr2" name="addr2" value="<?= $addr2 ?>">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="phone">Phone *</label>
-                                        <input type="text" readonly class="form-control" id="phone" name="phone" pattern="[0-9]{10}" value="<?= $phone ?>">
+                                        <input type="text" class="form-control" id="phone" name="phone" pattern="[0-9]{10}" value="<?= $phone ?>">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input type="email" readonly class="form-control" id="email" name="email" value="<?= $email ?>">
+                                        <input type="email" class="form-control" id="email" name="email" value="<?= $email ?>">
                                     </div>
                                 </div>
                             </div>
