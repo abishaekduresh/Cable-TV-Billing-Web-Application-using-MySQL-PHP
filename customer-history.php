@@ -2,6 +2,8 @@
    session_start();
    include "dbconfig.php";
    require "component.php";
+   include 'preloader.php';
+   
    if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
     
     if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
@@ -77,7 +79,7 @@ $filtervalues ='';
                                     <th>STB No</th>
                                     <th>Name</th>
                                     <th>Phone</th>
-                                    <th>Des.tion</th>
+                                    <th>Remark</th>
                                     <th>pMode</th>
                                     <th>BillAmt</th>
                                     <th>Disct</th>
@@ -92,7 +94,7 @@ $filtervalues ='';
                                     {
                                         $filtervalues = $_GET['search'];
                                         
-                                        $query = "SELECT * FROM bill WHERE CONCAT(stbno, phone) LIKE '%$filtervalues%' ORDER BY bill_id DESC LIMIT 50";
+                                        $query = "SELECT * FROM bill WHERE CONCAT(stbno, phone) LIKE '%$filtervalues%' ORDER BY DATE(due_month_timestamp) DESC LIMIT 50";
 
                                         $query_run = mysqli_query($con, $query);
 
@@ -102,22 +104,22 @@ $filtervalues ='';
                                             {
                                                 ?>
                                                 <tr><form action="" method="POST">
-                                                    <td style="width: 18px; font-size: 18px; font-weight: bold;"><?= $bill['billNo']; ?></td>
-                                                    <td style="width: 200px; font-weight: bold; font-size: 18px; color: #007DC3;">
-                                                        <?= formatDate($bill['date']); ?>
+                                                    <td style="font-weight: bold;"><?= $bill['billNo']; ?></td>
+                                                    <td style="font-weight: bold; color: #007DC3;">
+                                                        <?= formatDate($bill['due_month_timestamp']); ?>
                                                     </td>
-                                                    <td style="width: 100px; font-size: 17px; font-weight: bold;"><?= convertTo12HourFormat($bill['time']); ?></td>
-                                                    <td style="width: 100px; font-size: 18px; font-weight: bold;"><?= $bill['bill_by']; ?></td>
-                                                    <!--<td style="width: 180px; font-size: 18px; font-weight: bold;"><?= $bill['mso']; ?></td>-->
-                                                    <td style="width: 180px; font-size: 18px; font-weight: bold;"><?= $bill['stbno']; ?></td>
-                                                    <td style="width: 220px; font-size: 18px; font-weight: bold;"><?= $bill['name']; ?></td>
-                                                    <td style="width: 120px; font-size: 18px; font-weight: bold;"><?= $bill['phone']; ?></td>
-                                                    <td style="width: 150px; font-size: 18px; font-weight: bold;"><?= $bill['description']; ?></td>
-                                                    <td style="width: 80px; font-size: 18px; font-weight: bold;"><?= $bill['pMode']; ?></td>
-                                                    <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;"><?= $bill['paid_amount']; ?></td>
-                                                    <td style="width: 50px; font-weight: bold; font-size: 20px; color: #DD0581;"><?= $bill['discount']; ?></td>
-                                                    <td style="width: 70px; font-weight: bold; font-size: 20px; color: #F20000;"><?= $bill['Rs']; ?></td>
-                                                    <td style="width: 70px; font-weight: bold; font-size: 20px; color: #db4104;"><?= $bill['status']; ?></td>
+                                                    <td style="font-weight: bold;"><?= convertTo12HourFormat($bill['time']); ?></td>
+                                                    <td style="font-weight: bold;"><?= $bill['bill_by']; ?></td>
+                                                    <!--<td style="font-weight: bold;"><?= $bill['mso']; ?></td>-->
+                                                    <td style="font-weight: bold;"><?= $bill['stbno']; ?></td>
+                                                    <td style="font-weight: bold;"><?= $bill['name']; ?></td>
+                                                    <td style="font-weight: bold;"><?= $bill['phone']; ?></td>
+                                                    <td style="font-weight: bold;"><?= $bill['description']; ?></td>
+                                                    <td style="font-weight: bold;"><?= $bill['pMode']; ?></td>
+                                                    <td style="font-weight: bold;  color: #05A210;"><?= $bill['paid_amount']; ?></td>
+                                                    <td style="font-weight: bold; color: #DD0581;"><?= $bill['discount']; ?></td>
+                                                    <td style="font-weight: bold; color: #F20000;"><?= $bill['Rs']; ?></td>
+                                                    <td style="font-weight: bold; color: #db4104;"><?= $bill['status']; ?></td>
                                                 </tr>
                                                 <?php
                                             }

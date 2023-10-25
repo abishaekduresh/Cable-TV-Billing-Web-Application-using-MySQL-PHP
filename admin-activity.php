@@ -2,6 +2,7 @@
 session_start();
 include "dbconfig.php";
 include "component.php";
+include 'preloader.php';
 
 if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {    
     $session_username = $_SESSION['username'];
@@ -14,7 +15,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 include 'dbconfig.php';
 
 // Query to fetch the last 50 data from the database
-$query = "SELECT * FROM user_activity ORDER BY id DESC LIMIT 50";
+$query = "SELECT * FROM user_activity WHERE date = CURDATE() ORDER BY id DESC;";
 $result = mysqli_query($con, $query);
 ?>
 <br/>

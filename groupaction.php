@@ -1,6 +1,8 @@
 <?php 
    session_start();
    include "dbconfig.php";
+   include "component.php";
+   include 'preloader.php';
 //    if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'employee') { 
     if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {    
         $session_username = $_SESSION['username']; 
@@ -144,7 +146,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
-                                    <th>Group ID</th>
+                                    <th>STB Count</th>
                                     <th><center>Phone</center></th>
                                     <th><center>Group Amt</center></th>
                                     <th><center>Action</center></th>
@@ -164,15 +166,30 @@
                                         {
                                             ?>
                                             <tr>
-                                                <td style="width: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
-                                                <td style="width: 350px; font-weight: bold;"><?= $group['groupName']; ?></td>
-                                                <td style="width: 100px; font-weight: bold;"><center><?= $group['group_id']; ?></center></td>
-                                                <td style="width: 110px; font-weight: bold;"><center><?= $group['phone']; ?></center></td>
-                                                <td style="width: 180px; font-weight: bold;"><center><?= $group['billAmt']; ?></center></td>
+                                                <td style="font-weight: bold;"><?= $serial_number++; ?></td>
+                                                <td style="font-weight: bold;"><?= $group['groupName']; ?></td>
+                                                <td style="font-weight: bold;">
+                                                        <?php
+                                                            $gid = $group['group_id'];
+                                                            // SQL query to select data from a table
+                                                            $query = "SELECT cusGroup FROM customer WHERE cusGroup = $gid AND rc_dc = 1";
+
+                                                            // Execute the query
+                                                            $result = $con->query($query);
+
+                                                            // Check if the query was successful
+                                                            if ($result) {
+                                                                echo mysqli_num_rows($result);
+                                                            } else {
+                                                                echo "Query execution failed: " . $con->error;
+                                                            }
+                                                        ?>
+                                                </td>
+                                                <td style="font-weight: bold;"><center><?= $group['phone']; ?></center></td>
+                                                <td style="font-weight: bold;"><center><?= $group['billAmt']; ?></center></td>
                                                 <td><center>
                                                     <button type="button" value="<?=$group['group_id'];?>" class="editStudentBtn btn btn-success btn-sm">Edit</button>
                                                         <form action="code-group-action.php" method="POST" class="d-inline">
-                                                            <!--<button type="submit" name="delete_customer" value="<?=$group['group_id'];?>" class="deleteStudentBtn btn btn-danger btn-sm" -->
                                                             <button type="submit" name="delete_customer" value="<?=$group['group_id'];?>" class="deleteStudentBtn btn btn-danger btn-sm disabled" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                                             Delete
                                                     </button>

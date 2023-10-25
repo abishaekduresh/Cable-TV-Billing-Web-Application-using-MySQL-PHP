@@ -2,6 +2,7 @@
 session_start();
 include "dbconfig.php";
 require "component.php";
+include 'preloader.php';
 
 if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
     $session_username = $_SESSION['username'];
@@ -14,7 +15,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>bill-filter-by-date</title>
+        <title>Bill by All Report</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             /* CSS to remove underline and change color for <a> tags */
@@ -40,7 +41,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                 <div class="col-md-12">
                     <div class="card mt-5">
                         <div class="card-header">
-                            <h4>Bill by All</h4>
+                            <h4>Bill by All Report</h4>
                         </div>
                         <div class="card-body">
 
@@ -160,7 +161,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                         $discount_sum = '';
                                         $paid_amount_sum = '';
                                         $Rs_sum = '';
-                                        $oldMonthBal = '';
+                                        $oldMonthBal_sum = '';
 
                                         if (isset($_GET['from_date']) && isset($_GET['to_date'])) {
                                             $from_date = $_GET['from_date'];
@@ -186,7 +187,6 @@ if (!empty($from_time) && !empty($to_time)) {
                                             $filterCondition = '';
                                             $statusFilterCondition = '';
                                             $pModefilterCondition = '';
-                                            $oldMonthBal_sum = '';
 
                                             if (!empty($filters)) {
                                                 $filterCondition = "AND bill_by IN ('" . implode("','", $filters) . "')";
@@ -209,7 +209,7 @@ if (!empty($from_time) && !empty($to_time)) {
                                             }
 
 
-                                            $query = "SELECT * FROM bill WHERE date BETWEEN '$from_date' AND '$to_date' $timeFilterCondition $filterCondition $statusFilterCondition $pModefilterCondition";
+                                            $query = "SELECT * FROM bill WHERE DATE(due_month_timestamp) BETWEEN '$from_date' AND '$to_date' $timeFilterCondition $filterCondition $statusFilterCondition $pModefilterCondition";
 
                                             $query_run = mysqli_query($con, $query);
                                             $Rs_sum = 0;
@@ -223,26 +223,34 @@ if (!empty($from_time) && !empty($to_time)) {
                                                 foreach ($query_run as $row) {
                                                     ?>
                                         <tr>
-                                            <td style="width: 18px; font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
-                                            <td style="width: 100px; font-size: 18px; font-weight: bold;"><?= $row['bill_by']; ?></td>
-                                            <td style="width: 240px; font-weight: bold; font-size: 18px; color: #007DC3;"><?= formatDate($row['date']); ?></td>
-                                            <td style="width: 40px; font-size: 18px; font-weight: bold;"><?= $row['billNo']; ?></td>
-                                            <td style="width: 40px; font-size: 18px; font-weight: bold;"><?= $row['mso']; ?></td>
-                                            <td style="width: 160px; font-size: 18px; font-weight: bold;"><?= $row['stbno']; ?></td>
-                                            <td style="width: 350px; font-size: 18px; font-weight: bold;"><?= $row['name']; ?></td>
-                                            <td style="width: 110px; font-size: 18px; font-weight: bold;"><?= $row['phone']; ?></td>
-                                            <td style="width: 180px; font-size: 18px; font-weight: bold;"><?= $row['description']; ?></td>
-                                            <td style="width: 40px; font-size: 18px; font-weight: bold;"><?= $row['pMode']; ?></td>
-                                            <td style="width: 50px; font-weight: bold; font-size: 20px; color: #0012C3;">
+                                            <td style="font-weight: bold;"><?= $serial_number++; ?></td>
+                                            <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
+                                            <td style="font-weight: bold; color: #007DC3;">
+                                                        <?PHP 
+                                                            $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 
+                                                            formatDate($current_result['date']);
+                                                            // echo '&nbsp';
+                                                            // $t=convertTo12HourFormat($current_result['time']);
+                                                            // echo $t;
+                                                        ?>
+                                            </td>
+                                            <td style="font-weight: bold;"><?= $row['billNo']; ?></td>
+                                            <td style="font-weight: bold;"><?= $row['mso']; ?></td>
+                                            <td style="font-weight: bold;"><?= $row['stbno']; ?></td>
+                                            <td style="font-weight: bold;"><?= $row['name']; ?></td>
+                                            <td style="font-weight: bold;"><?= $row['phone']; ?></td>
+                                            <td style="font-weight: bold;"><?= $row['description']; ?></td>
+                                            <td style="font-weight: bold;"><?= $row['pMode']; ?></td>
+                                            <td style="font-weight: bold; color: #0012C3;">
                                                 <?= $row['oldMonthBal']; ?>
                                             </td>
-                                            <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;">
+                                            <td style="font-weight: bold; color: #05A210;">
                                                 <?= $row['paid_amount']; ?>
                                             </td>
-                                            <td style="width: 50px; font-weight: bold; font-size: 20px; color: #DD0581;">
+                                            <td style="font-weight: bold; color: #DD0581;">
                                                 <?= $row['discount']; ?>
                                             </td>
-                                            <td style="width: 70px; font-weight: bold; font-size: 20px; color: #F20000;">
+                                            <td style="font-weight: bold; color: #F20000;">
                                                 <?= $row['Rs']; ?>
                                             </td>
                                             <td>
@@ -275,17 +283,17 @@ if (!empty($from_time) && !empty($to_time)) {
                                         ?>
                                         <tr>
                                             <td colspan="9"></td>
-                                            <td style="width: 70px; font-weight: bold; font-size: 20px;">Total:</td>
-                                            <td style="width: 50px; font-weight: bold; font-size: 20px; color: #0012C3;">
+                                            <td style="font-weight: bold;">Total:</td>
+                                            <td style="font-weight: bold; color: #0012C3;">
                                                 <b><?= $oldMonthBal_sum ?></b>
                                             </td>
-                                            <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;">
+                                            <td style="font-weight: bold; color: #05A210;">
                                                 <b><?= $paid_amount_sum ?></b>
                                             </td>
-                                            <td style="width: 50px; font-weight: bold; font-size: 20px; color: #DD0581;">
+                                            <td style="font-weight: bold; color: #DD0581;">
                                                 <b><?= $discount_sum ?></b>
                                             </td>
-                                            <td style="width: 70px; font-weight: bold; font-size: 20px; color: #F20000;">
+                                            <td style="font-weight: bold; color: #F20000;">
                                                 <b><?= $Rs_sum ?></b>
                                             </td>
                                             <td></td>
@@ -300,7 +308,7 @@ if (!empty($from_time) && !empty($to_time)) {
             </div>
         </div>
     </div>
-
+<br>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

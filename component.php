@@ -123,7 +123,13 @@ function printClose(){
     closeTab();
 }
 
+function splitDateAndTime($timestamp) {
+    // Use the date() function to format the timestamp
+    $date = date('Y-m-d', $timestamp); // Format for date (e.g., 2023-10-21)
+    $time = date('H:i:s', $timestamp); // Format for time (e.g., 14:30:00)
 
+    return array('date' => $date, 'time' => $time);
+}
 
 ?>
 

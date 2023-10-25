@@ -14,7 +14,7 @@ $backupFolderPath = 'sql_backup_files/';
 // Create a backup file with the current timestamp
 $backupFile = $backupFolderPath . 'ctv' . $datetime->format('Y-m-d_h:i') . '.sql';
 
-$dump = new Ifsnop\Mysqldump\Mysqldump('mysql:host=localhost;dbname=ctv.pdpgroups', 'ctv.pdpgroups', 'reAddYsrktDA6skc');
+$dump = new Ifsnop\Mysqldump\Mysqldump('mysql:host=localhost;dbname=pdpcabletv', 'pdpcabletv', 'aiyxicDwaBktmh2e');
 $dump->start($backupFile);
 
 
@@ -31,7 +31,7 @@ $mail->SMTPSecure = 'tls'; // Enable encryption, 'ssl' also accepted
 // Set email details
 $mail->setFrom('pdpcabletv@gmail.com', 'CTV DB Backup' . $currentDateTime); // Set the sender's email address and name
 $mail->addAddress('pdpcabletv@gmail.com', 'Duresh'); // Set the recipient's email address and name
-$mail->Subject = 'ctv.pdpgroups.in-sql-backup'; // Set the email subject
+$mail->Subject = 'pdpcabletv.in-sql-backup'; // Set the email subject
 $mail->Body = $currentDateTime; // Set the email body
 
 

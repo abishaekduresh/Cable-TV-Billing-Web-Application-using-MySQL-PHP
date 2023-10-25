@@ -1,7 +1,7 @@
 <?php 
    session_start();
    include "dbconfig.php";
-   require 'dbconfig.php';
+   include 'preloader.php';
    include "component.php";
     if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
         ?>

@@ -3,6 +3,7 @@
    include "dbconfig.php";
    require 'dbconfig.php';
    require "component.php";
+include 'preloader.php';
 
     if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
         if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
@@ -220,7 +221,7 @@
 
                                 <form action="" method="GET">
                                     <div class="input-group mb-3">
-                                    <input type="text" name="search" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Name, Phone">
+                                    <input type="text" name="search" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Name, Phone, MSO">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
                                 </form>
@@ -256,7 +257,7 @@
                                     if(isset($_GET['search']))
                                     {
                                         $filtervalues = $_GET['search'];
-                                        $query = "SELECT * FROM customer WHERE CONCAT(stbno,name,phone) LIKE '%$filtervalues%'";
+                                        $query = "SELECT * FROM customer WHERE CONCAT(stbno,name,phone,mso) LIKE '%$filtervalues%'";
                                         $query_run = mysqli_query($con, $query);
 
                                         if(mysqli_num_rows($query_run) > 0)

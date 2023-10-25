@@ -49,6 +49,19 @@ if ($result->num_rows > 0) {
                 <li class="nav-item">
                     <li class="nav-item"><a class="nav-link" href="bill-last5-print.php">Latest Bill</a>
                 </li>
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <b>Billing</b>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="billing-dashboard.php"><b>Indiv Billing Dashboard</b></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="billing-group-dashboard.php"><b>Group Billing Dashboard</b></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="adv-indiv-billing-dashboard.php"><b>Indiv Advance Billing</b></a>
+                    </div>
+                </li>
 
                 </li>
                 <li class="nav-item dropdown">
@@ -71,6 +84,8 @@ if ($result->num_rows > 0) {
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="admin-bill-filter-by-all.php">Indiv Bill by All</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="rptadvindivbill.php">Advance Indiv Bill</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="admin-in-ex-report.php">Income Expense</a>
                         <div class="dropdown-divider"></div>

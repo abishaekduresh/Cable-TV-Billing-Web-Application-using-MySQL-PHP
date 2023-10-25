@@ -1,12 +1,10 @@
 <?php 
    session_start();
    include "dbconfig.php";
+   include 'preloader.php';
+   
    if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   ?>
 
-<?php
-require 'dbconfig.php';
-
-?>
 
 <!DOCTYPE html>
 <html lang="en">

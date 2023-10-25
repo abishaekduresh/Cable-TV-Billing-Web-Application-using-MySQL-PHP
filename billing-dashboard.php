@@ -2,6 +2,7 @@
 session_start();
 require "dbconfig.php";
 require "component.php";
+include 'preloader.php';
 
 if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
@@ -171,8 +172,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             $printStatus = 0;
             
             // Prepare the SQL statement
-            $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, status, printStatus) 
-            VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', '$bill_status', '$printStatus')";
+         $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, adv_status, due_month_timestamp, status, printStatus) 
+            VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', 0, '$currentDateTime', '$bill_status', '$printStatus')";
 
                 if (isset($_SESSION['id'])) {
                     // Get the user information before destroying the session
@@ -273,7 +274,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
                 <select style="font-weight: bold;" name="rc_dc" id="rc_dc" class="form-select" required>
                   <option style="font-weight: bold;" value="1" selected>RC</option>
-                  <!-- <option style="font-weight: bold;" value="0">DC</option> -->
+                   <option style="font-weight: bold;" value="0">DC</option> 
                 </select>
                 
                 <label for="selectBox" class="form-label">Select an Group: *</label>
@@ -444,8 +445,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
                                                     $nestedQuery = "SELECT * FROM bill 
                                                     WHERE stbno = '$stbno'  AND status = 'approve'
-                                                    AND MONTH(`date`) = '$currentMonth'
-                                                    AND YEAR(`date`) = '$currentYear'";
+                                                    AND MONTH(`due_month_timestamp`) = '$currentMonth'
+                                                    AND YEAR(`due_month_timestamp`) = '$currentYear'";
     
                                                     $nestedQuery_run = mysqli_query($con, $nestedQuery);
     
@@ -457,7 +458,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                     
                                                     $disableButton2 = (mysqli_num_rows($nestedQuery2_run) > 0) ? true : false;
                                                     
-                                                    if ($currentDay <= 05) {
+                                                    if ($currentDay <= 10) {
                                                         $discountValue = 10; // Set discount to 10 if current day is less than 5
                                                     } else {
                                                             $discountValue = 0;

@@ -1,6 +1,8 @@
 <?php 
    session_start();
    include "dbconfig.php";
+   require "component.php";
+   include 'preloader.php';
 
    if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
     
@@ -99,7 +101,7 @@
                                     $from_date = $_GET['from_date'];
                                     $to_date = $_GET['to_date'];
 
-                                    $query = "SELECT * FROM bill WHERE date BETWEEN '$from_date' AND '$to_date' AND status = 'approve'";
+                                    $query = "SELECT * FROM bill WHERE DATE(due_month_timestamp) BETWEEN '$from_date' AND '$to_date' AND status = 'approve'";
                                     $query_run = mysqli_query($con, $query);
                                     $total_sum = 0; //////////
                                     $discount_sum = 0;
@@ -115,26 +117,33 @@
                                             <tr>
                                                 <td style="font-weight: bold;"><?= $serial_number++; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
-                                                <td style="font-weight: bold;"><?= $row['date']; ?></td>
+                                                <td style="font-weight: bold; color: #007DC3;">
+                                                    <?PHP 
+                                                        $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 
+                                                        formatDate($current_result['date']);
+                                                        // echo '&nbsp';
+                                                        // $t=convertTo12HourFormat($current_result['time']);
+                                                        // echo $t;
+                                                    ?>
+                                                </td>
                                                 <td style="font-weight: bold;"><?= $row['stbno']; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['name']; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['phone']; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['description']; ?></td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #0012C3;"><?= $row['oldMonthBal']; ?></td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;"><?= $row['paid_amount']; ?></td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #DD0581;"><?= $row['discount']; ?></td>
-                                                <td style="width: 70px; font-weight: bold; font-size: 20px; color: #F20000;"><?= $row['Rs']; ?></td>
+                                                <td style="font-weight: bold; color: #0012C3;"><?= $row['oldMonthBal']; ?></td>
+                                                <td style="font-weight: bold; color: #05A210;"><?= $row['paid_amount']; ?></td>
+                                                <td style="font-weight: bold; color: #DD0581;"><?= $row['discount']; ?></td>
+                                                <td style=" font-weight: bold; color: #F20000;"><?= $row['Rs']; ?></td>
                                                 <td>
                                                     <a href="prtindivbillrpt.php?billid=<?= $row['bill_id']; ?>" target="blank"><button type="button" class="btn btn-warning"><i class="bi bi-printer-fill"></i></button></a>
                                                 </td>
                                             </tr>
                                             <?php 
                                             
-                                            $total_sum += $row['Rs']; // Add the value to the sum variable
-                                            $discount_sum += $row['discount'];
-                                            $paid_amount_sum += $row['paid_amount'];
-                                        
-                                            // Display the total sum
+                                            // $total_sum += $row['Rs'];
+                                            // $discount_sum += $row['discount'];
+                                            // $paid_amount_sum += $row['paid_amount'];
+
                                             ?>
                                             
                                             <?php
@@ -146,14 +155,14 @@
                                     }
                                 }
                             ?>
-                                            <!--<tr>-->
-                                            <!--    <td colspan="6"></td>-->
-                                            <!--    <td> <b>Grand Total :</td>-->
-                                            <!--    <td> <b><?= $discount_sum ?></td>-->
-                                            <!--    <td> <b><?= $paid_amount_sum ?></td>-->
-                                            <!--    <td> <b><?= $total_sum ?></td>                                                -->
-                                            <!--    <td></td>-->
-                                            <!--</tr>-->
+                                            <!-- <tr>
+                                               <td colspan="7"></td>
+                                               <td> <b>Grand Total :</td>
+                                               <td> <b><?= $discount_sum ?></td>
+                                               <td> <b><?= $paid_amount_sum ?></td>
+                                               <td> <b><?= $total_sum ?></td>                                               
+                                               <td></td>
+                                            </tr> -->
                             </tbody>
                         </table>
                     </div>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "dbconfig.php";
-require 'dbconfig.php';
+include 'preloader.php';
 require "component.php";
 
 if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
@@ -318,7 +318,7 @@ $status = 'approve';
                                                     <tr>
                                                         
                                                         <td style="font-weight: bold; font-size: 16px;"><?= $serial_number++; ?></td>
-                                                        <td>
+                                                        <td style="width: 50px;">
                                                             <?php if (!$disableButton): ?>
                                                                 <div class="form-check">
                                                                     <input type="checkbox" name="options[]" value="<?= $customer['id']; ?>" class="form-check-input" required>

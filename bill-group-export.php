@@ -2,6 +2,8 @@
    session_start();
    include "dbconfig.php";
    require "component.php";
+   include 'preloader.php';
+   
 //   $session_username = $_SESSION['name'];
 if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
     

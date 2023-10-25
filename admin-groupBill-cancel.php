@@ -1,8 +1,8 @@
 <?php
 session_start();
 include "dbconfig.php";
-require 'dbconfig.php';
 require 'component.php';
+include 'preloader.php';
 
 if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
     $session_username = $_SESSION['username'];

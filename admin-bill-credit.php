@@ -2,6 +2,8 @@
    session_start();
    include "dbconfig.php";
    require "component.php";
+   include 'preloader.php';
+   
 //    if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'employee') { 
     if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {    
         $session_username = $_SESSION['username']; 
@@ -137,7 +139,7 @@ $oldMonthBal_sum = '';
                                     }
 
                                 
-                                    $query = "SELECT * FROM bill WHERE pMode = 'credit' AND date BETWEEN '$from_date' AND '$to_date' AND status ='approve' $filterCondition $statusFilterCondition";
+                                    $query = "SELECT * FROM bill WHERE pMode = 'credit' AND DATE(due_month_timestamp) BETWEEN '$from_date' AND '$to_date' AND status ='approve' $filterCondition $statusFilterCondition";
                                     $query_run = mysqli_query($con, $query);
                                     
                                     $Rs_sum = 0; 
@@ -155,19 +157,27 @@ $oldMonthBal_sum = '';
                                             <tr>
                                                     <td style="font-weight: bold;"><?= $serial_number++; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
-                                                    <td style="width: 80px; font-weight: bold; color: #007DC3;"><?= formatDate($row['date']); ?></td>
+                                                    <td style="font-weight: bold; color: #007DC3;">
+                                                        <?PHP 
+                                                            $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 
+                                                            formatDate($current_result['date']);
+                                                            // echo '&nbsp';
+                                                            // $t=convertTo12HourFormat($current_result['time']);
+                                                            // echo $t;
+                                                        ?>
+                                                    </td>
                                                     <td style="font-weight: bold;"><?= $row['billNo']; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['mso']; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['stbno']; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['name']; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['phone']; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['description']; ?></td>
-                                                    <td style="width: 40px; font-weight: bold; font-size: 20px; color: #0012C3;">
+                                                    <td style="font-weight: bold; color: #0012C3;">
                                                         <?= $row['oldMonthBal']; ?>
                                                     </td>
-                                                    <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;"><?= $row['paid_amount']; ?></td>
-                                                    <td style="width: 50px; font-weight: bold; font-size: 20px; color: #DD0581;"><?= $row['discount']; ?></td>
-                                                    <td style="width: 70px; font-weight: bold; font-size: 20px; color: #F20000;"><?= $row['Rs']; ?></td>
+                                                    <td style="font-weight: bold; color: #05A210;"><?= $row['paid_amount']; ?></td>
+                                                    <td style="font-weight: bold; color: #DD0581;"><?= $row['discount']; ?></td>
+                                                    <td style="font-weight: bold; font-weight: bold; color: #F20000;"><?= $row['Rs']; ?></td>
                                                 <form action="admin-code-bill-credit.php" method="POST">
                                                     <td>                                                        
                                                         <div style="width:80px" class="input-group">
@@ -214,11 +224,11 @@ $oldMonthBal_sum = '';
                                     ?>
                                             <tr>
                                                 <td colspan="8"></td>
-                                                <td style="width: 70px; font-weight: bold; font-size: 20px;"> <b>Total :</td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #0012C3;"> <b><?= $oldMonthBal_sum ?></b></td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;"> <b><?= $paid_amount_sum ?></td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #DD0581;"> <b><?= $discount_sum ?></td>
-                                                <td style="width: 70px; font-weight: bold; font-size: 20px; color: #F20000;"> <b><?= $Rs_sum ?></td>                                                
+                                                <td style="font-weight: bold; font-weight: bold;"> <b>Total :</td>
+                                                <td style="font-weight: bold; color: #0012C3;"> <b><?= $oldMonthBal_sum ?></b></td>
+                                                <td style="font-weight: bold; color: #05A210;"> <b><?= $paid_amount_sum ?></td>
+                                                <td style="font-weight: bold; color: #DD0581;"> <b><?= $discount_sum ?></td>
+                                                <td style="font-weight: bold; font-weight: bold; color: #F20000;"> <b><?= $Rs_sum ?></td>                                                
                                                 <td></td>
                                             </tr>
                             </tbody>

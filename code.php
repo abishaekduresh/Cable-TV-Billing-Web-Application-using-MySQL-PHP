@@ -280,7 +280,7 @@ if(isset($_POST['save_student']))
     //     return;
     // }
 
-    $query = "INSERT INTO customer (cusGroup, mso, stbno, name, phone, description, amount, rc_dc) VALUES ('$cusGroup', '$mso', '$stbno', '$name', '$phone', '$description', '$amount', '1')";
+    $query = "INSERT INTO customer (date, time, cusGroup, mso, stbno, name, phone, description, amount, rc_dc) VALUES ('$currentDate', '$currentTime', '$cusGroup', '$mso', '$stbno', '$name', '$phone', '$description', '$amount', '1')";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)

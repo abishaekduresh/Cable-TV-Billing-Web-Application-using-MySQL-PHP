@@ -174,6 +174,7 @@ if (mysqli_num_rows($query) > 0) {
             
                 logUserActivity($userId, $username, $role, $action);
             }
+            
 ?>
 
 <div class="page">
@@ -250,6 +251,18 @@ if (mysqli_num_rows($query) > 0) {
                 <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><?= $footer1 ?><br/><?= $footer2 ?></td>
             </tr>
 
+            <tr>
+                <td colspan="3" align="center" style="border:1px; border-top-style:solid; font-size: 14px;">Bill Printed on&nbsp;
+                    <?PHP 
+                        $current_result = splitDateAndTime(strtotime($currentDateTime)); 
+                        formatDate($current_result['date']);
+                        echo '&nbsp';
+                        $t=convertTo12HourFormat($current_result['time']);
+                        echo $t;
+                    ?>
+                </td>
+            </tr>
+            
         </table>
 
 </div><!-- Page Devide -->
