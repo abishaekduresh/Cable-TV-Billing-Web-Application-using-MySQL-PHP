@@ -28,7 +28,7 @@
     
     <footer>
         <div class="footer-content">
-            <p>&copy; <?php echo date("Y"); ?> <strong>PDP GROUPS.</strong> All rights reserved. &nbsp; Developed by <strong>Abishaek Duresh</strong></p>
+            <p>&copy; <?php echo date("Y"); ?> <strong>PDP GROUPS.</strong> All rights reserved. &nbsp; Developed by <strong>Duresh Tech</strong></p>
         </div>
     </footer>
     

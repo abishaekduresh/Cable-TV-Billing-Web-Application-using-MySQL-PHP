@@ -200,7 +200,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
                 if ($currentDate <= $due_month_date) {
 
-                    $sql1 = "SELECT stbno FROM bill WHERE stbno = '$stbno' AND MONTH(due_month_timestamp)=$MM AND YEAR(due_month_timestamp)=$YY LIMIT 1";
+                    $sql1 = "SELECT stbno FROM bill WHERE stbno = '$stbno' AND MONTH(due_month_timestamp)=$MM AND YEAR(due_month_timestamp)=$YY AND status = 'approve' LIMIT 1";
 
                     $run1 = $con->query($sql1);
 

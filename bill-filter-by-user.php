@@ -9,9 +9,13 @@
 <?php
 if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
     include 'admin-menu-bar.php';
+    ?><br><?php
+    include 'admin-menu-btn.php';
     $session_username = $_SESSION['username'];
 } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
     include 'menu-bar.php';
+    ?><br><?php
+    include 'sub-menu-btn.php';
     $session_username = $_SESSION['username'];
 }
 
@@ -28,7 +32,7 @@ $oldMonthBal_sum = '';
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>bill-filter-by-date</title>
+    <title>Your Bill</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -38,7 +42,7 @@ $oldMonthBal_sum = '';
             <div class="col-md-12">
                 <div class="card mt-5">
                     <div class="card-header">
-                        <h4>Bill by You</h4>
+                        <h4>Bill by You</h4><h6>Date DB</h6>
                     </div>
                     <div class="card-body">
                     

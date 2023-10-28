@@ -105,7 +105,8 @@ body {
                   <i class="fab fa-facebook-f me-2"></i> Sign in with Facebook
                 </button> -->
               </div>
-		          <center><h6>Developed by<a href ="https://www.linkedin.com/in/abishaekduresh/" target="_blank">&nbsp;Abishaek Duresh</h6></a></center><p align="center">10th-Commit</p>
+		          <center><h6>Powered by <a href="https://www.dureshtech.com/" target="_blank" style="text-decoration: none;">Duresh Tech</a></h6></center>
+    <p align="center">13th-Commit</p>
             </form>
           </div>
         </div>
