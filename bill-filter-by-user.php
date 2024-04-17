@@ -1,7 +1,9 @@
 <?php 
    session_start();
-   include "dbconfig.php";
-   include 'preloader.php';
+include "dbconfig.php";
+require "component.php";
+include 'preloader.php';
+   
    
     if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
          ?>
@@ -42,7 +44,7 @@ $oldMonthBal_sum = '';
             <div class="col-md-12">
                 <div class="card mt-5">
                     <div class="card-header">
-                        <h4>Bill by You</h4><h6>Date DB</h6>
+                        <h4>Bill by You</h4>
                     </div>
                     <div class="card-body">
                     
@@ -50,13 +52,13 @@ $oldMonthBal_sum = '';
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>From Date</label>
+                                        <label>From Collection Date</label>
                                         <input type="date" name="from_date" value="<?php if(isset($_GET['from_date'])){ echo $_GET['from_date']; } else { echo $currentDate; } ?>" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>To Date</label>
+                                        <label>To Collection Date</label>
                                         <input type="date" name="to_date" value="<?php if(isset($_GET['to_date'])){ echo $_GET['to_date']; } else { echo $currentDate; } ?>" class="form-control" required>
                                     </div>
                                 </div>
@@ -80,6 +82,8 @@ $oldMonthBal_sum = '';
                                 <tr>
                                     <th>#</th>
                                     <th>Bill by</th>
+                                    <th>Col Date</th>
+                                    <th>Bill Date</th>
                                     <th>STB No</th>
                                     <th>Name</th>
                                     <th>Phone</th>
@@ -126,15 +130,25 @@ $oldMonthBal_sum = '';
                                             <tr>
                                                 <td style="font-weight: bold;"><?= $serial_number++; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
+                                                <td style="font-weight: bold; color: #007DC3;"><?= formatDate($row['date']); ?></td>
+                                                <td style="font-weight: bold; color: #007DC3;">
+                                                        <?PHP 
+                                                            $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 
+                                                            formatDate($current_result['date']);
+                                                            // echo '&nbsp';
+                                                            // $t=convertTo12HourFormat($current_result['time']);
+                                                            // echo $t;
+                                                        ?>
+                                                </td>
                                                 <td style="font-weight: bold;"><?= $row['stbno']; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['name']; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['phone']; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['description']; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['pMode']; ?></td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #0012C3;"><?= $row['oldMonthBal']; ?></td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;"><?= $row['paid_amount']; ?></td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #DD0581;"><?= $row['discount']; ?></td>
-                                                <td style="width: 70px; font-weight: bold; font-size: 20px; color: #F20000;"><?= $row['Rs']; ?></td>
+                                                <td style="font-weight: bold; font-size: 20px; color: #0012C3;"><?= $row['oldMonthBal']; ?></td>
+                                                <td style="font-weight: bold; font-size: 20px; color: #05A210;"><?= $row['paid_amount']; ?></td>
+                                                <td style="font-weight: bold; font-size: 20px; color: #DD0581;"><?= $row['discount']; ?></td>
+                                                <td style="font-weight: bold; font-size: 20px; color: #F20000;"><?= $row['Rs']; ?></td>
                                                 <td>
                                                     <a href="prtindivbillrpt.php?billid=<?= $row['bill_id']; ?>" target="blank"><button type="button" class="btn btn-warning"><i class="bi bi-printer-fill"></i></button></a>
                                                 </td>
@@ -159,12 +173,12 @@ $oldMonthBal_sum = '';
                                 }
                             ?>
                                             <tr>
-                                                <td colspan="6"></td>
+                                                <td colspan="8"></td>
                                                 <td> <b>Grand Total :</td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #0012C3;"> <b><?= $oldMonthBal_sum ?></td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #05A210;"> <b><?= $paid_amount_sum ?></td>
-                                                <td style="width: 50px; font-weight: bold; font-size: 20px; color: #DD0581;"> <b><?= $discount_sum ?></td>
-                                                <td style="width: 70px; font-weight: bold; font-size: 20px; color: #F20000;"> <b><?= 
+                                                <td style="font-weight: bold; font-size: 20px; color: #0012C3;"> <b><?= $oldMonthBal_sum ?></td>
+                                                <td style="font-weight: bold; font-size: 20px; color: #05A210;"> <b><?= $paid_amount_sum ?></td>
+                                                <td style="font-weight: bold; font-size: 20px; color: #DD0581;"> <b><?= $discount_sum ?></td>
+                                                <td style="font-weight: bold; font-size: 20px; color: #F20000;"> <b><?= 
                                                     $Rs_sum ?></td>                                                
                                                 <td></td>
                                             </tr>

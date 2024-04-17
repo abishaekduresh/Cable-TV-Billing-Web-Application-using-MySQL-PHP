@@ -232,7 +232,7 @@ $hidePromotion = ($footer1 == NULL);
             </tr>
 
             <tr <?php if ($hidePromotion) echo 'style="display: none;"'; ?>>
-                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><?= $footer1 ?><br/><?= $footer2 ?></td>
+                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><?= $footer1 ?><br/><b><?= $footer2 ?></b></td>
             </tr>
 
         </table>

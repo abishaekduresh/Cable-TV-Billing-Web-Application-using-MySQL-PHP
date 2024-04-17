@@ -47,13 +47,13 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>From Date</label>
+                                        <label>From Bill Date</label>
                                         <input type="date" name="from_date" value="<?php if(isset($_GET['from_date'])){ echo $_GET['from_date']; } else { echo '2023-06-01'; } ?>" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>To Date</label>
+                                        <label>To Bill Date</label>
                                         <input type="date" name="to_date" value="<?php if(isset($_GET['to_date'])){ echo $_GET['to_date']; } else { echo $currentDate; } ?>" class="form-control" required>
                                     </div>
                                 </div>
@@ -82,7 +82,7 @@
                     </div>
                 </div>
 
-                <div class="card mt-4">
+                <div class="card mt-12">
                     <div class="card-body">
                         <div class="table-responsive">
                         <table class="table table-hover" border="5">
@@ -90,7 +90,8 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Bill by</th>
-                                    <th>Date</th>
+                                    <th>Col Date</th>
+                                    <th>Bill Date</th>
                                     <th>Bill No</th>
                                     <th>MSO</th>
                                     <th>STB No</th>
@@ -157,6 +158,7 @@ $oldMonthBal_sum = '';
                                             <tr>
                                                     <td style="font-weight: bold;"><?= $serial_number++; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
+                                                    <td style="font-weight: bold; color: #007DC3;"><?= formatDate($row['date']); ?></td>
                                                     <td style="font-weight: bold; color: #007DC3;">
                                                         <?PHP 
                                                             $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 
@@ -223,7 +225,7 @@ $oldMonthBal_sum = '';
                                 }
                                     ?>
                                             <tr>
-                                                <td colspan="8"></td>
+                                                <td colspan="9"></td>
                                                 <td style="font-weight: bold; font-weight: bold;"> <b>Total :</td>
                                                 <td style="font-weight: bold; color: #0012C3;"> <b><?= $oldMonthBal_sum ?></b></td>
                                                 <td style="font-weight: bold; color: #05A210;"> <b><?= $paid_amount_sum ?></td>

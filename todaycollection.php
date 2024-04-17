@@ -76,6 +76,7 @@
                                     $total_sum = 0; //////////
                                     $discount_sum = 0;
                                     $paid_amount_sum = 0;
+                                    $old_month_sum = 0;
 
                                     if(mysqli_num_rows($query_run) > 0)
                                     {
@@ -91,9 +92,9 @@
                                                     <?PHP 
                                                         $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 
                                                         formatDate($current_result['date']);
-                                                        // echo '&nbsp';
-                                                        // $t=convertTo12HourFormat($current_result['time']);
-                                                        // echo $t;
+                                                        echo '   ';
+                                                        $t=convertTo12HourFormat($current_result['time']);
+                                                        echo $t;
                                                     ?>
                                                 </td>
                                                 <td style="font-weight: bold;"><?= $row['stbno']; ?></td>
@@ -113,6 +114,7 @@
                                             $total_sum += $row['Rs'];
                                             $discount_sum += $row['discount'];
                                             $paid_amount_sum += $row['paid_amount'];
+                                            $old_month_sum += $row['oldMonthBal'];
 
                                             ?>
                                             
@@ -125,8 +127,9 @@
                                     }
                             ?>
                                             <tr>
-                                               <td colspan="7"></td>
+                                               <td colspan="6"></td>
                                                <td> <b>Grand Total :</td>
+                                               <td style="font-weight: bold; color: #0012C3;"> <b><?= $old_month_sum ?></td>
                                                <td style="font-weight: bold; color: #05A210;"> <b><?= $paid_amount_sum ?></td>
                                                <td style="font-weight: bold; color: #DD0581;"> <b><?= $discount_sum ?></td>
                                                <td style=" font-weight: bold; color: #F20000;"> <b><?= $total_sum ?></td>                                               

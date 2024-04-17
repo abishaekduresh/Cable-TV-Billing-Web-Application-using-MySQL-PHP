@@ -91,36 +91,36 @@ if (!empty($from_time) && !empty($to_time)) {
                     $sql = "SELECT stbno FROM bill WHERE DATE(due_month_timestamp) BETWEEN '$fromDate' AND '$endDate' AND status = 'approve' $timeFilterCondition";
                     $result = $con->query($sql);
                 
-                    if ($result && $result->num_rows > 0) {
-                        // Create a file for writing the data
-                        $filename = "Indiv_bill_data_" . $session_username . "_" . $currentDate . ".txt";
-                        $file = fopen($filename, "w");
-                
-                        // Loop through each row of data
-                        while ($row = $result->fetch_assoc()) {
-                            // Write each data entry to the file, separated by a comma
-                            fwrite($file, implode(",", $row) . ",\n");
-                        }
-                
-                        // Close the file
-                        fclose($file);
-                    
                     // if ($result && $result->num_rows > 0) {
-                    //     // Specify the desired path to save the file
-                    //     $filePath = "bill-txt-downloaded-files/";
-                    
                     //     // Create a file for writing the data
-                    //     $filename = $filePath . "bill_data_" . $session_username . "_" . $currentDate . ".txt";
+                    //     $filename = "Indiv_bill_data_" . $session_username . "_" . $currentDate . ".txt";
                     //     $file = fopen($filename, "w");
-                    
+                
                     //     // Loop through each row of data
                     //     while ($row = $result->fetch_assoc()) {
                     //         // Write each data entry to the file, separated by a comma
                     //         fwrite($file, implode(",", $row) . ",\n");
                     //     }
-                    
+                
                     //     // Close the file
                     //     fclose($file);
+                    
+                    if ($result && $result->num_rows > 0) {
+                        // Specify the desired path to save the file
+                        $filePath = "bill-txt-downloaded-files/";
+                    
+                        // Create a file for writing the data
+                        $filename = $filePath . "bill_data_" . $currentDateTime . ".txt";
+                        $file = fopen($filename, "w");
+                    
+                        // Loop through each row of data
+                        while ($row = $result->fetch_assoc()) {
+                            // Write each data entry to the file, separated by a comma
+                            fwrite($file, implode(",", $row) . ",\n");
+                        }
+                    
+                        // Close the file
+                        fclose($file);
 
 
                         

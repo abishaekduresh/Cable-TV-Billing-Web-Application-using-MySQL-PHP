@@ -35,6 +35,7 @@ $hidePromotion = ($footer1 == NULL);
 <html>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Print Indiv Adv bill</title>
     <head>
         <style>
             body {
@@ -266,10 +267,10 @@ $hidePromotion = ($footer1 == NULL);
                 <td colspan="2" align="right" style="padding-right:20px;border:1px;border-left-style:solid;"><b>Bill Amount</b></td>
                 <td align="right" style="padding-right:20px;  border:1px; border-left-style:solid;border-right-style:solid;"><b>
                     <?php
-                        $sql4 = "SELECT paid_amount FROM bill WHERE stbno = '$stbno' 
-                        AND ((MONTH(due_month_timestamp) >= $MM AND YEAR(due_month_timestamp) >= $YY)
-                            OR (MONTH(due_month_timestamp) <= $MM AND YEAR(due_month_timestamp) >= $YY))
-                        AND adv_status = 1 AND status = 'approve'";
+                        // $sql4 = "SELECT paid_amount FROM bill WHERE stbno = '$stbno' 
+                        // AND ((MONTH(due_month_timestamp) >= $MM AND YEAR(due_month_timestamp) >= $YY)
+                        //     OR (MONTH(due_month_timestamp) <= $MM AND YEAR(due_month_timestamp) >= $YY))
+                        // AND adv_status = 1 AND status = 'approve'";
 
                         $sql4 = "SELECT * FROM bill WHERE stbno = '$stbno' AND
                             DATE(due_month_timestamp) >= '$currentDate' AND
@@ -300,12 +301,12 @@ $hidePromotion = ($footer1 == NULL);
                         <?php
                         $oldMonthBal = 0; // Initialize the variable to store oldMonthBal
                         
-                        $sql5 = "SELECT oldMonthBal, discount FROM bill WHERE stbno = '$stbno' 
-                            AND ((MONTH(due_month_timestamp) >= $MM AND YEAR(due_month_timestamp) >= $YY)
-                                OR (MONTH(due_month_timestamp) <= $MM AND YEAR(due_month_timestamp) >= $YY))
-                            AND adv_status = 1 AND status = 'approve'";
+                        // $sql5 = "SELECT oldMonthBal, discount FROM bill WHERE stbno = '$stbno' 
+                        //     AND ((MONTH(due_month_timestamp) >= $MM AND YEAR(due_month_timestamp) >= $YY)
+                        //         OR (MONTH(due_month_timestamp) <= $MM AND YEAR(due_month_timestamp) >= $YY))
+                        //     AND adv_status = 1 AND status = 'approve'";
                         
-                        $run = mysqli_query($con, $sql5);
+                        $run = mysqli_query($con, $sql4);
                         
                         if ($run) { // Check if the query was successful
                             while ($row = mysqli_fetch_assoc($run)) {
@@ -323,12 +324,12 @@ $hidePromotion = ($footer1 == NULL);
                 <td colspan="2" align="right" style="padding-right:20px;border:1px;border-left-style:solid;"><b>Discount</b></td>
                 <td align="right" style="padding-right:20px;  border:1px; border-left-style:solid;border-right-style:solid;"><b>
                     <?php
-                        $sql6 = "SELECT discount FROM bill WHERE stbno = '$stbno' 
-                        AND ((MONTH(due_month_timestamp) >= $MM AND YEAR(due_month_timestamp) >= $YY)
-                            OR (MONTH(due_month_timestamp) <= $MM AND YEAR(due_month_timestamp) >= $YY))
-                        AND adv_status = 1 AND status = 'approve'";
+                        // $sql6 = "SELECT discount FROM bill WHERE stbno = '$stbno' 
+                        // AND ((MONTH(due_month_timestamp) >= $MM AND YEAR(due_month_timestamp) >= $YY)
+                        //     OR (MONTH(due_month_timestamp) <= $MM AND YEAR(due_month_timestamp) >= $YY))
+                        // AND adv_status = 1 AND status = 'approve'";
 
-                        $run = mysqli_query($con, $sql6);
+                        $run = mysqli_query($con, $sql4);
                         $discount=0;
                         if ($run) { // Check if the query was successful
                             while ($row = mysqli_fetch_assoc($run)) {
@@ -356,7 +357,7 @@ $hidePromotion = ($footer1 == NULL);
             </tr>
 
             <tr <?php if ($hidePromotion) echo 'style="display: none;"'; ?>>
-                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><?= $footer1 ?><br/><?= $footer2 ?></td>
+                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><?= $footer1 ?><br/><b><?= $footer2 ?></b></td>
             </tr>
 
             <tr>

@@ -44,6 +44,12 @@
     <div class="col">
       <a href="groupaction.php"><button type="button" class="btn btn-info"><b>Add | Edit Group</b></button></a>
     </div>
+    <div class="col">
+      <a href="IndivDuplicateBill.php" class="btn btn-info position-relative">
+        <b>Indiv Duplicate Bill</b>
+      </a>
+    </div>
+
     <!-- <div class="col">
       <a href="options-add.php"><button type="button" class="btn btn-secondary"><b>Add Options</b></button></a>
     </div> -->

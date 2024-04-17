@@ -1,10 +1,16 @@
 <?php
-$con = mysqli_connect("localhost", "root", "", "pdpcabletv");
+$con = mysqli_connect("localhost:3310", "root", "", "pdpcabletv");
+
+// Check if connection is null
+if (!$con) {
+    header("Location: db-connection-error.php");
+    exit(); // Terminate script after redirect
+}
 
 // Check connection
-if (mysqli_connect_errno()) {
-    die("Failed to connect to MySQL: " . mysqli_connect_error());
-}
+// if (mysqli_connect_errno()) {
+//     die("Failed to connect to MySQL: " . mysqli_connect_error());
+// }
 
 
 

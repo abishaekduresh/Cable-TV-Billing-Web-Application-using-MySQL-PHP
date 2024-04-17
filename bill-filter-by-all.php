@@ -46,13 +46,13 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>From Date</label>
+                                        <label>From Bill Date</label>
                                         <input type="date" name="from_date" value="<?php if(isset($_GET['from_date'])){ echo $_GET['from_date']; } else { echo $currentDate; } ?>" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>To Date</label>
+                                        <label>To Bill Date</label>
                                         <input type="date" name="to_date" value="<?php if(isset($_GET['to_date'])){ echo $_GET['to_date']; } else { echo $currentDate; } ?>" class="form-control" required>
                                     </div>
                                 </div>
@@ -75,7 +75,8 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Bill by</th>
-                                    <th>Date</th>
+                                    <th>Col Date</th>
+                                    <th>Bill Date</th>
                                     <th>STB No</th>
                                     <th>Name</th>
                                     <th>Phone</th>
@@ -117,6 +118,7 @@
                                             <tr>
                                                 <td style="font-weight: bold;"><?= $serial_number++; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
+                                                <td style="font-weight: bold; color: #007DC3;"><?= formatDate($row['date']); ?></td>
                                                 <td style="font-weight: bold; color: #007DC3;">
                                                     <?PHP 
                                                         $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 

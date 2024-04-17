@@ -101,23 +101,25 @@ function printClose(){
     
     include 'dbconfig.php';
 
-        echo "<script type='text/javascript'>
-        window.onload = function() {
-            window.print();
-        }
-    </script>";
+            echo "<script type='text/javascript'>
+                window.onload = function() {
+                    //setTimeout(function() {
+                        window.print(); // Open print dialog after 1 second
+                    //}, 1000); // 1000 milliseconds = 1 second
+                };
+            </script>";
 
             // Tab Close function
             function closeTab() {
                 echo "<script>
                 setTimeout(function(){
                     window.close();
-                }, 200);
+                }, 2000);
                 </script>";
-    }
+            }
     
-        // Close the database connection
-        $con->close();
+    // Close the database connection
+    $con->close();
         
     // Usage example
     closeTab();
@@ -130,6 +132,54 @@ function splitDateAndTime($timestamp) {
 
     return array('date' => $date, 'time' => $time);
 }
+
+
+function call_api($url) {
+    // Make GET request to API endpoint
+    $response = file_get_contents($url);
+    
+    // Return the response
+    return $response;
+}
+
+
+function sms_api($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $con) {
+
+        // SMS API
+        
+        if ($pMode == 'cash' || $pMode == 'gpay') {
+            $pMode1 = 'Paid';
+        } elseif ($pMode == 'credit') {
+            $pMode1 = 'Unpaid - Credit';
+        } else {
+            $pMode1 = '-';
+        }
+
+                // API endpoint URL
+        $url = 'https://sms.textspeed.in/vb/apikey.php';
+        
+        $apiKey = urlencode('EUdKjgM81BAe6eEv');
+        $sender_id = urlencode('DURTEK');
+        $template_id = urlencode('1707171187493463121');
+        $message = rawurlencode('Dear Customer, Your THOOYAVAN PDP Cable TV bill (STB No: ' . $stbno . ') is due on ' . $due_month_timestamp . '. Status: ' . $pMode1 . '. DURTEK Thank you.');
+        
+        $data = 'apikey=' . $apiKey . '&senderid=' . $sender_id . '&templateid=' . $template_id . '&number=' . $phone . '&message=' . $message;
+        
+        // Final URL with query parameters
+        $finalUrl = $url . '?' . $data;
+        
+        // Triggering the API using cURL
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $finalUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        
+        return true;
+        // echo "<script>console.log('$response');</script>";
+
+}
+
 
 ?>
 

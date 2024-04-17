@@ -72,7 +72,8 @@ $filtervalues ='';
                             <thead>
                                 <tr>
                                     <th>B.No</th>
-                                    <th>Date</th>
+                                    <th>Col Date</th>
+                                    <th>Bill Date</th>
                                     <th>Time</th>
                                     <th>Bill by</th>
                                     <!--<th>MSO</th>-->
@@ -105,6 +106,7 @@ $filtervalues ='';
                                                 ?>
                                                 <tr><form action="" method="POST">
                                                     <td style="font-weight: bold;"><?= $bill['billNo']; ?></td>
+                                                    <td style="font-weight: bold; color: #007DC3;"><?= formatDate($bill['date']); ?></td>
                                                     <td style="font-weight: bold; color: #007DC3;">
                                                         <?= formatDate($bill['due_month_timestamp']); ?>
                                                     </td>
@@ -224,7 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $printStatus = 0;
             
             // Prepare the SQL statement
-            $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, status, printStatus) VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', '$bill_status', '$printStatus')";
+            $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, adv_status, due_month_timestamp, status, printStatus) VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', 0, '$currentDateTime', '$bill_status', '$printStatus')";
             
             
             
@@ -340,7 +342,7 @@ if(mysqli_num_rows($query_run1) > 0)
                             </div>
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone :</label>
-                                <input readonly type="text" name="phone" value="<?= $row['phone']; ?>" class="form-control" required>
+                                <input readonly type="number" name="phone" value="<?= $row['phone']; ?>" class="form-control" required>
                             </div>
                             <div class="mb-3">
                                 <label for="pMode" class="form-label">pMode :</label>
@@ -357,7 +359,7 @@ if(mysqli_num_rows($query_run1) > 0)
                             </div>
                             <div class="mb-3">
                                 <label for="paid_amount" class="form-label">Amount :</label>
-                                <input type="text" name="paid_amount" class="form-control" required>
+                                <input type="number" name="paid_amount" class="form-control" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>

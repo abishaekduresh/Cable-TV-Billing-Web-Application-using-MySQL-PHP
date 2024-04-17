@@ -248,7 +248,7 @@ if (mysqli_num_rows($query) > 0) {
             </tr>
 
             <tr <?php if ($hidePromotion) echo 'style="display: none;"'; ?>>
-                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><?= $footer1 ?><br/><?= $footer2 ?></td>
+                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><?= $footer1 ?><br/><b><?= $footer2 ?></b></td>
             </tr>
 
             <tr>
@@ -286,7 +286,7 @@ if (mysqli_num_rows($query) > 0) {
             echo "<script>
                 setTimeout(function(){
                     window.location.href = '$url';
-                }, 200);
+                }, 1000);
             </script>";
         }
 

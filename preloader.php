@@ -16,9 +16,14 @@
 
 </style>
 
-<!-- Preloader -->
+ <!--Preloader-->
     <div id="preloader">
-        <img src="assets/brand-logo-preloader.gif" alt="Preloader..." height="400px" width="500px">
+        <!--<img src="assets/brand-logo-preloader.gif" alt="Preloader..." height="400px" width="500px">-->
+                <div class="spinner-border text-primary" 
+            style="width: 6rem; height: 6rem;" 
+            role="status"> 
+            <span class="visually-hidden">Loading...</span> 
+        </div> 
     </div>
 
     <script>

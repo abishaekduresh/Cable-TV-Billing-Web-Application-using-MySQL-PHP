@@ -4,21 +4,19 @@
    include 'preloader.php';
    include "component.php";
     if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
-        ?>
-
-<?php
-if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
+    if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
         include 'admin-menu-bar.php';
         ?><br><?php
         include 'admin-menu-btn.php';
-    $session_username = $_SESSION['username'];
-    
-} elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
+        $session_username = $_SESSION['username'];
+        
+    } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
         include 'menu-bar.php';
         ?><br><?php
         include 'sub-menu-btn.php';
-    $session_username = $_SESSION['username']; 
-}
+        $session_username = $_SESSION['username'];
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -27,13 +25,11 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latest 10 Bill</title>
+    <title>Indiv Duplicate Bills</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body >
-
-    <br>
 
 <!---------    last 5 bill print   --------------->
 
@@ -45,11 +41,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Latest 10 Bill by <b><?php echo $session_username?></b>
-                            <a href="billing-dashboard.php"><button class="btn btn-primary float-end" accesskey="n">Billing Dashboard</button></a>
-                            <br/>
-                            <a href="prtindivbulkbilldash.php"><button class="btn btn-primary float-end" accesskey="n">Bulk Print</button></a>
-                        </h4>
+                        <h4>Current Month Indiv Duplicate Bills</h4>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -58,24 +50,39 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                 <tr>
                                     <th>#</th>
                                     <th>BillNo</th>
-                                    <th>Date</th>
+                                    <th>Due Date</th>
+                                    <th>Bill by</th>
                                     <th>MSO</th>
                                     <th>STB No</th>
                                     <th>Name</th>
                                     <th>Phone</th>
-                                    <th>Discription</th>
-                                    <th>P.Mode</th>
-                                    <th>OldBal</th>
-                                    <th>BillAmt</th>
-                                    <th>Disct</th>
-                                    <th>Rs.</th>
-                                    <th>Print</th>
+                                    <th>Remark</th>
+                                    <th>History</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php 
-                                    // $query = "SELECT * FROM bill ORDER BY bill_id DESC LIMIT 5 WHERE bill_by = '$session_usernamename'";
-                                    $query = "SELECT * FROM bill WHERE bill_by = '$session_username' AND DAY(date) = '$currentDay' AND status = 'approve' ORDER BY bill_id DESC LIMIT 10";
+                                    // $query = "SELECT *, COUNT(*) AS occurrences FROM bill WHERE YEAR(due_month_timestamp) = $currentYear AND MONTH(due_month_timestamp) = $currentMonth GROUP BY stbno HAVING occurrences >= 2 AND status = 'Approve'";
+$query = "SELECT * 
+          FROM bill 
+          WHERE YEAR(due_month_timestamp) = $currentYear 
+          AND MONTH(due_month_timestamp) = $currentMonth 
+          AND status = 'Approve' 
+          AND stbno IN (
+              SELECT stbno 
+              FROM bill 
+              WHERE YEAR(due_month_timestamp) = $currentYear 
+              AND MONTH(due_month_timestamp) = $currentMonth 
+              AND status = 'Approve'
+              GROUP BY stbno 
+              HAVING COUNT(*) >= 2
+          )
+          ORDER BY stbno ASC";
+
+
+
+
+
                                     $query_run = mysqli_query($con, $query);
 
                                     if(mysqli_num_rows($query_run) > 0)
@@ -88,28 +95,17 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                             <tr>
                                                 <td style="width: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
                                                 <td style="width: 40px; font-weight: bold;"><?= $bill['billNo']; ?></td>
-                                                <td style="width: 130px; font-weight: bold;"><?= formatDate($bill['date']); ?></td>
+                                                <td style="width: 130px; font-weight: bold; color: #007DC3;"><?= formatDate($bill['due_month_timestamp']); ?></td>
+                                                <td style="width: 40px; font-weight: bold;"><?= $bill['bill_by']; ?></td>
                                                 <td style="width: 70px; font-weight: bold;"><?= $bill['mso']; ?></td>
                                                 <td style="width: 160px; font-weight: bold;"><?= $bill['stbno']; ?></td>
                                                 <td style="width: 350px; font-weight: bold;"><?= $bill['name']; ?></td>
                                                 <td style="width: 110px; font-weight: bold;"><?= $bill['phone']; ?></td>
-                                                <td style="width: 180px; font-weight: bold;"><?= $bill['description']; ?></td>
-                                                <td style="width: 40px; font-weight: bold;"><?= $bill['pMode']; ?></td>
-                                                <td style="width: 50px; font-weight: bold; color: #0012C3;">
-                                                    <?= $bill['oldMonthBal']; ?>
-                                                </td>
-                                                <td style="width: 50px; font-weight: bold; color: #05A210;">
-                                                    <?= $bill['paid_amount']; ?>
-                                                </td>
-                                                <td style="width: 50px; font-weight: bold; color: #DD0581;">
-                                                    <?= $bill['discount']; ?>
-                                                </td>
-                                                <td style="width: 70px; font-weight: bold; font-size: 18px; color: #F20000;">
-                                                    <?= $bill['Rs']; ?>
-                                                </td>
+                                                <td style="width: 250px; font-weight: bold;"><?= $bill['description']; ?></td>
                                                 <td>
-                                                    <a href="prtindivbillrpt.php?billid=<?= $bill['bill_id']; ?>" target="blank">
-                                                    <button type="button" class="btn btn-warning btn-lg"><i class="bi bi-printer-fill"></i></button></a>
+                                                    <a href="customer-history.php?search=<?= $bill['stbno']; ?>" target="blank">
+                                                        <img src="assets/arrow-up-right-from-square-solid.svg" width="25px" height="25px">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             <?php

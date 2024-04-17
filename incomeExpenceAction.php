@@ -1,13 +1,25 @@
-<?php 
-   session_start();
-   include "dbconfig.php";
-   include 'preloader.php';
-   
-//    if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'employee') { 
-    if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {    
-        $session_username = $_SESSION['username']; 
-        ?>
+<?php
+session_start();
+include "dbconfig.php";
+include 'preloader.php';
+require 'component.php';
 
+
+if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
+    
+    if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
+        include 'admin-menu-bar.php';
+        $session_username = $_SESSION['username'];
+        ?><br><?php
+        include 'admin-menu-btn.php';
+    } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
+        include 'menu-bar.php';
+        $session_username = $_SESSION['username'];
+        ?><br><?php
+        include 'sub-menu-btn.php';
+    }
+
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,19 +27,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group Options</title>
-  <!-- Add Bootstrap CSS link -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 </head>
 <body>
     
-<?php
-
-    include 'admin-menu-bar.php';
-    ?><br><?php
-    include 'admin-menu-btn.php';
-
-?>
 <!-- <br/> -->
 <!-- CATEGORY -->
 <!----------------------Ajax Add Category---Popup model------------------------->
@@ -746,9 +754,7 @@ $(document).on('click', '.deleteSubCategoryBtn', function (e) {
 //////////////
 
 </script>
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-  <!-- Add Bootstrap and Popper.js scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

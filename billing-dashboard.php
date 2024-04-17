@@ -171,6 +171,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             
             $printStatus = 0;
             
+                
             // Prepare the SQL statement
          $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, adv_status, due_month_timestamp, status, printStatus) 
             VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', 0, '$currentDateTime', '$bill_status', '$printStatus')";
@@ -211,6 +212,51 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', '12', '35','', $sumPaidAmount)";
                     $con->query($sqlInsert);
                 }
+                
+                // // SMS API
+                
+                // if ($pMode == 'cash' || $pMode == 'gpay') {
+                //     $pMode1 = 'Paid';
+                // } elseif ($pMode == 'credit') {
+                //     $pMode1 = 'Unpaid - Credit';
+                // } else {
+                //     $pMode1 = '-';
+                // }
+                
+                // // API endpoint URL
+                // $url = 'https://sms.textspeed.in/vb/apikey.php';
+                
+                // $apiKey = urlencode('PrYMGx2Z7pDp3Vmc');
+                // $sender_id = urlencode('DURTEK');
+                // $template_id = urlencode('1707171187493463121');
+                // $message = rawurlencode('Dear Customer, Your THOOYAVAN PDP Cable TV bill (STB No: ' . $stbno . ') is due on ' . $currentDateTime . '. Status: ' . $pMode1 . '. DURTEK Thank you.');
+                
+                // $data = 'apikey=' . $apiKey . '&senderid=' . $sender_id . '&templateid=' . $template_id . '&number=' . $phone . '&message=' . $message;
+                
+                // // Final URL with query parameters
+                // $finalUrl = $url . '?' . $data;
+                
+                // // Triggering the API using cURL
+                // $ch = curl_init();
+                // curl_setopt($ch, CURLOPT_URL, $finalUrl);
+                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                // $response = curl_exec($ch);
+                // curl_close($ch);
+                
+                $sms_res = sms_api($name, $phone, $billNo, $currentDateTime, $stbno, $pMode, $con);
+                
+                if (isset($_SESSION['id']) && $sms_res == true) {
+                    // Get the user information before destroying the session
+                    $userId = $_SESSION['id'];
+                    $username = $_SESSION['username'];
+                    $role = $_SESSION['role'];
+                    $action = "SMS Send to $phone - $stbno";
+                
+                    // Call the function to insert user activity log
+                    logUserActivity($userId, $username, $role, $action);
+                }
+                
+                // echo "<script>console.log('$response');</script>";
 
                 continue;
 
@@ -373,6 +419,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 </head>
 <body>
     
+
     <!--<hr class="mt-0 mb-4">-->
 
     <div class="container custom-container">
@@ -391,9 +438,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-7">
-                                <form action="" method="GET">
+                                
+                                <form autocomplete="off" action="" method="GET">
                                     <div class="input-group mb-3">
-                                        <input type="text" name="search" id="search" autocomplete="off" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Name, Phone" >                                      
+                                        <input type="text" name="search" id="search" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Name, Phone" autofocus>                                      
                                         <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
                                 </form>
@@ -570,7 +618,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     </div>
 </div>
 
-
+<br/>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Autosearch List -->

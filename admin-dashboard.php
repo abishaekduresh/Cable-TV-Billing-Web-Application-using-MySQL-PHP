@@ -153,29 +153,44 @@ if ($countresult) {
 $totalCreditCount = 0;
 $totalCreditRsSum = 0;
 
-$sql ="SELECT 
-  COUNT(CASE WHEN pMode = 'credit' AND status = 'approve' THEN 1 END) AS totalCreditCount,
-  (SELECT SUM(Rs) FROM bill WHERE pMode = 'credit') AS totalCreditRsSum
-FROM bill";
-
+$sql = "SELECT * FROM bill WHERE pMode = 'credit' AND status = 'approve'";
 $result2 = mysqli_query($con, $sql);
 
-
 if ($result2) {
-  
-    $row = mysqli_fetch_assoc($result2);
-
+    // Get the total number of rows returned by the query
+    $totalCreditCount = mysqli_num_rows($result2);
     
-    if ($row) {
-        $totalCreditCount = $row['totalCreditCount'];
-        $totalCreditRsSum = $row['totalCreditRsSum'];
+    // Use a while loop to fetch each row from the result set
+    while ($row = mysqli_fetch_assoc($result2)) {
+        // Accumulate the 'Rs' values from each row
+        $totalCreditRsSum += $row['Rs']; // Make sure 'Rs' is the correct column name
     }
 
-    
 } else {
-  
     echo "Error executing the query: " . mysqli_error($con);
 }
+
+
+$totalGroupCreditCount = 0;
+$totalGroupCreditRsSum = 0;
+
+$sqlGroup = "SELECT * FROM billgroupdetails WHERE pMode = 'credit' AND status = 'approve'";
+$result2Group = mysqli_query($con, $sqlGroup);
+
+if ($result2Group) {
+    // Get the total number of rows returned by the query
+    $totalGroupCreditCount = mysqli_num_rows($result2Group);
+    
+    // Use a while loop to fetch each row from the result set
+    while ($rowGroup = mysqli_fetch_assoc($result2Group)) {
+        // Accumulate the 'Rs' values from each row
+        $totalGroupCreditRsSum += $rowGroup['Rs']; // Make sure 'Rs' is the correct column name
+    }
+
+} else {
+    echo "Error executing the query: " . mysqli_error($con);
+}
+
 
 
 mysqli_close($con);
@@ -294,7 +309,7 @@ color:#69707a;
     <?php include 'admin-menu-btn.php'?>
 
 <div class="container-xl px-4 mt-4">
-    
+    Available SMS Credit: <b><?= sms_credit(); ?></b>
     <!--<hr class="mt-0 mb-4">-->
  
      <div class="row">
@@ -458,7 +473,7 @@ color:#69707a;
         <div class="col-lg-4 mb-4">
             <div class="card h-100 border-start-lg border-start-success">
                  <div class="card-body">
-                    <div style="font-weight: bold;" class="small text-muted">Overall Crdit Bill Pending</div>
+                    <div style="font-weight: bold;" class="small text-muted">Indiv Credit Bill Pending</div>
                     <div class="h3 d-flex align-items-center"> <?php echo $totalCreditCount?>   -- ₹ <?php echo $totalCreditRsSum?></div>
                     <!--<div class="h3">₹-->
                     <!--  <span id="TodayCollection" data-value="<?php echo $sumRs; ?>">****</span>-->
@@ -499,19 +514,18 @@ color:#69707a;
                 </div>
             </div>
         </div>
-        <!--<div class="col-lg-4 mb-4">-->
-            <!-- Billing card 3-->
-        <!--    <div class="card h-100 border-start-lg border-start-success">-->
-        <!--        <div class="card-body">-->
-        <!--            <div style="font-weight: bold;" class="small text-muted">Today Income</div>-->
-                    <!--<div class="h3" id="password">₹ <?php echo $sumBillAmt?></div>-->
-        <!--            <div class="h3">₹-->
-        <!--              <span id="TodayIncome" data-value="<?php echo $sumRs; ?>">****</span>-->
-        <!--              <i class="bi bi-eye-slash" id="toggleTodayIncome"></i>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--    </div>-->
-        <!--</div>-->
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 border-start-lg border-start-success">
+                 <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Group Credit Bill Pending</div>
+                    <div class="h3 d-flex align-items-center"> <?php echo $totalGroupCreditCount?>   -- ₹ <?php echo $totalGroupCreditRsSum?></div>
+                    <!--<div class="h3">₹-->
+                    <!--  <span id="TodayCollection" data-value="<?php echo $sumRs; ?>">****</span>-->
+                    <!--  <i class="bi bi-eye-slash" id="toggleTodayCollection"></i>-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
     </div>
 </div>   
     

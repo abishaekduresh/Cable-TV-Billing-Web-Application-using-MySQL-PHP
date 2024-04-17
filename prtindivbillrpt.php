@@ -130,8 +130,8 @@ $hidePromotion = ($footer1 == NULL);
             $billBy = $row["bill_by"];
             $stbNo = $row["stbno"];
             $billNo = $row["billNo"];
-            $date = $row["date"];
-            $time = $row["time"];
+            // $due_month_timestamp = $row["due_month_timestamp"];
+            // $time = $row["time"];
             $billTo = $row["name"];
             $cusphone = $row["phone"];
             $billAmount= $row["paid_amount"];
@@ -176,7 +176,15 @@ $hidePromotion = ($footer1 == NULL);
             
             <tr>
                 <td style="border:1px; border-left-style:solid;">Date</td>
-                <td align="left" colspan="2" style="border:1.5px; border-right-style:solid;"><?= formatDate($date) ?>&nbsp;&nbsp;<?= convertTo12HourFormat($time) ?></td>
+                <td align="left" colspan="2" style="border:1.5px; border-right-style:solid;">
+                    <?php 
+                        $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 
+                        formatDate($current_result['date']);
+                        echo '&nbsp';
+                        $t=convertTo12HourFormat($current_result['time']);
+                        echo $t;
+                    ?>
+                </td>
             </tr>
             
             <tr>
@@ -225,7 +233,7 @@ $hidePromotion = ($footer1 == NULL);
             </tr>
 
             <tr <?php if ($hidePromotion) echo 'style="display: none;"'; ?>>
-                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><?= $footer1 ?><br/><?= $footer2 ?></td>
+                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><?= $footer1 ?><br/><b><?= $footer2 ?></b></td>
             </tr>
 
             <tr>

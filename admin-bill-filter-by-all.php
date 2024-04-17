@@ -49,7 +49,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>From Date</label>
+                                            <label>From Bill Date</label>
                                             <input type="date" name="from_date"
                                                 value="<?php if (isset($_GET['from_date'])) {
                                                 echo $_GET['from_date'];
@@ -60,7 +60,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>To Date</label>
+                                            <label>To Bill Date</label>
                                             <input type="date" name="to_date"
                                                 value="<?php if (isset($_GET['to_date'])) {
                                                 echo $_GET['to_date'];
@@ -139,7 +139,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                         <tr>
                                             <th>#</th>
                                             <th>Bill by</th>
-                                            <th>Date</th>
+                                            <th>Col Date</th>
+                                            <th>Bill Date</th>
                                             <th>Bill No</th>
                                             <th>MSO</th>
                                             <th>STB No</th>
@@ -225,7 +226,8 @@ if (!empty($from_time) && !empty($to_time)) {
                                         <tr>
                                             <td style="font-weight: bold;"><?= $serial_number++; ?></td>
                                             <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
-                                            <td style="font-weight: bold; color: #007DC3;">
+                                            <td style="width: 220px; font-weight: bold; color: #007DC3;"><?= formatDate($row['date']); ?></td>
+                                            <td style="width: 220px; font-weight: bold; color: #007DC3;">
                                                         <?PHP 
                                                             $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 
                                                             formatDate($current_result['date']);
@@ -282,7 +284,7 @@ if (!empty($from_time) && !empty($to_time)) {
                                         }
                                         ?>
                                         <tr>
-                                            <td colspan="9"></td>
+                                            <td colspan="10"></td>
                                             <td style="font-weight: bold;">Total:</td>
                                             <td style="font-weight: bold; color: #0012C3;">
                                                 <b><?= $oldMonthBal_sum ?></b>

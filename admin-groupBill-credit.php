@@ -54,7 +54,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                                 value="<?php if (isset($_GET['from_date'])) {
                                                 echo $_GET['from_date'];
                                             } else {
-                                                echo $currentDate;
+                                                echo '2023-06-01';
                                             } ?>" class="form-control">
                                         </div>
                                     </div>

@@ -42,6 +42,15 @@
     <div class="col">
       <a href="rptgroupbill.php"><button type="button" class="btn btn-success"><b>Group Bill Report</b></button></a>
     </div>
+    <div class="col">
+      <a href="IndivDuplicateBill.php" class="btn btn-info position-relative">
+        <b>Indiv Duplicate Bill</b>
+        <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">
+          New
+        </span>
+      </a>
+    </div>
+
   </div>
 </div>
 </center>

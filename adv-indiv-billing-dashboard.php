@@ -130,6 +130,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                         // Data inserted successfully
                     //  $q= "SELECT date,sum(paid_amount) TotAmt FROM `bill` where date='2023-06-01' group by date";
                     
+                    sms_api($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $con);
+                    
                         // Calculate sum of paid_amount for the current date
                         $sqlSum = "SELECT SUM(Rs) AS total_Rs FROM bill WHERE date = '$currentDate' AND status = 'approve'";
                         $result = $con->query($sqlSum);
@@ -163,17 +165,17 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                             logUserActivity($userId, $username, $role, $action);
                         }
                         
-                        // echo "<script>alert('Bill Successful $name')</script>";
-                        echo "<script>
-                        function myFunction(stbno) {
-                        let text = 'Are Want to print ?';
-                        if (confirm(text)) {
-                            window.open('prtindivadvbill.php?stbnumber=' + stbno);
-                        } else {
+                        echo "<script>window.open('prtindivadvbill.php?stbnumber=' + stbno);</script>";
+                        // echo "<script>
+                        // function myFunction(stbno) {
+                        // let text = 'Are Want to print ?';
+                        // if (confirm(text)) {
+                        //     window.open('prtindivadvbill.php?stbnumber=' + stbno);
+                        // } else {
                             
-                        }
-                        }
-                        </script>";
+                        // }
+                        // }
+                        // </script>";
 
                         // Call the JavaScript function with the PHP variable
                         echo "<script>myFunction('$stbno');</script>";

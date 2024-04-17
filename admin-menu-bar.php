@@ -1,5 +1,6 @@
 <?php
 include "dbconfig.php";
+include("component2.php");
 if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
     $session_user = $_SESSION['name'];
 
