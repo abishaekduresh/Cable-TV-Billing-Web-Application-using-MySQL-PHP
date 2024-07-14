@@ -74,20 +74,20 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                             <!--<label>Click to Filter</label>--> <br>
                                             <button type="submit" class="btn btn-primary">Search</button>
                                         </div>
-                                    </div><p>Under Testing...</p>
-                                    <div class="col-md-4">
+                                    </div>
+                                    <div class="col-md-2">
                                         <div class="form-group">
-                                            <label>From Time</label>
-                                            <input type="time" name="from_time" value="<?php if (isset($_GET['from_time'])) {
-                                                echo $_GET['from_time'];
+                                            <label>From Bill No.</label>
+                                            <input type="number" name="from_billno" value="<?php if (isset($_GET['from_billno'])) {
+                                                echo $_GET['from_billno'];
                                             }?>" class="form-control" step="1">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-2">
                                         <div class="form-group">
-                                            <label>To Time</label>
-                                            <input type="time" name="to_time" value="<?php if (isset($_GET['to_time'])) {
-                                                echo $_GET['to_time'];
+                                            <label>To Bill No.</label>
+                                            <input type="number" name="to_billno" value="<?php if (isset($_GET['to_billno'])) {
+                                                echo $_GET['to_billno'];
                                             }?>" class="form-control" step="1">
                                         </div>
                                     </div>
@@ -100,8 +100,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                                 Duresh</label>
                                             <label><input type="checkbox" name="filter[]" value="23A001">
                                                 Baskar Raj</label>
-                                            <label><input type="checkbox" name="filter[]" value="23E001">
-                                                Kannika</label>
+                                            <label><input type="checkbox" name="filter[]" value="23E005">
+                                                Divya</label>
                                             <label><input type="checkbox" name="filter[]" value="23E002">
                                                 Santhanam</label>
                                             <label><input type="checkbox" name="filter[]" value="23E003">
@@ -118,8 +118,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                             <br>
                                             <label><input type="checkbox" name="pMode_filter[]" value="cash">
                                                 Cash</label>
-                                            <label><input type="checkbox" name="pMode_filter[]" value="gpay">
+                                            <label><input type="checkbox" name="pMode_filter[]" value="Gpay">
                                                 GPay</label>
+                                            <label><input type="checkbox" name="pMode_filter[]" value="paytm">
+                                                Paytm</label>
                                             <label><input type="checkbox" name="pMode_filter[]" value="credit">
                                                 Credit</label>
 </b>
@@ -169,12 +171,12 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                             $to_date = $_GET['to_date'];
 
 
-$from_time = isset($_GET['from_time']) ? $_GET['from_time'] : '';
-$to_time = isset($_GET['to_time']) ? $_GET['to_time'] : '';
-$timeFilterCondition = '';
+$from_billno = isset($_GET['from_billno']) ? $_GET['from_billno'] : '';
+$to_billno = isset($_GET['to_billno']) ? $_GET['to_billno'] : '';
+$billnoFilterCondition = '';
 
-if (!empty($from_time) && !empty($to_time)) {
-    $timeFilterCondition = "AND time BETWEEN '$from_time' AND '$to_time'";
+if (!empty($from_billno) && !empty($to_billno)) {
+    $billnoFilterCondition = "AND billNo BETWEEN '$from_billno' AND '$to_billno'";
 }
 
 
@@ -210,7 +212,7 @@ if (!empty($from_time) && !empty($to_time)) {
                                             }
 
 
-                                            $query = "SELECT * FROM bill WHERE DATE(due_month_timestamp) BETWEEN '$from_date' AND '$to_date' $timeFilterCondition $filterCondition $statusFilterCondition $pModefilterCondition";
+                                            $query = "SELECT * FROM bill WHERE DATE(due_month_timestamp) BETWEEN '$from_date' AND '$to_date' $billnoFilterCondition $filterCondition $statusFilterCondition $pModefilterCondition";
 
                                             $query_run = mysqli_query($con, $query);
                                             $Rs_sum = 0;

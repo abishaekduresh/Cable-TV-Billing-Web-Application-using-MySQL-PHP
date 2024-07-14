@@ -110,6 +110,9 @@ if ($result->num_rows > 0) {
             <li class="nav-item"><a class="nav-link" href="#"><b><?php echo $session_username ?></b></a>
         </li>
         <li class="nav-item">
+            <li class="nav-item"><a class="nav-link" href="profile.php">Profile</a>
+        </li>
+        <li class="nav-item">
             <li class="nav-item nav-link" style="color:black; font-weight: bold;"><b><?= $newDate = date("d-m-Y", strtotime($currentDate)); ?></b>
         </li>
         </ul>

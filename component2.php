@@ -2,7 +2,7 @@
 
 function sms_credit(){
     // URL to retrieve JSON data
-    $url = 'https://sms.textspeed.in/vb/http-credit.php?apikey=EUdKjgM81BAe6eEv&route_id=1&format=json';
+    $url = 'https://sms.textspeed.in/vb/http-credit.php?apikey=i1JdnQyj9tFYW6S7&route_id=1&format=json';
     
     // Fetch JSON data from the URL
     $json_data = file_get_contents($url);
@@ -15,13 +15,13 @@ function sms_credit(){
         // Extract data from the associative array
         $status = $data_array['status'];
         $code = $data_array['code'];
-        $balance = $data_array['balance'];
+        $balance_sms_credit = $data_array['balance'];
     
         // Now you can use $status, $code, and $balance variables as needed
         // echo "Status: $status <br>";
         // echo "Code: $code <br>";
         // echo "Balance: $balance <br>";
-        return $balance;
+        return $balance_sms_credit;
     } else {
         // Handle JSON decoding error
         return "Failed to decode JSON data.";
