@@ -92,7 +92,13 @@ if ($result->num_rows > 0) {
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="user-today-collection.php" target="blank">Today Collection</a>
                         <div class="dropdown-divider"></div>
+                         <a class="dropdown-item" href="bill-filter-by-user.php">Bill by You</a>
+                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="rptindivcancelledbill.php" target="blank">Cancelled Indiv Bill</a>
+                         <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="rptposinvoice.php">POS Report</a>
+                         <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="rpt-indiv-unpaid-list.php" target="blank">Indiv Unpaid List</a>
                     </div>
                 </li>
 
@@ -122,14 +128,18 @@ if ($result->num_rows > 0) {
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="admin-bill-cancel.php">Cancel Bill</a>
                         <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="pos-bill-cancel.php">POS Bill Cancel</a>
+                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="incomeExpenceAction.php">Add incomeExpenceAction</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="pos-product.php">Manage POS Product</a>
                     </div>
                 </li>
                 <li class="nav-item">
                     <li class="nav-item"><a class="nav-link" href="admin-activity.php">Activity</a>
                 </li>
                 <li class="nav-item">
-                    <li class="nav-item"><a class="nav-link" href="admin-profile.php">Profile</a>
+                    <li class="nav-item"><a class="nav-link" href="profile.php">Profile</a>
                 </li>
                 <li class="nav-item">
                     <li class="nav-item"><a class="nav-link" href="#"><b><?php echo $session_user ?></b></a>

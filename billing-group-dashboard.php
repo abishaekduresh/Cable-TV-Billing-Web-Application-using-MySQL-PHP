@@ -133,6 +133,20 @@ $status = 'approve';
                     $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', 12, 36,'', $sumPaidAmount)";
                     $con->query($sqlInsert);
                 }
+                
+                // $bill_status = "approve";
+                // $sms_res = sms_api($name, $phone, $billNo, $currentDateTime, $stbno, $pMode, $bill_status);
+                
+                // if (isset($_SESSION['id']) && $sms_res == true) {
+                //     // Get the user information before destroying the session
+                //     $userId = $_SESSION['id'];
+                //     $username = $_SESSION['username'];
+                //     $role = $_SESSION['role'];
+                //     $action = "Bill Approve SMS Send to $phone - $stbno";
+                
+                //     // Call the function to insert user activity log
+                //     logUserActivity($userId, $username, $role, $action);
+                // }
 
                 continue;
 

@@ -149,7 +149,7 @@ $hidePromotion = ($footer1 == NULL);
             $adv_result = splitDateAndTime(strtotime($due_month_timestamp));
             $hideoldMonthBalRow = ($oldMonthBal == 0);
             
-            $hideStatusRow = ($pMode === 'cash' || $pMode === 'gpay');
+            $hideStatusRow = ($pMode === 'cash' || $pMode === 'gpay' || $pMode === 'Paytm');
 
             if (isset($_SESSION['id'])) {
                 $userId = $_SESSION['id'];

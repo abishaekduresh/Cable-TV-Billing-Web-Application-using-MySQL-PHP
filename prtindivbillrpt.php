@@ -144,7 +144,7 @@ $hidePromotion = ($footer1 == NULL);
             $oldMonthBal = $row["oldMonthBal"];
             $hideoldMonthBalRow = ($oldMonthBal == 0);
             
-            $hideStatusRow = ($pMode === 'cash' || $pMode === 'gpay');
+            $hideStatusRow = ($pMode === 'cash' || $pMode === 'gpay' || $pMode === 'Paytm');
 
             if (isset($_SESSION['id'])) {
                 $userId = $_SESSION['id'];

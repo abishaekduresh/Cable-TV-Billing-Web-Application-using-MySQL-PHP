@@ -162,7 +162,7 @@ if (mysqli_num_rows($query) > 0) {
             $oldMonthBal = $row["oldMonthBal"];
             $hideoldMonthBalRow = ($oldMonthBal == 0);
             
-            $hideStatusRow = ($pMode === 'cash' || $pMode === 'gpay');
+            $hideStatusRow = ($pMode === 'cash' || $pMode === 'gpay' || $pMode === 'Paytm');
 
             mysqli_query($con, "UPDATE bill SET printStatus = 1");
 

@@ -41,7 +41,19 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 
 
                 $due_month_timestamp = $due_month_date . " " . $currentTime;
+                
 
+                            function redirect($url)
+                            {
+                                echo "<script>
+                                setTimeout(function(){
+                                    window.location.href = '$url';
+                                }, 200);
+                            </script>";
+                            }
+                            
+                            $url = "adv-indiv-billing-dashboard.php?search=$stbno";
+                            
             function insertBill(){
 
                 require "dbconfig.php";
@@ -118,7 +130,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     }
                 }
                 
-                $printStatus = 0;
+                $printStatus = 1;
 
                     // Prepare the SQL statement
                     $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, adv_status, due_month_timestamp, status, printStatus) 
@@ -130,7 +142,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                         // Data inserted successfully
                     //  $q= "SELECT date,sum(paid_amount) TotAmt FROM `bill` where date='2023-06-01' group by date";
                     
-                    sms_api($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $con);
+                    // sms_api($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $con);
                     
                         // Calculate sum of paid_amount for the current date
                         $sqlSum = "SELECT SUM(Rs) AS total_Rs FROM bill WHERE date = '$currentDate' AND status = 'approve'";
@@ -164,8 +176,26 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                             // Call the function to insert user activity log
                             logUserActivity($userId, $username, $role, $action);
                         }
-                        
-                        echo "<script>window.open('prtindivadvbill.php?stbnumber=' + stbno);</script>";
+
+
+                            echo '<script type="text/javascript">
+                                let stbno = "' . htmlspecialchars($stbno, ENT_QUOTES, 'UTF-8') . '";
+                                // JavaScript to open the link in a new tab
+                                window.onload = function() {
+                                    // var newTab = window.open("prtindivadvbill.php?stbnumber=" + stbno);
+                                    var newTab2 = window.location.href = "adv-indiv-billing-dashboard.php?search=" + stbno;
+                                    var newTab = window.open("prtindivadvbill.php?stbnumber=" + stbno, "_blank");
+                                    // Check if the popup was blocked by the browser
+                                    if (newTab) {
+                                        newTab.focus();
+                                        newTab2.focus();
+                                    } else {
+                                        alert("Please allow popups for this website");
+                                    }
+                                }
+                            </script>';
+                            // sleep(1);
+                        // echo "<script>window.open('prtindivadvbill.php?stbnumber=' + stbno);</script>";
                         // echo "<script>
                         // function myFunction(stbno) {
                         // let text = 'Are Want to print ?';
@@ -178,7 +208,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                         // </script>";
 
                         // Call the JavaScript function with the PHP variable
-                        echo "<script>myFunction('$stbno');</script>";
+                        // echo "<script>myFunction('$stbno');</script>";
+                        // redirect($url);
 
 
                     } else {
@@ -210,9 +241,12 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
                         $row = $run1->fetch_assoc();
                         $run_result1 = $row['stbno'];
+                        
                     } else {
                         $run_result1 = 0;
                     }
+                    
+
 
                     // Check if the query was successful
                     if (isset($run_result1) == $stbno) {
@@ -232,24 +266,11 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
                             insertBill();
 
-
                         } else {  
 
                             echo "<script>alert('Due Month Approved Bill already Exists for " . $name . "');</script>";
-
-                            function redirect($url)
-                            {
-                                echo "<script>
-                                setTimeout(function(){
-                                    window.location.href = '$url';
-                                }, 200);
-                            </script>";
-                            }
-                    
-                            // Usage example
-                            $url = "adv-indiv-billing-dashboard.php"; // Replace with your desired URL bill-print-bulk.php
+                            
                             redirect($url);
-                    
 
                         }  
                     }
@@ -262,6 +283,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
           
 
                 }
+                            // redirect($url);
             }
 
     }
@@ -293,7 +315,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advance Individual Billing Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -465,7 +487,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                             <input type="text" name="discount[<?= $customer['id']; ?>]" value="<?php echo $discountValue ?>" class="form-control fw-bold" style="width: 50px; color: #DD0581;">
                                                         </td>
                                                         <td>
-                                                            <input type="date" class="form-control" name="due_month_date[<?= $customer['id']; ?>]" required>
+                                                            <input type="date" class="form-control" name="due_month_date[<?= $customer['id']; ?>]" value="<?= $currentDate ?>" required>
                                                         </td>
                                                     </tr>
                                                     <?php

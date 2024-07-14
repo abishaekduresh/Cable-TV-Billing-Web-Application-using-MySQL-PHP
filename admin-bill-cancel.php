@@ -206,9 +206,14 @@
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <input type="hidden" name="bill_no" value="<?= $row['bill_id']; ?>">
+                                                        <input type="hidden" name="bill_id" value="<?= $row['bill_id']; ?>">
                                                         <input type="hidden" name="date" value="<?= $row['date']; ?>">
                                                         <input type="hidden" name="stbno" value="<?= $row['stbno']; ?>">
+                                                        <input type="hidden" name="name" value="<?= $row['name']; ?>">
+                                                        <input type="hidden" name="billNo" value="<?= $row['billNo']; ?>">
+                                                        <input type="hidden" name="due_month_timestamp" value="<?= $row['due_month_timestamp']; ?>">
+                                                        <input type="hidden" name="pMode" value="<?= $row['pMode']; ?>">
+                                                        <input type="hidden" name="phone" value="<?= $row['phone']; ?>">
                                                         <!-- Assign 'bill_id' value to the hidden input field for 'bill_no' -->
                                                         <button type="submit" class="btn btn-danger btn-sm" style="font-weight: bold;">Submit</button>
                                                     </td>
