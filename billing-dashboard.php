@@ -7,11 +7,12 @@ include 'preloader.php';
 if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
 
-    if (isset($_SESSION['username']) && $_SESSION['role'] === 'admin') {
+    if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
         include 'admin-menu-bar.php';
-        echo '<br>';
+        ?><br><?php
         include 'admin-menu-btn.php';
         $session_username = $_SESSION['username'];
+        
     } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
         include 'menu-bar.php';
         ?><br><?php
@@ -20,268 +21,282 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        
-        $indiv_csrf_token = $_POST["indiv_csrf_token"];
+        // Retrieve checkbox values
+        $checkboxValues = isset($_POST["options"]) ? $_POST["options"] : [];
 
-        if($indiv_csrf_token === $_SESSION['indiv_bill_csrf_token']){
+        // Process selected checkboxes
+        foreach ($checkboxValues as $customerId) {
+            // Retrieve form data
             
-            // Retrieve checkbox values
-            $checkboxValues = isset($_POST["options"]) ? $_POST["options"] : [];
+            $stbno = mysqli_real_escape_string($con, $_POST["stbno"][$customerId]);
+            $mso = $_POST["mso"][$customerId];
+            $name = $_POST["name"][$customerId];
+            $phone = $_POST["phone"][$customerId];
+            $description = $_POST["description"][$customerId];
+            $pMode = $_POST["pMode"][$customerId];
+            $oldMonthBal = $_POST["oldMonthBal"][$customerId];
+            $paid_amount = $_POST["paid_amount"][$customerId];
+            $discount = $_POST["discount"][$customerId];
+            $bill_status = 'approve';
+            
 
-            // Process selected checkboxes
-            foreach ($checkboxValues as $customerId) {
-                // Retrieve form data
-                
-                $stbno = mysqli_real_escape_string($con, $_POST["stbno"][$customerId]);
-                $mso = $_POST["mso"][$customerId];
-                $name = $_POST["name"][$customerId];
-                $phone = $_POST["phone"][$customerId];
-                $description = $_POST["description"][$customerId];
-                $pMode = $_POST["pMode"][$customerId];
-                $oldMonthBal = $_POST["oldMonthBal"][$customerId];
-                $paid_amount = $_POST["paid_amount"][$customerId];
-                $discount = $_POST["discount"][$customerId];
-                $bill_status = 'approve';
-                
+            if ($discount > 0) {
+                $discount = $discount;
+            } else {
+                $discount = 0;
+            }
+            
+            // if ($currentDay <= 05) {
+            //     $discount = 10; // Set discount to 10 if current day is less than 5
+            // } else {
+            //     if ($discount > 0) {
+            //         $discount = $discount;
+            //     } else {
+            //         $discount = 10;
+            //     }
+            // }
+            
+            
+            
+            $Rs = $paid_amount - $discount;
 
-                if ($discount > 0) {
-                    $discount = $discount;
+// OLD
+            // $currentDay = $datetime->format('d');
+            // // Reset billNo to 1 on the first day of each month
+            // if ($currentDay === '01') {
+            //     $resetQuery = "UPDATE bill SET billNo = 1 WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
+            //     $con->query($resetQuery);
+            // }
+
+            // // Retrieve the next billNo for the current month and year
+            // $getBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
+            // $result = $con->query($getBillNoQuery);
+
+            // if ($result->num_rows > 0) {
+            //     $row = $result->fetch_assoc();
+            //     $billNo = $row["maxBillNo"] + 1;
+            // } else {
+            //     $billNo = 1;
+            // }
+            
+            
+            
+            // /// NOT THIS CODE https://chat.openai.com/share/80e316ef-c537-447b-9b20-a1db341e3e94
+            // /// THIS CODE https://chat.openai.com/share/59162802-39b4-4187-8f8c-b6ceb6bc0258
+            // if ($currentDay === '01') {
+            //     // Check if there is any bill entry for the next month
+            //     $checkNextMonthQuery = "SELECT billNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT(DATE_ADD('$currentDate', INTERVAL 1 MONTH), '%Y-%m') LIMIT 1";
+            //     $result = $con->query($checkNextMonthQuery);
+            
+            //     if ($result->num_rows > 0) {
+            //         // There is already a bill entry for the next month, so set billNo to 1
+            //         $billNo = 1;
+            //     } else {
+            //         // Retrieve the maximum billNo for the current month and year
+            //         $getMaxBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
+            //         $result = $con->query($getMaxBillNoQuery);
+            
+            //         if ($result->num_rows > 0) {
+            //             $row = $result->fetch_assoc();
+            //             $maxBillNo = $row["maxBillNo"];
+            //             if ($maxBillNo < 1) {
+            //                 $billNo = 1;
+            //             } else {
+            //                 $billNo = $maxBillNo + 1;
+            //             }
+            //         } else {
+            //             $billNo = 1;
+            //         }
+            //     }
+            // } else {
+            //     // Retrieve the next billNo for the current month and year
+            //     $getBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
+            //     $result = $con->query($getBillNoQuery);
+            
+            //     if ($result->num_rows > 0) {
+            //         $row = $result->fetch_assoc();
+            //         $billNo = $row["maxBillNo"] + 1;
+            //     } else {
+            //         $billNo = 1;
+            //     }
+            // }
+            
+            
+            if ($oldMonthBal > 0) {
+                $oldMonthBal = $oldMonthBal;
+            } else {
+                $oldMonthBal = 0;
+            }
+            
+            $Rs = $Rs + $oldMonthBal;
+
+            // https://chat.openai.com/share/6d0e9e8b-5d51-4f0c-a59c-3ee2ee77c382
+            if ($currentDay === '01') {
+                // Check if there is any bill entry for the next day
+                $checkNextDayQuery = "SELECT billNo FROM bill WHERE DATE(date) = DATE_ADD('$currentDate', INTERVAL 1 DAY) LIMIT 1";
+                $result = $con->query($checkNextDayQuery);
+            
+                if ($result->num_rows > 0) {
+                    // There is already a bill entry for the next day, so set billNo to 1
+                    $billNo = 1;
                 } else {
-                    $discount = 0;
-                }
-                
-                // if ($currentDay <= 05) {
-                //     $discount = 10; // Set discount to 10 if current day is less than 5
-                // } else {
-                //     if ($discount > 0) {
-                //         $discount = $discount;
-                //     } else {
-                //         $discount = 10;
-                //     }
-                // }
-                
-                
-                
-                $Rs = $paid_amount - $discount;
-
-    // OLD
-                // $currentDay = $datetime->format('d');
-                // // Reset billNo to 1 on the first day of each month
-                // if ($currentDay === '01') {
-                //     $resetQuery = "UPDATE bill SET billNo = 1 WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
-                //     $con->query($resetQuery);
-                // }
-
-                // // Retrieve the next billNo for the current month and year
-                // $getBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
-                // $result = $con->query($getBillNoQuery);
-
-                // if ($result->num_rows > 0) {
-                //     $row = $result->fetch_assoc();
-                //     $billNo = $row["maxBillNo"] + 1;
-                // } else {
-                //     $billNo = 1;
-                // }
-                
-                
-                
-                // /// NOT THIS CODE https://chat.openai.com/share/80e316ef-c537-447b-9b20-a1db341e3e94
-                // /// THIS CODE https://chat.openai.com/share/59162802-39b4-4187-8f8c-b6ceb6bc0258
-                // if ($currentDay === '01') {
-                //     // Check if there is any bill entry for the next month
-                //     $checkNextMonthQuery = "SELECT billNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT(DATE_ADD('$currentDate', INTERVAL 1 MONTH), '%Y-%m') LIMIT 1";
-                //     $result = $con->query($checkNextMonthQuery);
-                
-                //     if ($result->num_rows > 0) {
-                //         // There is already a bill entry for the next month, so set billNo to 1
-                //         $billNo = 1;
-                //     } else {
-                //         // Retrieve the maximum billNo for the current month and year
-                //         $getMaxBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
-                //         $result = $con->query($getMaxBillNoQuery);
-                
-                //         if ($result->num_rows > 0) {
-                //             $row = $result->fetch_assoc();
-                //             $maxBillNo = $row["maxBillNo"];
-                //             if ($maxBillNo < 1) {
-                //                 $billNo = 1;
-                //             } else {
-                //                 $billNo = $maxBillNo + 1;
-                //             }
-                //         } else {
-                //             $billNo = 1;
-                //         }
-                //     }
-                // } else {
-                //     // Retrieve the next billNo for the current month and year
-                //     $getBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
-                //     $result = $con->query($getBillNoQuery);
-                
-                //     if ($result->num_rows > 0) {
-                //         $row = $result->fetch_assoc();
-                //         $billNo = $row["maxBillNo"] + 1;
-                //     } else {
-                //         $billNo = 1;
-                //     }
-                // }
-                
-                
-                if ($oldMonthBal > 0) {
-                    $oldMonthBal = $oldMonthBal;
-                } else {
-                    $oldMonthBal = 0;
-                }
-                
-                $Rs = $Rs + $oldMonthBal;
-
-                // https://chat.openai.com/share/6d0e9e8b-5d51-4f0c-a59c-3ee2ee77c382
-                if ($currentDay === '01') {
-                    // Check if there is any bill entry for the next day
-                    $checkNextDayQuery = "SELECT billNo FROM bill WHERE DATE(date) = DATE_ADD('$currentDate', INTERVAL 1 DAY) LIMIT 1";
-                    $result = $con->query($checkNextDayQuery);
-                
-                    if ($result->num_rows > 0) {
-                        // There is already a bill entry for the next day, so set billNo to 1
-                        $billNo = 1;
-                    } else {
-                        // Retrieve the maximum billNo for the current day
-                        $getMaxBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE(date) = DATE('$currentDate')";
-                        $result = $con->query($getMaxBillNoQuery);
-                
-                        if ($result->num_rows > 0) {
-                            $row = $result->fetch_assoc();
-                            $maxBillNo = $row["maxBillNo"];
-                            if ($maxBillNo < 1) {
-                                $billNo = 1;
-                            } else {
-                                $billNo = $maxBillNo + 1;
-                            }
-                        } else {
-                            $billNo = 1;
-                        }
-                    }
-                } else {
-                    // Retrieve the next billNo for the current day
-                    $getBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE(date) = DATE('$currentDate')";
-                    $result = $con->query($getBillNoQuery);
-                
+                    // Retrieve the maximum billNo for the current day
+                    $getMaxBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE(date) = DATE('$currentDate')";
+                    $result = $con->query($getMaxBillNoQuery);
+            
                     if ($result->num_rows > 0) {
                         $row = $result->fetch_assoc();
-                        $billNo = $row["maxBillNo"] + 1;
+                        $maxBillNo = $row["maxBillNo"];
+                        if ($maxBillNo < 1) {
+                            $billNo = 1;
+                        } else {
+                            $billNo = $maxBillNo + 1;
+                        }
                     } else {
                         $billNo = 1;
                     }
                 }
-                
-                $printStatus = 0;
-                
-                    
-                // Prepare the SQL statement
-            $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, adv_status, due_month_timestamp, status, printStatus) 
-                VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', 0, '$currentDateTime', '$bill_status', '$printStatus')";
-
-                    if (isset($_SESSION['id'])) {
-                        // Get the user information before destroying the session
-                        $userId = $_SESSION['id'];
-                        $username = $_SESSION['username'];
-                        $role = $_SESSION['role'];
-                        $action = "Bill Successful - $pMode - $stbno";
-                    
-                        // Call the function to insert user activity log
-                        logUserActivity($userId, $username, $role, $action);
-                    }
-                    
-                    
-                // Execute the SQL statement
-                if ($con->query($sql) === TRUE) {
-                    // Data inserted successfully
-                //  $q= "SELECT date,sum(paid_amount) TotAmt FROM `bill` where date='2023-06-01' group by date";
-                
-                    // Calculate sum of paid_amount for the current date
-                    $sqlSum = "SELECT SUM(Rs) AS total_Rs FROM bill WHERE date = '$currentDate' AND status = 'approve'";
-                    $result = $con->query($sqlSum);
+            } else {
+                // Retrieve the next billNo for the current day
+                $getBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE(date) = DATE('$currentDate')";
+                $result = $con->query($getBillNoQuery);
+            
+                if ($result->num_rows > 0) {
                     $row = $result->fetch_assoc();
-                    $sumPaidAmount = $row["total_Rs"];
-
-                    // Check if a record exists in in_ex table
-                    $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35";
-                    $resultCheck = $con->query($sqlCheck);
-
-                    if ($resultCheck->num_rows > 0) {
-                        // Update existing record
-                        $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = '12', subcategory_id = '35', remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35";
-                        $con->query($sqlUpdate);
-                    } else {
-                        // Insert new record
-                        $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', '12', '35','', $sumPaidAmount)";
-                        $con->query($sqlInsert);
-                    }
-                    
-                    $bill_status = "approve";
-                    $sms_res = sms_api($name, $phone, $billNo, $currentDateTime, $stbno, $pMode, $bill_status);
-                    
-                    if (isset($_SESSION['id']) && $sms_res == true) {
-                        // Get the user information before destroying the session
-                        $userId = $_SESSION['id'];
-                        $username = $_SESSION['username'];
-                        $role = $_SESSION['role'];
-                        $action = "Bill Approve SMS Send to $phone - $stbno";
-                    
-                        // Call the function to insert user activity log
-                        logUserActivity($userId, $username, $role, $action);
-                    }
-                    
-                    // echo "<script>console.log('$response');</script>";
-
-                    continue;
-
+                    $billNo = $row["maxBillNo"] + 1;
                 } else {
-                    echo "Error inserting data: " . $con->error;
-                    if (isset($_SESSION['id'])) {
-                        // Get the user information before destroying the session
-                        $userId = $_SESSION['id'];
-                        $username = $_SESSION['username'];
-                        $role = $_SESSION['role'];
-                        $action = "Bill Failed - $pMode - $stbno";
-                    
-                        // Call the function to insert user activity log
-                        logUserActivity($userId, $username, $role, $action);
-                    }
-                    ?>
-                    <center><img src="assets/red-thumbs-up.svg" alt="green-thumbs-up" width="512px" height="512px"></center>
-                    <?php
-                    break;
+                    $billNo = 1;
                 }
             }
-
-            // Redirect after processing
-            ?>
-            <!--<center><img src="assets/green-thumbs-up.svg" alt="green-thumbs-up" width="100px" height="100px"></center>-->
-            <?php
-
-            // Redirect function
-            function redirect($url)
-            {
-                echo "<script>
-                setTimeout(function(){
-                    window.location.href = '$url';
-                }, 200);
-            </script>";
-            }
-
-            // Usage example
-            $url = "prtindivbulkbilldash.php"; // Replace with your desired URL bill-print-bulk.php
-            redirect($url);
-
-            unset($_SESSION['indiv_bill_csrf_token']);
-
-        }else{
             
-            echo "<script>alert('Invalid CSRF Token - Double Entry Avoided');</script>";
-            unset($_SESSION['indiv_bill_csrf_token']);
-        
+            $printStatus = 0;
+            
+                
+            // Prepare the SQL statement
+         $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, adv_status, due_month_timestamp, status, printStatus) 
+            VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', 0, '$currentDateTime', '$bill_status', '$printStatus')";
+
+                if (isset($_SESSION['id'])) {
+                    // Get the user information before destroying the session
+                    $userId = $_SESSION['id'];
+                    $username = $_SESSION['username'];
+                    $role = $_SESSION['role'];
+                    $action = "Bill Successful - $pMode - $stbno";
+                
+                    // Call the function to insert user activity log
+                    logUserActivity($userId, $username, $role, $action);
+                }
+                
+                
+            // Execute the SQL statement
+            if ($con->query($sql) === TRUE) {
+                // Data inserted successfully
+            //  $q= "SELECT date,sum(paid_amount) TotAmt FROM `bill` where date='2023-06-01' group by date";
+            
+                // Calculate sum of paid_amount for the current date
+                $sqlSum = "SELECT SUM(Rs) AS total_Rs FROM bill WHERE date = '$currentDate' AND status = 'approve'";
+                $result = $con->query($sqlSum);
+                $row = $result->fetch_assoc();
+                $sumPaidAmount = $row["total_Rs"];
+
+                // Check if a record exists in in_ex table
+                $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35";
+                $resultCheck = $con->query($sqlCheck);
+
+                if ($resultCheck->num_rows > 0) {
+                    // Update existing record
+                    $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = '12', subcategory_id = '35', remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35";
+                    $con->query($sqlUpdate);
+                } else {
+                    // Insert new record
+                    $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', '12', '35','', $sumPaidAmount)";
+                    $con->query($sqlInsert);
+                }
+                
+                // // SMS API
+                
+                // if ($pMode == 'cash' || $pMode == 'gpay') {
+                //     $pMode1 = 'Paid';
+                // } elseif ($pMode == 'credit') {
+                //     $pMode1 = 'Unpaid - Credit';
+                // } else {
+                //     $pMode1 = '-';
+                // }
+                
+                // // API endpoint URL
+                // $url = 'https://sms.textspeed.in/vb/apikey.php';
+                
+                // $apiKey = urlencode('PrYMGx2Z7pDp3Vmc');
+                // $sender_id = urlencode('DURTEK');
+                // $template_id = urlencode('1707171187493463121');
+                // $message = rawurlencode('Dear Customer, Your THOOYAVAN PDP Cable TV bill (STB No: ' . $stbno . ') is due on ' . $currentDateTime . '. Status: ' . $pMode1 . '. DURTEK Thank you.');
+                
+                // $data = 'apikey=' . $apiKey . '&senderid=' . $sender_id . '&templateid=' . $template_id . '&number=' . $phone . '&message=' . $message;
+                
+                // // Final URL with query parameters
+                // $finalUrl = $url . '?' . $data;
+                
+                // // Triggering the API using cURL
+                // $ch = curl_init();
+                // curl_setopt($ch, CURLOPT_URL, $finalUrl);
+                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                // $response = curl_exec($ch);
+                // curl_close($ch);
+                
+                $sms_res = sms_api($name, $phone, $billNo, $currentDateTime, $stbno, $pMode, $con);
+                
+                if (isset($_SESSION['id']) && $sms_res == true) {
+                    // Get the user information before destroying the session
+                    $userId = $_SESSION['id'];
+                    $username = $_SESSION['username'];
+                    $role = $_SESSION['role'];
+                    $action = "SMS Send to $phone - $stbno";
+                
+                    // Call the function to insert user activity log
+                    logUserActivity($userId, $username, $role, $action);
+                }
+                
+                // echo "<script>console.log('$response');</script>";
+
+                continue;
+
+            } else {
+                echo "Error inserting data: " . $con->error;
+                if (isset($_SESSION['id'])) {
+                    // Get the user information before destroying the session
+                    $userId = $_SESSION['id'];
+                    $username = $_SESSION['username'];
+                    $role = $_SESSION['role'];
+                    $action = "Bill Failed - $pMode - $stbno";
+                
+                    // Call the function to insert user activity log
+                    logUserActivity($userId, $username, $role, $action);
+                }
+                ?>
+                <center><img src="assets/red-thumbs-up.svg" alt="green-thumbs-up" width="512px" height="512px"></center>
+                <?php
+                break;
+            }
         }
 
+        // Redirect after processing
+        ?>
+        <!--<center><img src="assets/green-thumbs-up.svg" alt="green-thumbs-up" width="100px" height="100px"></center>-->
+        <?php
+
+        // Redirect function
+        function redirect($url)
+        {
+            echo "<script>
+            setTimeout(function(){
+                window.location.href = '$url';
+            }, 200);
+        </script>";
+        }
+
+        // Usage example
+        $url = "prtindivbulkbilldash.php"; // Replace with your desired URL bill-print-bulk.php
+        redirect($url);
     }
 
 ?>
@@ -447,8 +462,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Status</th>
-                                            <th>#$#</th>
+                                            <th></th>
                                             <th>MSO</th>
                                             <th>STB No</th>
                                             <th>Name</th>
@@ -462,9 +476,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        
-                                        <input type="hidden" style="width: 750px;" name="indiv_csrf_token" value="<?= generate_indiv_bill_csrf_token(); ?>">
-                                    
                                         <?php
                                         if (isset($_GET['search'])) {
                                             $filtervalues = $_GET['search'];
@@ -510,9 +521,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                     <?php endif; ?>
                                                         
                                                         <td style="font-weight: bold; font-size: 16px;"><?= $serial_number++; ?></td>
-                                                    
-                                                        <td><b><?= fetchIndivPreMonthPaidStatus($customer['stbno']) ?></b></td>
-                                                        
                                                         <td>
                                                             <?php if (!$disableButton): ?>
                                                                 <div class="form-check">
@@ -544,7 +552,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                                 <select name="pMode[<?= $customer['id']; ?>]" class="form-select fw-bold" style="width: 100px; height: 40px;">
                                                                     <option value="cash" selected class="fw-bold">Cash</option>
                                                                     <option value="gpay" class="fw-bold">G Pay</option>
-                                                                    <option value="Paytm" class="fw-bold">Paytm</option>
                                                                     <option value="credit" class="fw-bold">Credit</option>
                                                                 </select>
                                                         </td>
@@ -643,34 +650,34 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
 $(document).on('click', '.editStudentBtn', function () {
 
-    var student_id = $(this).val();
+var student_id = $(this).val();
 
-    $.ajax({
-        type: "GET",
-        url: "code.php?student_id=" + student_id,
-        success: function (response) {
+$.ajax({
+    type: "GET",
+    url: "code.php?student_id=" + student_id,
+    success: function (response) {
 
-            var res = jQuery.parseJSON(response);
-            if(res.status == 404) {
+        var res = jQuery.parseJSON(response);
+        if(res.status == 404) {
 
-                alert(res.message);
-            }else if(res.status == 200){
+            alert(res.message);
+        }else if(res.status == 200){
 
-                $('#student_id').val(res.data.id);
-                $('#cusGroup').val(res.data.cusGroup);
-                $('#rc_dc').val(res.data.rc_dc);
-                $('#mso').val(res.data.mso);
-                $('#name').val(res.data.name);
-                $('#stbno').val(res.data.stbno);
-                $('#phone').val(res.data.phone);
-                $('#description').val(res.data.description);
-                $('#amount').val(res.data.amount);
+            $('#student_id').val(res.data.id);
+            $('#cusGroup').val(res.data.cusGroup);
+            $('#rc_dc').val(res.data.rc_dc);
+            $('#mso').val(res.data.mso);
+            $('#name').val(res.data.name);
+            $('#stbno').val(res.data.stbno);
+            $('#phone').val(res.data.phone);
+            $('#description').val(res.data.description);
+            $('#amount').val(res.data.amount);
 
-                $('#studentEditModal').modal('show');
-            }
-
+            $('#studentEditModal').modal('show');
         }
-    });
+
+    }
+});
 
 });
         

@@ -19,8 +19,7 @@ if (isset($_POST["query"])) {
         if(mysqli_num_rows($result) > 0) {
             $output .= '<ul class="list-unstyled list-group">';
             while ($row = mysqli_fetch_array($result)) {
-                // $msg=fetchIndivPreMonthPaidStatus($row["stbno"]);
-                $output .= '<a href="billing-dashboard.php?search='.$row["stbno"].'" class="text-decoration-none text-dark font-weight-bold"><li class="list-group-item list-group-item-action">'.$row["name"].' | '.$row["stbno"].' | '.$row["phone"].' -> '.$row["description"].'</li></a>';
+                $output .= '<a href="billing-dashboard.php?search='.$row["stbno"].'" class="text-decoration-none text-dark font-weight-bold"><li class="list-group-item list-group-item-action">'.$row["name"].' | '.$row["stbno"].' | '.$row["phone"].'</li></a>';
             }
             $output .= '</ul>';
         } else {

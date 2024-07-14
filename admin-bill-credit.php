@@ -60,13 +60,6 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Phone</label>
-                                        <input type="number" name="phone" class="form-control" autocomplete=off>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
                                         <!--<label>Click to Filter</label>--> <br>
                                       <button type="submit" class="btn btn-primary">Search</button>
                                     </div>
@@ -76,7 +69,7 @@
                                     <br>
                                     <label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="23A002"> Duresh</label>
                                     <label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="23A001"> Baskar Raj</label>
-                                    <label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="23E005"> Divya</label>
+                                    <label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="23E001"> Kannika</label>
                                     <br>
                                     <label style="font-weight: bold;"><u>Bill Status :</u></label>
                                     <br>
@@ -96,7 +89,7 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <!--<th>Bill by</th>-->
+                                    <th>Bill by</th>
                                     <th>Col Date</th>
                                     <th>Bill Date</th>
                                     <th>Bill No</th>
@@ -129,7 +122,6 @@ $oldMonthBal_sum = '';
                                     // Retrieve selected filter options
                                     $filters = isset($_GET['filter']) ? $_GET['filter'] : array();
                                     $status_filter = isset($_GET['status_filter']) ? $_GET['status_filter'] : array();
-                                    $phone_filter = isset($_GET['phone']) ? $_GET['phone'] : '';
                                 
                                 
                                     // Build the filter condition
@@ -146,14 +138,9 @@ $oldMonthBal_sum = '';
                                             $statusFilterCondition = "AND pMode = '$status_filter'";
                                         }
                                     }
-                                    
-                                    $phoneFilterCondition = '';
-                                    if (!empty($phone_filter)) {
-                                        $phoneFilterCondition = "AND phone = '$phone_filter'";
-                                    }
 
                                 
-                                    $query = "SELECT * FROM bill WHERE pMode = 'credit' AND DATE(due_month_timestamp) BETWEEN '$from_date' AND '$to_date' AND status ='approve' $filterCondition $statusFilterCondition $phoneFilterCondition";
+                                    $query = "SELECT * FROM bill WHERE pMode = 'credit' AND DATE(due_month_timestamp) BETWEEN '$from_date' AND '$to_date' AND status ='approve' $filterCondition $statusFilterCondition";
                                     $query_run = mysqli_query($con, $query);
                                     
                                     $Rs_sum = 0; 
@@ -170,7 +157,7 @@ $oldMonthBal_sum = '';
                                             ?>
                                             <tr>
                                                     <td style="font-weight: bold;"><?= $serial_number++; ?></td>
-                                                    <!--<td style="font-weight: bold;"><?= $row['bill_by']; ?></td>-->
+                                                    <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
                                                     <td style="font-weight: bold; color: #007DC3;"><?= formatDate($row['date']); ?></td>
                                                     <td style="font-weight: bold; color: #007DC3;">
                                                         <?PHP 
@@ -199,7 +186,6 @@ $oldMonthBal_sum = '';
                                                             <select class="form-select p-1 mb-0 bg-warning text-dark" name="selectedValue">
                                                                 <option value="cash" <?php if ($row['pMode'] === 'cash') { echo 'selected'; } ?>>Cash</option>
                                                                 <option value="gpay" <?php if ($row['pMode'] === 'gpay') { echo 'selected'; } ?>>G Pay</option>
-                                                                <option value="paytm" <?php if ($row['pMode'] === 'paytm') { echo 'selected'; } ?>>Paytm</option>
                                                                 <option value="credit" <?php if ($row['pMode'] === 'credit') { echo 'selected'; } ?>>Credit</option>
                                                             </select>
                                                         </div>

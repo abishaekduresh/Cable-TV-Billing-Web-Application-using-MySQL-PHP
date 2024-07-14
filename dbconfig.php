@@ -1,5 +1,5 @@
 <?php
-$con = mysqli_connect("localhost", "pdpcabletv", "mEMWwjSp2bXSDz5r", "pdpcabletv");
+$con = mysqli_connect("localhost:3310", "root", "", "pdpcabletv");
 
 // Check if connection is null
 if (!$con) {
@@ -29,8 +29,6 @@ $currentDateTime = $datetime->format('Y-m-d H:i:s');
 $currentDay = $datetime->format('d');
 $currentMonth = $datetime->format('m');
 $currentYear = $datetime->format('Y');
-
-// $sms_api_key = urlencode('i1JdnQyj9tFYW6S7');
 
 
 ?>

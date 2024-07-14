@@ -138,7 +138,7 @@ $hidePromotion = ($footer1 == NULL);
         $hideRsRow = ($discount == 0 && $oldMonthBal == 0); // Determine if the discount row should be hidden
         $pMode = $row["pMode"];
         
-        $hideStatusRow = ($pMode === 'cash' || $pMode === 'gpay' || $pMode === 'Paytm');
+        $hideStatusRow = ($pMode === 'cash' || $pMode === 'gpay');
 
             if (isset($_SESSION['id'])) {
                 $userId = $_SESSION['id'];

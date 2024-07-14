@@ -3,7 +3,7 @@
    include "dbconfig.php";
 //    if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'employee') { 
     if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {    
-        $session_username = $_SESSION['username'];
+        $session_username = $_SESSION['username']; 
         ?>
 
 <!DOCTYPE html>
@@ -25,16 +25,6 @@
     <div class="col">
       <a href="billing-group-dashboard.php?group_id=select"><button type="button" class="btn btn-primary"><b>New Group Bill</b>
       </button></a>
-    </div>
-    <div class="col">
-      <a href="pos-billing.php"><button type="button" class="btn btn-primary position-relative">
-          POS Billing
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            New
-            <span class="visually-hidden">unread messages</span>
-          </span>
-        </button>
-      </a>
     </div>
     <!--<div class="col">-->
     <!--  <a href="customer-history.php"><button type="button" class="btn btn-secondary"><b>Group History</b></button></a>-->

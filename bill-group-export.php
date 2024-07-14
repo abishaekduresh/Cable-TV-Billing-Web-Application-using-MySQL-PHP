@@ -36,42 +36,42 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
     <div class="container">
         <div class="d-flex justify-content-end">
-            <!--<button type="click" class="btn btn-warning btn-lg justify-content-end" onclick="goBack()"><img src="assets/arrow-left-solid.svg" -->
-            <!--width="20" height="20"> &nbsp;Back </button>-->
+            <button type="click" class="btn btn-warning btn-lg justify-content-end" onclick="goBack()"><img src="assets/arrow-left-solid.svg" 
+            width="20" height="20"> &nbsp;Back </button>
         </div>
     </div>
 
             
 <div class="container">
   <div class="row">
-    <!--<div class="col">-->
-    <!--    <form method="POST" action="code-bill-export.php">-->
-    <!--        <h2><u>Export Bill as Excel</u></h2><br>-->
-    <!--        <div class="form-group">-->
-    <!--            <label for="start_date">Start Date</label>-->
-    <!--            <input type="date" class="form-control" id="start_date" name="start_date" value="<?php echo $currentDate?>" required>-->
-    <!--        </div>-->
-    <!--        <div class="form-group">-->
-    <!--            <label for="end_date">End Date</label>-->
-    <!--            <input type="date" class="form-control" id="end_date" name="end_date" value="<?php echo $currentDate?>" required>-->
-    <!--        </div>-->
-    <!--        <div class="form-group">-->
-    <!--            <label><u>Bill By :</u></label><br>-->
-    <!--            <label><input type="checkbox" name="filter[]" value="23A002"> Duresh</label>-->
-    <!--            <label><input type="checkbox" name="filter[]" value="23A001"> Baskar Raj</label>-->
-    <!--            <label><input type="checkbox" name="filter[]" value="23E001"> Kannika</label>-->
-    <!--            <label><input type="checkbox" name="filter[]" value="23A002"> Santhanam</label>-->
-    <!--            <label><input type="checkbox" name="filter[]" value="23E003"> Jeyaraj Thatha</label>-->
-    <!--            <br>-->
-    <!--            <label><u>Bill Status :</u></label>-->
-    <!--            <br>-->
-    <!--            <label><input type="checkbox" name="status_filter[]" value="cancel"> Cancel</label>-->
-    <!--            <label><input type="checkbox" name="status_filter[]" value="approve" checked> Approve</label>-->
+    <div class="col">
+        <form method="POST" action="code-bill-export.php">
+            <h2><u>Export Bill as Excel</u></h2><br>
+            <div class="form-group">
+                <label for="start_date">Start Date</label>
+                <input type="date" class="form-control" id="start_date" name="start_date" value="<?php echo $currentDate?>" required>
+            </div>
+            <div class="form-group">
+                <label for="end_date">End Date</label>
+                <input type="date" class="form-control" id="end_date" name="end_date" value="<?php echo $currentDate?>" required>
+            </div>
+            <div class="form-group">
+                <label><u>Bill By :</u></label><br>
+                <label><input type="checkbox" name="filter[]" value="23A002"> Duresh</label>
+                <label><input type="checkbox" name="filter[]" value="23A001"> Baskar Raj</label>
+                <label><input type="checkbox" name="filter[]" value="23E001"> Kannika</label>
+                <label><input type="checkbox" name="filter[]" value="23A002"> Santhanam</label>
+                <label><input type="checkbox" name="filter[]" value="23E003"> Jeyaraj Thatha</label>
+                <br>
+                <label><u>Bill Status :</u></label>
+                <br>
+                <label><input type="checkbox" name="status_filter[]" value="cancel"> Cancel</label>
+                <label><input type="checkbox" name="status_filter[]" value="approve" checked> Approve</label>
                  <!--Add more checkboxes for other filter options -->
-    <!--        </div>-->
-    <!--        <button type="submit" class="btn btn-primary" name="submit">Download</button>-->
-    <!--    </form>-->
-    <!--</div>-->
+            </div>
+            <button type="submit" class="btn btn-primary" name="submit">Download</button>
+        </form>
+    </div>
     
     
     <div class="col">
@@ -81,28 +81,22 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     $fromDate = "";
                     $endDate = "";
                     $filename = "";
-                    $bill_no_FilterCondition = '';
-                    $group_id_FilterCondition = '';
 
                 // Check if the form has been submitted
                 if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $fromDate = $_POST["from_date"];
                     $endDate = $_POST["end_date"];
                     
-                    $from_bill_no = isset($_POST['from_bill_no']) ? $_POST['from_bill_no'] : '';
-                    $to_bill_no = isset($_POST['to_bill_no']) ? $_POST['to_bill_no'] : '';
-                    $group_id = isset($_POST['group_id']) ? $_POST['group_id'] : '';
-                    
-                    if (!empty($from_bill_no) && !empty($to_bill_no)) {
-                        $bill_no_FilterCondition = "AND billNo BETWEEN '$from_bill_no' AND '$to_bill_no'";
-                    }
-                    
-                    if (!empty($group_id)) {
-                        $group_id_FilterCondition = "AND group_id = $group_id";
+                    $from_time = isset($_POST['from_time']) ? $_POST['from_time'] : '';
+                    $to_time = isset($_POST['to_time']) ? $_POST['to_time'] : '';
+                    $timeFilterCondition = '';
+
+                    if (!empty($from_time) && !empty($to_time)) {
+                        $timeFilterCondition = "AND time BETWEEN '$from_time' AND '$to_time'";
                     }
 
                     // Fetch data from the MySQL database based on the date range
-                    $sql = "SELECT stbno FROM billgroup WHERE date BETWEEN '$fromDate' AND '$endDate' AND status = 'approve' $bill_no_FilterCondition $group_id_FilterCondition";
+                    $sql = "SELECT stbno FROM billgroup WHERE date BETWEEN '$fromDate' AND '$endDate' AND status = 'approve' $timeFilterCondition";
                     $result = $con->query($sql);
                 
                     // if ($result && $result->num_rows > 0) {
@@ -140,7 +134,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     $userId = $_SESSION['id'];
                     $username = $_SESSION['username'];
                     $role = $_SESSION['role'];
-                    $action = "Text Group Bill Exported - $session_username";
+                    $action = "Text Group Bill Exported - $from_time--$to_time /$session_username";
                 
                     // Call the function to insert user activity log
                     logUserActivity($userId, $username, $role, $action);
@@ -150,67 +144,41 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                         fclose($file);
 
                     } else {
-                        echo "<center><b><h1>No data found.!!!</h1></b></center>";
+                        echo "No data found.";
                     }
                 }
                 
                 // Close the database connection
-                // $con->close();
+                $con->close();
                 ?>
 <!--https://chat.openai.com/share/e40cf2a0-a130-4724-806b-1a146c825bf4-->
                 <form method="POST" action="">
                     <h2><u>Export Bill as Text file</u></h2>
                     <div class="mb-3">
-                        <label for="from_date" class="form-label">From Date</label> <span class="text-danger">*</span></label>
+                        <label for="from_date" class="form-label">From Date</label>
                         <input type="date" class="form-control" id="from_date" value="<?php echo $currentDate?>" name="from_date" required>
                     </div>
                     <div class="mb-3">
-                        <label for="end_date" class="form-label">End Date</label> <span class="text-danger">*</span></label>
+                        <label for="end_date" class="form-label">End Date</label>
                         <input type="date" class="form-control" id="end_date" value="<?php echo $currentDate?>" name="end_date" required>
+                    </div><p>Under Testing...</p>
+                    <div class="mb-3">
+                        <label for="from_time" class="form-label">From Time</label>
+                        <input type="time" class="form-control" id="from_time" name="from_time">
                     </div>
                     <div class="mb-3">
-                        <select name="group_id" class="form-select">
-                            <option value="select" selected disabled>Select Group</option>
-                            <?php
-                            $query = "SELECT * FROM groupinfo WHERE group_id != '1' AND group_id != '2' LIMIT 100";
-                            $result = mysqli_query($con, $query);
-                            $selectedValue = isset($_GET['group_id']) ? $_GET['group_id'] : ''; // Get the selected value from the URL
-
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                $optionValueID = $row['group_id'];
-                                $optionValue = $row['groupName'];
-                                 ?>
-                                <option value="<?php echo $optionValueID; ?>" <?php if ($optionValue === $selectedValue) echo 'selected'; ?>><?php echo $optionValue; ?></option>
-                                <?php
-                             }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <input type="number" class="form-control" id="from_bill_no" name="from_bill_no" placeholder="Enter From Bill No.">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <input type="number" class="form-control" id="to_bill_no" name="to_bill_no" placeholder="Enter To Bill No.">
-                        </div>
+                        <label for="to_time" class="form-label">End Time</label>
+                        <input type="time" class="form-control" id="to_time" name="to_time">
                     </div>
                     <button type="submit" class="btn btn-primary">Search</button>
                 </form>
-                    <?php 
-                    if (isset($result) && $result->num_rows > 0) {
-                        if (!empty($filename)) { ?>
-                            <b>From Date: <?= formatDate($fromDate); ?><br/>To Date: <?= formatDate($endDate); ?> 
-                            <br/>
-                                <?= isset($bill_no_FilterCondition) ? $bill_no_FilterCondition : ''; ?>
-                            <br/>
-                                <?= isset($group_id) ? 'Group Name : ' : ''; ?><?= isset($group_id) ? fetchGroupName($group_id) : ''; ?>
-                            </b>
-                            <br>
-                            <a href="<?= $filename ?>" class="btn btn-primary" download>Download Data</a>
-                    <?php 
-                        } 
-                    } 
-                    ?>
+                
+                <?php if (isset($result) && $result->num_rows > 0) { 
+                ?><b>From Date :<?= formatDate($fromDate); ?><br/>To Date:<?= 
+                formatDate($endDate);?></b>
+                    <br>
+                    <a href="<?php echo $filename ?>" class="btn btn-primary" download>Download Data</a>
+                <?php } ?>
                 </div>
         </div>
     </div>

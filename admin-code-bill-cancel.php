@@ -8,15 +8,9 @@ require "component.php";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the selected fruit value from the form
     $selectedValue = $_POST['selectedValue'];
-    $bill_no = $_POST['bill_id'];
+    $bill_no = $_POST['bill_no'];
     $stbNo = $_POST['stbno'];
     $date = $_POST['date'];
-    $name = $_POST['name'];
-    $billNo = $_POST['billNo'];
-    $due_month_timestamp = $_POST['due_month_timestamp'];
-    $pMode = $_POST['pMode'];
-    $phone = $_POST['phone'];
-    // $ = $_POST[''];
 
     // Update the table with the selected fruit value
     $updateQuery = "UPDATE bill SET status = '$selectedValue' WHERE bill_id = '$bill_no'";
@@ -24,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($updateResult) {
         // Database update successful, perform any additional actions or display a success message
-        // echo "Database update successful. Bill Status updated to: " . $selectedValue; 
+        echo "Database update successful. Bill Status updated to: " . $selectedValue; 
 
                 // Calculate sum of paid_amount for the current date
                 $sqlSum = "SELECT SUM(Rs) AS total_Rs FROM bill WHERE date = '$date' AND status = 'approve'";
@@ -56,19 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Call the function to insert user activity log
             logUserActivity($userId, $username, $role, $action);
         }
-            $bill_status = "cancel";
-            $sms_res = sms_api($name, $phone, $billNo, $due_month_timestamp, $stbNo, $pMode, $bill_status);
-            
-            if (isset($_SESSION['id']) && $sms_res == true) {
-                // Get the user information before destroying the session
-                $userId = $_SESSION['id'];
-                $username = $_SESSION['username'];
-                $role = $_SESSION['role'];
-                $action = "Cancel SMS Send to $phone - $stbNo";
-            
-                // Call the function to insert user activity log
-                logUserActivity($userId, $username, $role, $action);
-            }
+    
         ?>
         <center><img src="assets/green-thumbs-up.svg" alt="green-thumbs-up" width="512px" height="512px"></center>
         <?php

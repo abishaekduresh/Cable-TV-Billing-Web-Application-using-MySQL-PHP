@@ -2,13 +2,202 @@
    session_start();
    include "dbconfig.php";
    include 'preloader.php';
-//   include 'component.php';
-//   include 'component2.php';
       
     if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         $session_username = $_SESSION['username']; 
         ?>
+<?php
+
+
+$sumBillAmt = 0;
+$sumDiscount = 0;
+$sumRs = 0;
+
+
+
+
+$sumQuery ="SELECT
+  (SELECT SUM(paid_amount) FROM bill WHERE date = '$currentDate' AND status = 'approve') AS sumBillAmt,
+  (SELECT SUM(discount) FROM bill WHERE date = '$currentDate' AND status = 'approve') AS sumDiscount,
+  (SELECT SUM(Rs) FROM bill WHERE date = '$currentDate' AND status = 'approve') AS sumRs";
+
+$result = mysqli_query($con, $sumQuery);
+
+
+if ($result) {
   
+    $row = mysqli_fetch_assoc($result);
+
+    
+    if ($row) {
+        $sumBillAmt = $row['sumBillAmt'];
+        $sumDiscount = $row['sumDiscount'];
+        $sumRs = $row['sumRs'];
+    }
+
+    
+} else {
+  
+    echo "Error executing the query: " . mysqli_error($con);
+}
+?>
+
+<?php
+
+
+$sumIncome = 0;
+$sumExpense = 0;
+$profit = 0;
+
+$sumIncomeExpense ="SELECT
+  (SELECT SUM(amount) FROM in_ex WHERE type = 'Income' AND MONTH(date)='$currentMonth') AS sumIncome,
+  (SELECT SUM(amount) FROM in_ex WHERE type = 'Expense' AND MONTH(date)='$currentMonth') AS sumExpense";
+
+$resultsumIncomeExpense = mysqli_query($con, $sumIncomeExpense);
+
+
+if ($resultsumIncomeExpense) {
+  
+    $row = mysqli_fetch_assoc($resultsumIncomeExpense);
+
+    
+    if ($row) {
+        $sumIncome = $row['sumIncome'];
+        $sumExpense = $row['sumExpense'];
+    }
+
+} else {
+  
+    echo "Error executing the query: " . mysqli_error($con);
+}
+?>
+
+<?php
+
+
+$sumMonthBillAmt = 0;
+$sumMonthDiscount = 0;
+$sumMonthRs = 0;
+
+
+$sumMonth ="SELECT
+  (SELECT SUM(paid_amount) FROM bill WHERE MONTH(date) = '$currentMonth' AND status = 'approve') AS sumMonthBillAmt,
+  (SELECT SUM(discount) FROM bill WHERE MONTH(date) = '$currentMonth' AND status = 'approve') AS sumMonthDiscount,
+  (SELECT SUM(Rs) FROM bill WHERE MONTH(date) = '$currentMonth' AND status = 'approve') AS sumMonthRs";
+
+
+
+$resultMonth = mysqli_query($con, $sumMonth);
+
+
+if ($resultMonth) {
+  
+    $row = mysqli_fetch_assoc($resultMonth);
+
+    
+    if ($row) {
+        $sumMonthBillAmt = $row['sumMonthBillAmt'];
+        $sumMonthDiscount = $row['sumMonthDiscount'];
+        $sumMonthRs = $row['sumMonthRs'];
+    }
+
+$formattedSumMonthBillAmt = number_format($sumMonthBillAmt, 0, ',', ',');
+$formattedSumMonthDiscount = number_format($sumMonthDiscount, 0, ',', ',');
+$formattedSumMonthRs = number_format($sumMonthRs, 0, ',', ',');
+
+
+} else {
+  
+    echo "Error executing the query: " . mysqli_error($con);
+}
+
+
+?>
+<?php
+$todayCount = 0;
+$todayCancel = 0;
+$totalCashCount = 0;
+$totalOnlineCount = 0;
+
+$countQuery="SELECT 
+          COUNT(CASE WHEN date = '$currentDate' THEN 1 END) AS todayCount,
+          COUNT(CASE WHEN status = 'cancel' AND date = '$currentDate' THEN 1 END) AS todayCancel,
+          COUNT(CASE WHEN pMode = 'cash' AND status = 'approve' AND date = '$currentDate' THEN 1 END) AS totalCashCount,
+          COUNT(CASE WHEN pMode = 'gpay' AND status = 'approve' AND date = '$currentDate' THEN 1 END) AS totalOnlineCount
+            FROM bill";
+
+$countresult = mysqli_query($con, $countQuery);
+
+
+if ($countresult) {
+  
+    $row = mysqli_fetch_assoc($countresult);
+
+    
+    if ($row) {
+        $todayCount = $row['todayCount'];
+        $todayCancel = $row['todayCancel'];
+        $totalCashCount = $row['totalCashCount'];
+        $totalOnlineCount = $row['totalOnlineCount'];
+    }
+
+} else {
+  
+    echo "Error executing the query: " . mysqli_error($con);
+}
+
+?>
+
+<?php 
+
+$totalCreditCount = 0;
+$totalCreditRsSum = 0;
+
+$sql = "SELECT * FROM bill WHERE pMode = 'credit' AND status = 'approve'";
+$result2 = mysqli_query($con, $sql);
+
+if ($result2) {
+    // Get the total number of rows returned by the query
+    $totalCreditCount = mysqli_num_rows($result2);
+    
+    // Use a while loop to fetch each row from the result set
+    while ($row = mysqli_fetch_assoc($result2)) {
+        // Accumulate the 'Rs' values from each row
+        $totalCreditRsSum += $row['Rs']; // Make sure 'Rs' is the correct column name
+    }
+
+} else {
+    echo "Error executing the query: " . mysqli_error($con);
+}
+
+
+$totalGroupCreditCount = 0;
+$totalGroupCreditRsSum = 0;
+
+$sqlGroup = "SELECT * FROM billgroupdetails WHERE pMode = 'credit' AND status = 'approve'";
+$result2Group = mysqli_query($con, $sqlGroup);
+
+if ($result2Group) {
+    // Get the total number of rows returned by the query
+    $totalGroupCreditCount = mysqli_num_rows($result2Group);
+    
+    // Use a while loop to fetch each row from the result set
+    while ($rowGroup = mysqli_fetch_assoc($result2Group)) {
+        // Accumulate the 'Rs' values from each row
+        $totalGroupCreditRsSum += $rowGroup['Rs']; // Make sure 'Rs' is the correct column name
+    }
+
+} else {
+    echo "Error executing the query: " . mysqli_error($con);
+}
+
+
+
+mysqli_close($con);
+
+
+?>
+       
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,95 +208,97 @@
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-body
-{
-	background:#00bcd4;
+body{margin-top:20px;
+background-color:#f2f6fc;
+color:#69707a;
+}
+.img-account-profile {
+    height: 10rem;
+}
+.rounded-circle {
+    border-radius: 50% !important;
+}
+.card {
+    box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+}
+.card .card-header {
+    font-weight: 500;
+}
+.card-header:first-child {
+    border-radius: 0.35rem 0.35rem 0 0;
+}
+.card-header {
+    padding: 1rem 1.35rem;
+    margin-bottom: 0;
+    background-color: rgba(33, 40, 50, 0.03);
+    border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+}
+.form-control, .dataTable-input {
+    display: block;
+    width: 100%;
+    padding: 0.875rem 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1;
+    color: #69707a;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #c5ccd6;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.35rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-h1
-{
-	color:#fff;
-	margin:40px 0 60px 0;
-	font-weight:300;
+.nav-borders .nav-link.active {
+    color: #0061f2;
+    border-bottom-color: #0061f2;
+}
+.nav-borders .nav-link {
+    color: #69707a;
+    border-bottom-width: 0.125rem;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+.fa-2x {
+    font-size: 2em;
 }
 
-.our-team-main
-{
-	width:100%;
-	height:auto;
-	border-bottom:5px #323233 solid;
-	background:#fff;
-	text-align:center;
-	border-radius:10px;
-	overflow:hidden;
-	position:relative;
-	transition:0.5s;
-	margin-bottom:28px;
+.table-billing-history th, .table-billing-history td {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-left: 1.375rem;
+    padding-right: 1.375rem;
+}
+.table > :not(caption) > * > *, .dataTable-table > :not(caption) > * > * {
+    padding: 0.75rem 0.75rem;
+    background-color: var(--bs-table-bg);
+    border-bottom-width: 1px;
+    box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
 }
 
-
-.our-team-main img
-{
-	border-radius:50%;
-	margin-bottom:20px;
-	width: 90px;
+.border-start-primary {
+    border-left-color: #0061f2 !important;
 }
-
-.our-team-main h3
-{
-	font-size:20px;
-	font-weight:700;
+.border-start-secondary {
+    border-left-color: #6900c7 !important;
 }
-
-.our-team-main p
-{
-	margin-bottom:0;
+.border-start-success {
+    border-left-color: #00ac69 !important;
 }
-
-.team-back
-{
-	width:100%;
-	height:auto;
-	position:absolute;
-	top:0;
-	left:0;
-	padding:5px 15px 0 15px;
-	text-align:left;
-	background:#fff;
-	
+.border-start-lg {
+    border-left-width: 0.25rem !important;
 }
-
-.team-front
-{
-	width:100%;
-	height:auto;
-	position:relative;
-	z-index:10;
-	background:#fff;
-	padding:15px;
-	bottom:0px;
-	transition: all 0.5s ease;
+.h-100 {
+    height: 100% !important;
 }
-
-.our-team-main:hover .team-front
-{
-	bottom:-200px;
-	transition: all 0.5s ease;
-}
-
-.our-team-main:hover
-{
-	border-color:#777;
-	transition:0.5s;
-}
-
-.dt-img-fluid {
-    /*width: 10px;*/
-    height: 60px;
-}
-
-/*our-team-main*/
-
 
 </style>
 </head>
@@ -116,407 +307,620 @@ h1
     <?php include 'admin-menu-bar.php'?>
 <br>
     <?php include 'admin-menu-btn.php'?>
-    
-<!--<div class="container mt-2" style="text-align: center;">-->
-    <input type="hidden" id="date" class="form-control" style="display: inline-block; width: 230px;" value="<?= $currentDate ?>">
-<!--</div>-->
 
-
-<div class="container">
-    <!-- Two-column layout -->
-    <div class="row">
-        <!-- Left Column -->
-        <div class="col-lg-6">
-            <div  id="dashboard-data" style="display: none;">
-                <!--Today-->
-                <h4 style="text-align: center;">Today Bill</h4>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/bill.png" alt="Billing" class="dt-img-fluid" style="width: 60px; border: 0px;" />
-                                <h3>Collection</h3>
-                            </div>
-                            <div class="team-back">
-                                <div style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 20px;">
-                                    ₹ <span id="todayColAmt">
-                                    </span>
-                                </div>
-                                <p>Indiv &nbsp;&nbsp;: ₹ <span id="indivTodayColAmt"></span></p>
-                                <p>Group : ₹ <span id="groupTodayColAmt"></span></p>
-                            </div>
-                        </div>
+<div class="container-xl px-4 mt-4">
+    Available SMS Credit: <b><?= sms_credit(); ?></b>
+    <!--<hr class="mt-0 mb-4">-->
+ 
+     <div class="row">
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 1-->
+            <div class="card h-10 border-start-lg border-start-primary">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Current Month Bill Amount</div>
+                    <div class="h3">₹
+                      <span id="CurrentMonthBillAmount" data-value="<?php echo $formattedSumMonthBillAmt; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleCurrentMonthBillAmount"></i>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/discount.png" alt="Discount" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Discount</h3>
-                            </div>
-                            <div class="team-back">
-                                <div style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 20px;">
-                                    ₹ <span id="todayDisAmt">
-                                    </span>
-                                </div>
-                                <p>Indiv &nbsp;&nbsp;: ₹ <span id="indivTodayDisAmt"></span></p>
-                                <p>Group : ₹ <span id="groupTodayDisAmt"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/profits.png" alt="Profits" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Profit</h3>
-                            </div>
-                            <div class="team-back" style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 60px;">
-                                ₹ <span id="todayProfAmt">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <h4 style="text-align: center;">Credit Due Bill Amt</h4>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/credit.png" alt="Credit" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Individual</h3>
-                            </div>
-                            <div class="team-back">
-                                <div style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 20px;">
-                                    ₹ <span id="indivTotCreditAmt">
-                                    </span>
-                                </div>
-                                <p>Count &nbsp;&nbsp;: <span id="indivCreditBillCount"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/credit.png" alt="Credit" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Group</h3>
-                            </div>
-                            <div class="team-back">
-                                <div style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 20px;">
-                                    ₹ <span id="groupTotCreditAmt">
-                                    </span>
-                                </div>
-                                <p>Count &nbsp;&nbsp;: <span id="groupCreditBillCount"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/smartphone.png" alt="SMS" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>SMS Credits</h3>
-                            </div>
-                            <div class="team-back" style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 40px;">
-                                <span id="avlSmsCredit">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <h4 style="text-align: center;"> Current Month </h4>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/month.png" alt="Month" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Income</h3>
-                            </div>
-                            <div class="team-back" style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 40px;">
-                                ₹ <span id="totIncomeAmt">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/expenses.png" alt="Expenses" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Expense</h3>
-                            </div>
-                            <div class="team-back" style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 40px;">
-                                ₹ <span id="totExpenseAmt">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/profits.png" alt="Profits" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Profit</h3>
-                            </div>
-                            <div class="team-back" style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 40px;">
-                                ₹ <span id="incomeExpenseProfit">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>  <!--  dashboard-data div  -->
-
-            <div class="row justify-content-center mt-5">
-                <div class="col-md-6">
-                    <button type="button" id="passcode_btn" class="btn btn-primary" onclick="checkPasscode()">
-                      Enter Passcode
-                    </button>
                 </div>
             </div>
-        
-
         </div>
-
-
-        <!-- Right Column (empty) -->
-        <!--<div class="col-lg-6">-->
-            <!--<p>Testing</p>-->
-            
-    <!--<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
-    <!--<script type="text/javascript">-->
-    <!--  // Sample JSON data for Red Sox Attendance and Amount-->
-    <!--  var jsonData = [-->
-    <!--    {"date": "2022-01", "attendance": 35000, "amount": 4000},-->
-    <!--    {"date": "2022-04", "attendance": 35000, "amount": 4000},-->
-    <!--    {"date": "2023-04", "attendance": 36000, "amount": 2000},-->
-    <!--    {"date": "2023-04", "attendance": 17000, "amount": 4050},-->
-    <!--    {"date": "2023-05", "attendance": 38000, "amount": 1000},-->
-    <!--    {"date": "2024-05", "attendance": 2500, "amount": 4000}-->
-    <!--    // Add more data points as needed-->
-    <!--  ];-->
-
-    <!--  // Load the Google Charts library-->
-    <!--  google.charts.load('current', {'packages':['corechart']});-->
-
-    <!--  // Set a callback function to run when the Google Charts library is loaded-->
-    <!--  google.charts.setOnLoadCallback(drawChart);-->
-
-    <!--  function drawChart() {-->
-    <!--    // Convert JSON data to DataTable format-->
-    <!--    var data = new google.visualization.DataTable();-->
-    <!--    data.addColumn('string', 'Date');-->
-    <!--    data.addColumn('number', 'Attendance');-->
-    <!--    data.addColumn('number', 'Amount');-->
-
-    <!--    jsonData.forEach(function(row) {-->
-    <!--      data.addRow([row.date, row.attendance, row.amount]);-->
-    <!--    });-->
-
-    <!--    // Define chart options-->
-    <!--    var options = {-->
-    <!--      title: 'Red Sox Attendance and Amount',-->
-    <!--      curveType: 'function',-->
-    <!--      legend: { position: 'bottom' },-->
-    <!--      series: {-->
-    <!--        0: { targetAxisIndex: 0 },-->
-    <!--        1: { targetAxisIndex: 1 }-->
-    <!--      },-->
-    <!--      vAxes: {-->
-    <!--        0: { title: 'Attendance' },-->
-    <!--        1: { title: 'Amount' }-->
-    <!--      }-->
-    <!--    };-->
-
-    <!--    // Create and draw the combination chart-->
-    <!--    var chart = new google.visualization.LineChart(document.getElementById('attendance_chart'));-->
-    <!--    chart.draw(data, options);-->
-    <!--  }-->
-    <!--</script>-->
-    <!--<div id="attendance_chart" style="width: 900px; height: 500px;"></div>-->
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 2-->
+            <div class="card h-100 border-start-lg border-start-secondary">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Current Month Discount</div>
+                    <div class="h3">₹
+                      <span id="CurrentMonthDiscount" data-value="<?php echo $formattedSumMonthDiscount; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleCurrentMonthDiscount"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 3-->
+            <div class="card h-100 border-start-lg border-start-success">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Current Month Collection (Rs)</div>
+                    <div class="h3">₹
+                      <span id="CurrentMonthCollection" data-value="<?php echo $formattedSumMonthRs; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleCurrentMonthCollection"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
     
+    <hr class="mt-0 mb-4">
     
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--  <head>-->
-<!--    <title>Red Sox Attendance and Amount Chart</title>-->
-<!--    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
-<!--    <script type="text/javascript">-->
-<!--      // Sample JSON data for Red Sox Attendance and Amount-->
-<!--      var jsonData = [-->
-<!--        {"date": "2022-01", "attendance": 35000, "amount": 4000},-->
-<!--        {"date": "2022-04", "attendance": 35000, "amount": 4000},-->
-<!--        {"date": "2023-04", "attendance": 36000, "amount": 2000},-->
-<!--        {"date": "2023-04", "attendance": 17000, "amount": 4050},-->
-<!--        {"date": "2023-05", "attendance": 38000, "amount": 1000},-->
-<!--        {"date": "2024-05", "attendance": 2500, "amount": 4000}-->
-<!--        // Add more data points as needed-->
-<!--      ];-->
-
-<!--      // Load the Google Charts library-->
-<!--      google.charts.load('current', {'packages':['corechart']});-->
-
-<!--      // Set a callback function to run when the Google Charts library is loaded-->
-<!--      google.charts.setOnLoadCallback(drawChart);-->
-
-<!--      function drawChart() {-->
-        <!--// Convert JSON data to DataTable format-->
-<!--        var data = new google.visualization.DataTable();-->
-<!--        data.addColumn('string', 'Date');-->
-<!--        data.addColumn('number', 'Attendance');-->
-<!--        data.addColumn('number', 'Amount');-->
-
-<!--        jsonData.forEach(function(row) {-->
-<!--          data.addRow([row.date, row.attendance, row.amount]);-->
-<!--        });-->
-
-        <!--// Define chart options-->
-<!--        var options = {-->
-<!--          title: 'Red Sox Attendance and Amount',-->
-<!--          legend: { position: 'bottom' },-->
-<!--          seriesType: 'bars',-->
-<!--          series: {-->
-<!--            0: { targetAxisIndex: 0 },-->
-<!--            1: { targetAxisIndex: 1 }-->
-<!--          },-->
-<!--          vAxes: {-->
-<!--            0: { title: 'Attendance' },-->
-<!--            1: { title: 'Amount' }-->
-<!--          },-->
-<!--          bar: { groupWidth: '75%' }-->
-<!--        };-->
-
-        <!--// Create and draw the bar chart-->
-<!--        var chart = new google.visualization.ComboChart(document.getElementById('attendance_chart'));-->
-<!--        chart.draw(data, options);-->
-<!--      }-->
-<!--    </script>-->
-<!--  </head>-->
-<!--  <body>-->
-    <!-- Div where the chart will be rendered -->
-<!--    <div id="attendance_chart" style="width: 900px; height: 500px;"></div>-->
-<!--  </body>-->
-<!--</html>-->
-
-
-
-            
-        <!--</div>-->
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 1-->
+            <div class="card h-10 border-start-lg border-start-primary">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Current Month Income</div>
+                    <div class="h3">₹
+                      <span id="CurrentMonthIncome" data-value="<?php echo $sumIncome ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleCurrentMonthIncome"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 2-->
+            <div class="card h-100 border-start-lg border-start-secondary">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Current Month Expense</div>
+                    <div class="h3">₹
+                      <span id="CurrentMonthExpense" data-value="<?php echo $sumExpense; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleCurrentMonthExpense"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 2-->
+            <div class="card h-100 border-start-lg border-start-success">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Current Month Profit</div>
+                    <div class="h3">₹
+                      <span id="CurrentMonthProfit" data-value="<?php $profit = $sumIncome - $sumExpense; echo $profit; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleCurrentMonthProfit"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+    
+    <!--<hr class="mt-0 mb-4">-->
+    
+    <hr class="mt-0 mb-4">
+    
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 1-->
+            <div class="card h-10 border-start-lg border-start-primary">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Today Bill Amount</div>
+                    <div class="h3">₹
+                      <span id="TodayBillAmount" data-value="<?php echo $sumBillAmt; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleTodayBillAmount"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 2-->
+            <div class="card h-100 border-start-lg border-start-secondary">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Today Discount</div>
+                    <!--<div class="h3" id="password">₹ <?php echo $sumDiscount?></div>-->
+                    <div class="h3">₹
+                      <span id="TodayDiscount" data-value="<?php echo $sumDiscount; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleTodayDiscount"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 3-->
+            <div class="card h-100 border-start-lg border-start-success">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Today Collection (Rs)</div>
+                    <!--<div class="h3 d-flex align-items-center">₹ <?php echo $sumRs?></div>-->
+                    <div class="h3">₹
+                      <span id="TodayCollection" data-value="<?php echo $sumRs; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleTodayCollection"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--<hr class="mt-0 mb-4">-->
+<!--</div>   -->
+    
+    
+<!--<div class="container-xl px-4 mt-4">-->
+    <!--<hr class="mt-0 mb-4">-->
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 1-->
+            <div class="card h-100 border-start-lg border-start-primary">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Today Bill Count</div>
+                    <!--<div class="h3">₹ <?php echo $todayCount?></div>-->
+                    <div class="h3">
+                      <span id="TodayBillCount" data-value="<?php echo $todayCount; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleTodayBillCount"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 2-->
+            <div class="card h-100 border-start-lg border-start-secondary">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Today Cancel Bill</div>
+                    <!--<div class="h3">₹ <?php echo $todayCancel?></div>-->
+                    <div class="h3">
+                      <span id="TodayCancelBill" data-value="<?php echo $todayCancel; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleTodayCancelBill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 border-start-lg border-start-success">
+                 <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Indiv Credit Bill Pending</div>
+                    <div class="h3 d-flex align-items-center"> <?php echo $totalCreditCount?>   -- ₹ <?php echo $totalCreditRsSum?></div>
+                    <!--<div class="h3">₹-->
+                    <!--  <span id="TodayCollection" data-value="<?php echo $sumRs; ?>">****</span>-->
+                    <!--  <i class="bi bi-eye-slash" id="toggleTodayCollection"></i>-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+    <!--</div>-->
+    <!--<hr class="my-4">-->
+</div>  
 
+<!--<div class="container-xl px-4 mt-4">-->
+    <!--<hr class="mt-0 mb-4">-->
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 1-->
+            <div class="card h-10 border-start-lg border-start-primary">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Today Cash Bill</div>
+                    <div class="h3">
+                      <span id="TodayCashCount" data-value="<?php echo $totalCashCount; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleTodayCashCount"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <!-- Billing card 2-->
+            <div class="card h-100 border-start-lg border-start-secondary">
+                <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Today GPay Bill</div>
+                    <!--<div class="h3">₹ <span id="password"><?php echo $sumBillAmt; ?></span>&nbsp;<i class="bi bi-eye-slash" id="togglePassword"></i></div>-->
+                    <div class="h3">
+                      <span id="TodayGpay" data-value="<?php echo $totalOnlineCount; ?>">****</span>
+                      <i class="bi bi-eye-slash" id="toggleTodayGpay"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 border-start-lg border-start-success">
+                 <div class="card-body">
+                    <div style="font-weight: bold;" class="small text-muted">Group Credit Bill Pending</div>
+                    <div class="h3 d-flex align-items-center"> <?php echo $totalGroupCreditCount?>   -- ₹ <?php echo $totalGroupCreditRsSum?></div>
+                    <!--<div class="h3">₹-->
+                    <!--  <span id="TodayCollection" data-value="<?php echo $sumRs; ?>">****</span>-->
+                    <!--  <i class="bi bi-eye-slash" id="toggleTodayCollection"></i>-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>   
+    
+ 
+
+                
+<!--<div class="container">-->
+<!--  <div class="row">-->
+<!--    <div class="col-6" id="piechart4" style="width: 900px; height: 500px;"></div>-->
+    <div class="col-6" id="piechart2" style="width: 900px; height: 500px;"></div>
+    
+    
+    <!--<div id="columnchart_material" style="width: 800px; height: 500px;"></div>-->
+    
+<!--    <div class="col-6" id="piechart" style="width: 900px; height: 500px;"></div>-->
+<!--    <div class="col-6" id="piechart3" style="width: 900px; height: 500px;"></div>-->
+    
+<!--  </div>-->
+<!--</div>-->
 
     
     
-<!-- Bootstrap JS Bundle (including Popper) -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    
+    
+    
+<!----------------------------------------Google Pie Charts 3-------------------------------------------------------->
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['bill_by', 'count'],
+         <?php
+        //  $sql = "SELECT bill_by, COUNT(*) AS count FROM bill GROUP BY bill_by";
+        $sql = "SELECT bill_by, COUNT(*) AS count FROM bill WHERE status = 'approve' AND date = CURDATE() - INTERVAL 1 DAY GROUP BY bill_by";
+         $fire = mysqli_query($con,$sql);
+          while ($result = mysqli_fetch_assoc($fire)) {
+            echo"['".$result['bill_by']."',".$result['count']."],";
+          }
+
+         ?>
+        ]);
+
+        var options = {
+          title: "Yeserday Collection ' approved bills '"
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart3'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    
+    <!----------------------------------------Google Pie Charts 2-------------------------------------------------------->
+    
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['bill_by', 'count'],
+         <?php
+
+         $sql = "SELECT bill_by, COUNT(*) AS count FROM bill WHERE status = 'approve' AND date = '$Date' GROUP BY bill_by";
+
+         $fire = mysqli_query($con,$sql);
+          while ($result = mysqli_fetch_assoc($fire)) {
+            echo"['".$result['bill_by']."',".$result['count']."],";
+          }
+
+         ?>
+        ]);
+
+        var options = {
+          title: "Today Collection ' approved bills '"
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    
+    
+    <!--      BAR Chart         -->
+
+
+
 
     
-<script type="text/javascript">
+    <!----------------------------------------Google Pie Charts -------------------------------------------------------->
 
-function checkPasscode() {
-    var passcode = prompt("Please enter the passcode:");
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['bill_by', 'count'],
+         <?php
+        //  $sql = "SELECT bill_by, COUNT(*) AS count FROM bill GROUP BY bill_by";
+        $sql = "SELECT bill_by, COUNT(*) AS count FROM bill WHERE status = 'cancel' AND date = CURDATE() - INTERVAL 1 DAY GROUP BY bill_by";
+         $fire = mysqli_query($con,$sql);
+          while ($result = mysqli_fetch_assoc($fire)) {
+            echo"['".$result['bill_by']."',".$result['count']."],";
+          }
+
+         ?>
+        ]);
+
+        var options = {
+          title: "Yeserday Collection ' cancel bills '"
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+      }
+    </script>
     
-    // Replace with your actual passcode validation logic
-    if (passcode === "sarojaammal") {
-        // Show the item
-        document.getElementById("dashboard-data").style.display = "block";
-        document.getElementById("passcode_btn").style.display = "none";
-        
-    } else {
-        // Hide the item
-        document.getElementById("dashboard-data").style.display = "none";
-        alert("Incorrect passcode. Please try again.");
-    }
+        <!----------------------------------------Google Pie Charts 4 Cancel Bills-------------------------------------------------------->
+    
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['bill_by', 'count'],
+         <?php
+            
+         $sql = "SELECT bill_by, COUNT(*) AS count FROM bill WHERE status = 'cancel' AND date = '$Date' GROUP BY bill_by";
+
+         $fire = mysqli_query($con,$sql);
+          while ($result = mysqli_fetch_assoc($fire)) {
+            echo"['".$result['bill_by']."',".$result['count']."],";
+          }
+
+         ?>
+        ]);
+
+        var options = {
+          title: "Today Collection ' cancel bills '"
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart4'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    
+    <!-------------------------------------Bar Charts--------------------->
+<?php
+
+// Retrieve data from MySQL
+$sql = "SELECT bill_by, COUNT(*) AS count FROM bill GROUP BY bill_by";
+$result = mysqli_query($con, $sql);
+
+// Prepare the data array
+$data = [['bill_by', 'count']];
+while ($row = mysqli_fetch_assoc($result)) {
+  $data[] = [$row['bill_by'], (int)$row['count']];
 }
 
+mysqli_close($con);
+?>
 
-$(document).ready(function(){
-    
-    function formatMoney(amount) {
-        // Convert amount to number and round to two decimal places
-        amount = parseFloat(amount).toFixed(2);
-    
-        // Separate the whole number part from the decimal part
-        let parts = amount.toString().split('.');
-        let wholeNumber = parts[0];
-        let decimalPart = parts.length > 1 ? '.' + parts[1] : '';
-    
-        // Add commas for thousands separator
-        wholeNumber = wholeNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    
-        // Combine whole number part with decimal part
-        return wholeNumber + decimalPart;
-    }
-    
-    var inputData = {
-        date: $("#date").val().trim()
+<script type="text/javascript">
+  google.charts.load('', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawVisualization);
+
+  function drawVisualization() {
+    var data = google.visualization.arrayToDataTable(<?php echo json_encode($data); ?>);
+
+    var options = {
+      title: 'Count of Bills Today',
+      hAxis: {title: 'Count'},
+      vAxis: {title: 'Bill By'},
+      chartArea: {width: '50%'},
+      bars: 'horizontal'
     };
-    
-    console.log(inputData);
 
-    $.ajax({
-        type: "POST",
-        url: "api/v1/admin/dashboard.php",
-        data: JSON.stringify(inputData),
-        contentType: "application/json",
-        success: function(response) {
-            if (response.status === "success") {
-                if (!response.data.indivTodayBillArray.length > 0) {
-                    console.warn('indivTodayArray is empty.');
-                }
-                
-                if (!response.data.groupTodayBillArray.length > 0) {
-                    console.warn('groupTodayArray is empty.');
-                }
-                
-                if (response.data.avlSmsCredit == 0) {
-                    console.warn('avlSmsCredit is zero.');
-                }
-                
-                var indivTodayBillData = response.data.indivTodayBillArray[0];
-                var groupTodayBillData = response.data.groupTodayBillArray[0];
-                var indivCreditBillData = response.data.indivCreditBillArray[0];
-                var groupCreditBillData = response.data.groupCreditBillArray[0];
-                var incomeExpenseArrayData = response.data.incomeExpenseArray[0];
-                
-                var todayTotColAmt = Number(indivTodayBillData.indivTodayBillColAmt) + Number(groupTodayBillData.groupTodayBillColAmt);
-                var todayTotDisAmt = Number(indivTodayBillData.indivTodayBillDisAmt) + Number(groupTodayBillData.groupTodayBillDisAmt);
-                var incomeExpenseProfit = Number(incomeExpenseArrayData.totIncomeAmt) - Number(incomeExpenseArrayData.totExpenseAmt);
-                
-                var todayTotProfAmt = todayTotColAmt - todayTotDisAmt;
-                
-                $("#todayColAmt").html(formatMoney(todayTotColAmt));
-                $("#todayDisAmt").html(formatMoney(todayTotDisAmt));
-                $("#todayProfAmt").html(formatMoney(todayTotProfAmt));
-                $("#indivTodayColAmt").html(formatMoney(indivTodayBillData.indivTodayBillColAmt));
-                $("#groupTodayColAmt").html(formatMoney(groupTodayBillData.groupTodayBillColAmt));
-                $("#indivTodayDisAmt").html(formatMoney(indivTodayBillData.indivTodayBillDisAmt));
-                $("#groupTodayDisAmt").html(formatMoney(groupTodayBillData.groupTodayBillDisAmt));
-                
-                $("#indivTotCreditAmt").html(formatMoney(indivCreditBillData.indivCreditBillAmt));
-                $("#indivCreditBillCount").html(indivCreditBillData.indivCreditBillCount);
-                
-                $("#groupTotCreditAmt").html(formatMoney(groupCreditBillData.groupCreditBillAmt));
-                $("#groupCreditBillCount").html(groupCreditBillData.groupCreditBillCount);
-                
-                $("#totIncomeAmt").html(formatMoney(incomeExpenseArrayData.totIncomeAmt));
-                $("#totExpenseAmt").html(formatMoney(incomeExpenseArrayData.totExpenseAmt));
-                $("#incomeExpenseProfit").html(formatMoney(incomeExpenseProfit));
-                
-                $("#avlSmsCredit").html(response.data.avlSmsCredit);
-                
-            } else {
-                console.warn('Response status is not success:', response.message);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', status, error);
-            alert('An error occurred: ' + error);
-            $("#response").html(status);
-            openModal();
-        }
+    var chart = new google.visualization.BarChart(document.getElementById('ComboChart'));
+    chart.draw(data, options);
+  }
+</script>
+
+<!---------------------------------Visibility toggle------------>
+<script>
+
+////////////////////// Current Month   //////////////////
+    const toggleCurrentMonthBillAmount = document.querySelector("#toggleCurrentMonthBillAmount");
+    const currentMonthBillAmount = document.querySelector("#CurrentMonthBillAmount");
+    
+    toggleCurrentMonthBillAmount.addEventListener("click", function() {
+      // toggle the visibility of the password value
+      const isCurrentMonthBillAmountVisible = currentMonthBillAmount.classList.toggle("CurrentMonthBillAmount-visible");
+      currentMonthBillAmount.textContent = isCurrentMonthBillAmountVisible ? currentMonthBillAmount.getAttribute("data-value") : "****";
+    
+      // toggle the icon
+      this.classList.toggle("bi-eye");
+      this.classList.toggle("bi-eye-slash");
     });
 
+    const toggleCurrentMonthDiscount = document.querySelector("#toggleCurrentMonthDiscount");
+    const currentMonthDiscount = document.querySelector("#CurrentMonthDiscount");
     
-});
+    toggleCurrentMonthDiscount.addEventListener("click", function() {
+      // toggle the visibility of the Current Month Discount value
+      const isCurrentMonthDiscountVisible = currentMonthDiscount.classList.toggle("CurrentMonthDiscount-visible");
+      currentMonthDiscount.textContent = isCurrentMonthDiscountVisible ? currentMonthDiscount.getAttribute("data-value") : "****";
+    
+      // toggle the icon
+      this.classList.toggle("bi-eye");
+      this.classList.toggle("bi-eye-slash");
+    });
+  
+    const toggleCurrentMonthCollection = document.querySelector("#toggleCurrentMonthCollection");
+    const currentMonthCollection = document.querySelector("#CurrentMonthCollection");
+    
+    toggleCurrentMonthCollection.addEventListener("click", function() {
+      // toggle the visibility of the Current Month Collection value
+      const isCurrentMonthCollectionVisible = currentMonthCollection.classList.toggle("CurrentMonthCollection-visible");
+      currentMonthCollection.textContent = isCurrentMonthCollectionVisible ? currentMonthCollection.getAttribute("data-value") : "****";
+    
+      // toggle the icon
+      this.classList.toggle("bi-eye");
+      this.classList.toggle("bi-eye-slash");
+    });
 
+////////////////  Income Expense  //////////
+
+    const toggleCurrentMonthIncome = document.querySelector("#toggleCurrentMonthIncome");
+    const currentMonthIncome = document.querySelector("#CurrentMonthIncome");
+    
+    toggleCurrentMonthIncome.addEventListener("click", function() {
+      // toggle the visibility of the password value
+      const isCurrentMonthIncomeVisible = currentMonthIncome.classList.toggle("CurrentMonthIncome-visible");
+      currentMonthIncome.textContent = isCurrentMonthIncomeVisible ? currentMonthIncome.getAttribute("data-value") : "****";
+    
+      // toggle the icon
+      this.classList.toggle("bi-eye");
+      this.classList.toggle("bi-eye-slash");
+    });
+    
+    const toggleCurrentMonthExpense = document.querySelector("#toggleCurrentMonthExpense");
+    const currentMonthExpense = document.querySelector("#CurrentMonthExpense");
+    
+    toggleCurrentMonthExpense.addEventListener("click", function() {
+      // toggle the visibility of the password value
+      const isCurrentMonthExpenseVisible = currentMonthExpense.classList.toggle("CurrentMonthExpense-visible");
+      currentMonthExpense.textContent = isCurrentMonthExpenseVisible ? currentMonthExpense.getAttribute("data-value") : "****";
+    
+      // toggle the icon
+      this.classList.toggle("bi-eye");
+      this.classList.toggle("bi-eye-slash");
+    });
+    
+    const toggleCurrentMonthProfit = document.querySelector("#toggleCurrentMonthProfit");
+    const currentMonthProfit = document.querySelector("#CurrentMonthProfit");
+    
+    toggleCurrentMonthProfit.addEventListener("click", function() {
+      // toggle the visibility of the password value
+      const isCurrentMonthProfitVisible = currentMonthProfit.classList.toggle("CurrentMonthProfit-visible");
+      currentMonthProfit.textContent = isCurrentMonthProfitVisible ? currentMonthProfit.getAttribute("data-value") : "****";
+    
+      // toggle the icon
+      this.classList.toggle("bi-eye");
+      this.classList.toggle("bi-eye-slash");
+    });
+    
+/////////////////// Today  ////////////////
+  const toggleTodayBillAmount = document.querySelector("#toggleTodayBillAmount");
+  const todayBillAmount = document.querySelector("#TodayBillAmount");
+
+  toggleTodayBillAmount.addEventListener("click", function() {
+    // toggle the visibility of the password value
+    const isTodayBillAmountVisible = todayBillAmount.classList.toggle("TodayBillAmount-visible");
+    todayBillAmount.textContent = isTodayBillAmountVisible ? todayBillAmount.getAttribute("data-value") : "****";
+
+    // toggle the icon
+    this.classList.toggle("bi-eye");
+    this.classList.toggle("bi-eye-slash");
+  });
+
+  // Additional toggle operation for Today Discount
+  const toggleTodayDiscount = document.querySelector("#toggleTodayDiscount");
+  const todayDiscount = document.querySelector("#TodayDiscount");
+
+  toggleTodayDiscount.addEventListener("click", function() {
+    // toggle the visibility of the Today Discount value
+    const isTodayDiscountVisible = todayDiscount.classList.toggle("TodayDiscount-visible");
+    todayDiscount.textContent = isTodayDiscountVisible ? todayDiscount.getAttribute("data-value") : "****";
+
+    // toggle the icon
+    this.classList.toggle("bi-eye");
+    this.classList.toggle("bi-eye-slash");
+  });
+ 
+  // Additional toggle operation for Today Discount
+  const toggleTodayCollection = document.querySelector("#toggleTodayCollection");
+  const TodayCollection = document.querySelector("#TodayCollection");
+
+  toggleTodayCollection.addEventListener("click", function() {
+    // toggle the visibility of the Today Discount value
+    const isTodayCollectionVisible = TodayCollection.classList.toggle("TodayCollection-visible");
+    TodayCollection.textContent = isTodayCollectionVisible ? TodayCollection.getAttribute("data-value") : "****";
+
+    // toggle the icon
+    this.classList.toggle("bi-eye");
+    this.classList.toggle("bi-eye-slash");
+  });
+  
+  // Additional toggle operation for Today Discount
+  const toggleTodayBillCount = document.querySelector("#toggleTodayBillCount");
+  const TodayBillCount = document.querySelector("#TodayBillCount");
+
+  toggleTodayBillCount.addEventListener("click", function() {
+    // toggle the visibility of the Today Discount value
+    const isTodayBillCountVisible = TodayBillCount.classList.toggle("TodayBillCount-visible");
+    TodayBillCount.textContent = isTodayBillCountVisible ? TodayBillCount.getAttribute("data-value") : "****";
+
+    // toggle the icon
+    this.classList.toggle("bi-eye");
+    this.classList.toggle("bi-eye-slash");
+  });
+  
+  // Additional toggle operation for Today Discount
+  const toggleTodayCancelBill = document.querySelector("#toggleTodayCancelBill");
+  const TodayCancelBill = document.querySelector("#TodayCancelBill");
+
+  toggleTodayCancelBill.addEventListener("click", function() {
+    // toggle the visibility of the Today Discount value
+    const isTodayCancelBillVisible = TodayCancelBill.classList.toggle("TodayCancelBill-visible");
+    TodayCancelBill.textContent = isTodayCancelBillVisible ? TodayCancelBill.getAttribute("data-value") : "****";
+
+    // toggle the icon
+    this.classList.toggle("bi-eye");
+    this.classList.toggle("bi-eye-slash");
+  });
+  
+  // Additional toggle operation for Today Discount
+  const toggleTodayCashCount = document.querySelector("#toggleTodayCashCount");
+  const TodayCashCount = document.querySelector("#TodayCashCount");
+
+  toggleTodayCashCount.addEventListener("click", function() {
+    // toggle the visibility of the Today Discount value
+    const isTodayCashCountVisible = TodayCashCount.classList.toggle("TodayCashCount-visible");
+    TodayCashCount.textContent = isTodayCashCountVisible ? TodayCashCount.getAttribute("data-value") : "****";
+
+    // toggle the icon
+    this.classList.toggle("bi-eye");
+    this.classList.toggle("bi-eye-slash");
+  });
+  
+
+   // Additional toggle operation for Today Discount
+  const toggleTodayGpay = document.querySelector("#toggleTodayGpay");
+  const TodayGpay = document.querySelector("#TodayGpay");
+
+  toggleTodayGpay.addEventListener("click", function() {
+    // toggle the visibility of the Today Discount value
+    const isTodayGpayVisible = TodayGpay.classList.toggle("TodayGpay-visible");
+    TodayGpay.textContent = isTodayGpayVisible ? TodayGpay.getAttribute("data-value") : "****";
+
+    // toggle the icon
+    this.classList.toggle("bi-eye");
+    this.classList.toggle("bi-eye-slash");
+  });
+  
+  
+  // Additional toggle operation for Today Discount
+  const toggleTodayIncome = document.querySelector("#toggleTodayIncome");
+  const TodayIncome = document.querySelector("#TodayIncome");
+
+  toggleTodayIncome.addEventListener("click", function() {
+    // toggle the visibility of the Today Discount value
+    const isTodayIncomeVisible = TodayIncome.classList.toggle("TodayIncome-visible");
+    TodayIncome.textContent = isTodayIncomeVisible ? TodayIncome.getAttribute("data-value") : "****";
+
+    // toggle the icon
+    this.classList.toggle("bi-eye");
+    this.classList.toggle("bi-eye-slash");
+  });
 </script>
 
 
@@ -528,7 +932,7 @@ $(document).ready(function(){
 </body>
 </html>
 
-<?php //include 'footer.php'?>
+<?php include 'footer.php'?>
 
 
 <?php }else{
