@@ -16,7 +16,7 @@ if ($result->num_rows > 0) {
         $appName2 = $row['appName2'];
     }
 } else {
-    echo "No data found.";
+    $appName2 = 'Cable TV Software';
 }
 
 ?>
@@ -90,7 +90,7 @@ if ($result->num_rows > 0) {
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="admin-in-ex-report.php">Income Expense</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="user-today-collection.php" target="blank">Today Collection</a>
+                        <a class="dropdown-item" href="user-today-collection.php" target="blank">Your Collection</a>
                         <div class="dropdown-divider"></div>
                          <a class="dropdown-item" href="bill-filter-by-user.php">Bill by You</a>
                          <div class="dropdown-divider"></div>
@@ -106,18 +106,21 @@ if ($result->num_rows > 0) {
                 <!--    <li class="nav-item"><a class="nav-link" href="admin-bill-cancel.php">Cancel Bill</a>-->
                 <!--</li>-->
 
-                <li class="nav-item dropdown">
+                <!--li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Download
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <!--<a class="dropdown-item" href="bill-export.php">Download Bill Report</a>-->
+                        <!--<a class="dropdown-item" href="bill-export.php">Download Bill Report</a>
                         <a class="dropdown-item" onclick="openBill_Export()">Download Indiv Bill</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="bill-group-export.php">Download Group Bill</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="admin-excel-downloaded-files.php">Downloaded Files</a>
+                        <a class="dropdown-item" href="export-stbno.php">Copy Bill STB No.</a>
                     </div>
+                </li-->
+                <li class="nav-item">
+                    <li class="nav-item"><a class="nav-link" href="export-stbno.php">EC</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -153,7 +156,7 @@ if ($result->num_rows > 0) {
                 <!-- <a class="nav-link" href="pos/billing-dashboard.php"><button type="button" class="btn btn-primary"><b>POS Bill</b></button></a> -->
                 <a class="nav-link" href="app-settings.php"><button type="button" class="btn btn-info"><b>App Settings</b></button></a>
                 <a class="nav-link" href="logout.php"><button type="button" class="btn btn-success">Logout</button></a>
-                <a class="nav-link" href="backup" target="blank"><button type="button" class="btn btn-warning">Backup</button></a>
+                <!--a class="nav-link" href="backup" target="blank"><button type="button" class="btn btn-warning">Backup</button></a-->
             </form>
         </div>
     </nav>

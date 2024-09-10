@@ -38,6 +38,13 @@ $sql = "SELECT * FROM settings"; // Replace 'your_table_name' with your actual t
 $result = $con->query($sql);
 
 // Check if there are any rows returned
+$appName = '';
+$email = '';
+$addr1 = '';
+$addr2 = '';
+$phone = '';
+$footer1 = '';
+$footer2 = '';
 if ($result->num_rows > 0) {
     // Loop through each row and fetch the data
     while ($row = $result->fetch_assoc()) {

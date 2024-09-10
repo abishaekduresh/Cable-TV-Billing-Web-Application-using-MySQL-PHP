@@ -33,7 +33,7 @@ if(isset($_POST['submitExpense'])) {
   $type = 'Expense';
   
   // Insert data into database
-  $sql = "INSERT INTO in_ex (type, date, time, username, category_id, subcategory_id, remark, amount) VALUES ('$type', '$currentDate', '$currentTime', '$session_username', '$category', '$subCategory', '$remark', '$amount')";
+  $sql = "INSERT INTO in_ex (type, date, time, username, category_id, subcategory_id, remark, amount,status) VALUES ('$type', '$currentDate', '$currentTime', '$session_username', '$category', '$subCategory', '$remark', '$amount','1')";
   if ($con->query($sql) === TRUE) {
     // echo "<div class='container mt-3'>Data stored successfully!</div>";
     
@@ -74,7 +74,7 @@ if(isset($_POST['submitIncome'])) {
   $type = 'Income';
   
   // Insert data into database
-  $sql = "INSERT INTO in_ex (type, date, time, username, category_id, subcategory_id, remark, amount) VALUES ('$type', '$currentDate', '$currentTime', '$session_username', '$category', '$subCategory', '$remark', '$amount')";
+  $sql = "INSERT INTO in_ex (type, date, time, username, category_id, subcategory_id, remark, amount,status) VALUES ('$type', '$currentDate', '$currentTime', '$session_username', '$category', '$subCategory', '$remark', '$amount','1')";
   if ($con->query($sql) === TRUE) {
     // echo "<div class='container mt-3'>Data stored successfully!</div>";
     
@@ -145,7 +145,7 @@ if(isset($_POST['submitIncome'])) {
                     <select class="form-select" name="category" id="categoryID" required>
                         <option selected disabled>Select Category</option>
                         <?php
-                        $sql = "SELECT * FROM in_ex_category WHERE in_ex='Expense' OR in_ex='Both'";
+                        $sql = "SELECT * FROM in_ex_category WHERE in_ex='Expense' AND status = '1'";
                         $result = mysqli_query($con, $sql);
                         while($row = mysqli_fetch_assoc($result)) {
                             echo '<option value="' . $row['category_id'] . '">' . $row['category'] . '</option>';
@@ -215,7 +215,7 @@ if(isset($_POST['submitIncome'])) {
                             <tbody>
                                 <?php 
                                 
-                                    $query = "SELECT * FROM in_ex WHERE username = '$session_username' AND date = '$currentDate' AND type = 'Expense' ORDER BY date DESC";
+                                    $query = "SELECT * FROM in_ex WHERE username = '$session_username' AND date = '$currentDate' AND status = 1 AND type = 'Expense' ORDER BY date DESC";
 
                                     $query_run = mysqli_query($con, $query);
 
@@ -238,7 +238,7 @@ if(isset($_POST['submitIncome'])) {
 
                                                     $CategoryResult = $incomeExpense['category_id'];
                                                     // SQL query
-                                                    $sql = "SELECT * FROM in_ex_category WHERE category_id='$CategoryResult'";
+                                                    $sql = "SELECT * FROM in_ex_category WHERE category_id='$CategoryResult' AND status = '1'";
 
                                                     // Execute query
                                                     $result = mysqli_query($con, $sql);
@@ -262,7 +262,7 @@ if(isset($_POST['submitIncome'])) {
 
                                                     $incomeExpenseResult = $incomeExpense['subcategory_id'];
                                                     // SQL query
-                                                    $sql = "SELECT * FROM in_ex_subcategory WHERE subcategory_id='$incomeExpenseResult'";
+                                                    $sql = "SELECT * FROM in_ex_subcategory WHERE subcategory_id='$incomeExpenseResult' AND status = 1";
 
                                                     // Execute query
                                                     $result = mysqli_query($con, $sql);
@@ -326,7 +326,7 @@ if(isset($_POST['submitIncome'])) {
                     <select class="form-select" name="category" id="category_ID" required>
                         <option selected disabled>Select Category</option>
                         <?php
-                        $sql = "SELECT * FROM in_ex_category WHERE in_ex='Income' OR in_ex='Both'";
+                        $sql = "SELECT * FROM in_ex_category WHERE in_ex='Income' OR in_ex='Both' AND status = 1";
                         $result = mysqli_query($con, $sql);
                         while($row = mysqli_fetch_assoc($result)) {
                             echo '<option value="' . $row['category_id'] . '">' . $row['category'] . '</option>';
@@ -395,7 +395,7 @@ if(isset($_POST['submitIncome'])) {
                             <tbody>
                                 <?php 
                                 
-                                    $query = "SELECT * FROM in_ex WHERE username = '$session_username' AND date = '$currentDate' AND type = 'Income' ORDER BY date DESC";
+                                    $query = "SELECT * FROM in_ex WHERE username = '$session_username' AND date = '$currentDate' AND status = '1' AND type = 'Income' ORDER BY date DESC";
 
                                     $query_run = mysqli_query($con, $query);
 
@@ -418,7 +418,7 @@ if(isset($_POST['submitIncome'])) {
 
                                                     $CategoryResult = $incomeExpense['category_id'];
                                                     // SQL query
-                                                    $sql = "SELECT * FROM in_ex_category WHERE category_id='$CategoryResult'";
+                                                    $sql = "SELECT * FROM in_ex_category WHERE category_id='$CategoryResult' AND status = '1'";
 
                                                     // Execute query
                                                     $result = mysqli_query($con, $sql);
@@ -442,7 +442,7 @@ if(isset($_POST['submitIncome'])) {
 
                                                     $incomeExpenseResult = $incomeExpense['subcategory_id'];
                                                     // SQL query
-                                                    $sql = "SELECT * FROM in_ex_subcategory WHERE subcategory_id='$incomeExpenseResult'";
+                                                    $sql = "SELECT * FROM in_ex_subcategory WHERE subcategory_id='$incomeExpenseResult' AND status = '1'";
 
                                                     // Execute query
                                                     $result = mysqli_query($con, $sql);

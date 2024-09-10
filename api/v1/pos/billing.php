@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once("../../../dbconfig.php");
 require_once("../../../component.php");
 
@@ -145,6 +149,7 @@ if ($insertStmt->execute()) {
                     $qty = $item['qty'];
                     $pos_product_id = $item['pos_product_id'];
                     $price = $item['price'];
+					$total = $price * $qty;
         
                     $insertItemsStmt = $con->prepare("INSERT INTO pos_bill_items (entry_timestamp, username, pos_bill_id, pos_product_id, qty, r_or_hs, price, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                     if (!$insertItemsStmt) {
@@ -156,7 +161,7 @@ if ($insertStmt->execute()) {
                         echo json_encode($response);
                         exit;
                     }
-                    $insertItemsStmt->bind_param("sssssiss", $timestamp, $username, $pos_bill_id, $pos_product_id, $qty, $r_or_hs, $price, $unic_token);
+                    $insertItemsStmt->bind_param("sssssiss", $timestamp, $username, $pos_bill_id, $pos_product_id, $qty, $r_or_hs, $total, $unic_token);
         
                     if (!$insertItemsStmt->execute()) {
                         $insertItemsStmt->close();
@@ -191,33 +196,62 @@ if ($insertStmt->execute()) {
     }
     $selectStmt->close();
 
-    $sqlSum = "SELECT SUM(pbi.price) AS total_price
-               FROM pos_bill pb
-               LEFT JOIN pos_bill_items pbi ON pb.pos_bill_id = pbi.pos_bill_id
-               WHERE DATE(pb.entry_timestamp) = '$currentDate' AND pb.status = '1'";
-    
-    $result = $con->query($sqlSum);
-    $row = $result->fetch_assoc();
-    $sumPaidAmount = $row["total_price"];
+	/// Update in_ex
+	//updatePOSIncomeExpense();
+	
+	// Calculate sum of paid_amount for the current date
+	/*$sqlSum = "SELECT SUM(pbi.price) AS total_price
+				   FROM pos_bill pb
+				   JOIN pos_bill_items pbi ON pb.pos_bill_id = pbi.pos_bill_id
+				   WHERE DATE(pb.entry_timestamp) = '$currentDate' AND pb.status = '1'";
+	
+	$result = $con->query($sqlSum);
+	$row = $result->fetch_assoc();
+	$total_price = $row["total_price"];*/
 
-    // Check if a record exists in in_ex table
-    $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 16 AND subcategory_id = 57";
-    $resultCheck = $con->query($sqlCheck);
+	/*//Check if a record exists in in_ex table
+	$sqlCheck = "SELECT id FROM in_ex WHERE date = '$currentDate' AND category_id = 16 AND subcategory_id = 57";
+	$resultCheck = $con->query($sqlCheck);
 
-    if ($resultCheck->num_rows > 0) {
-        // Update existing record
-        $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = '16', subcategory_id = '57', remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 16 AND subcategory_id = 57";
-        $con->query($sqlUpdate);
-    } else {
-        // Insert new record
-        $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', '16', '57','', $sumPaidAmount)";
-        $con->query($sqlInsert);
-    }
+	if ($resultCheck->num_rows > 0) {
+		// Update existing record
+		$sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = '16', subcategory_id = '57', remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 16 AND subcategory_id = 57";
+		$con->query($sqlUpdate);
+	} else {
+		// Insert new record
+		$sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', '16', '57','', $sumPaidAmount)";
+		$con->query($sqlInsert);
+	}*/
+	
+	$sqlSum = "SELECT SUM(pbi.price) AS total_price
+			   FROM pos_bill pb
+			   JOIN pos_bill_items pbi ON pb.pos_bill_id = pbi.pos_bill_id
+			   WHERE DATE(pb.entry_timestamp) = ? AND pb.status = '1'";
+	$stmt = $con->prepare($sqlSum);
+	$stmt->bind_param("s", $currentDate); // Assuming $currentDate is a string in 'Y-m-d' format
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$row = $result->fetch_assoc();
+	$total_price = $row['total_price'];
     
+	//Check if a record exists in in_ex table
+	$sqlCheck = "SELECT id FROM in_ex WHERE date = '$currentDate' AND category_id = 16 AND subcategory_id = 57 AND status = '1'";
+	$resultCheck = $con->query($sqlCheck);
+
+	if ($resultCheck->num_rows > 0) {
+		// Update existing record
+		$sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = '16', subcategory_id = '57', remark='', amount = $total_price WHERE date = '$currentDate' AND category_id = 16 AND subcategory_id = 57 AND status ='1'";
+		$con->query($sqlUpdate);
+	} else {
+		// Insert new record
+		$sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount,status) VALUES ('Income', '$currentDate', '$currentTime','Auto', '16', '57','', '$total_price','1')";
+		$con->query($sqlInsert);
+	}
+	
     $response = array(
         "status" => "success",
         "message" => "Bill processed successfully",
-        "data" => array("token" => $unic_token,"bill_no" => $bill_no),
+        "data" => array("token" => $unic_token,"bill_no" => $bill_no, "tot_price"=>$total_price),
         "code" => "200"
     );
     echo json_encode($response);

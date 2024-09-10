@@ -41,7 +41,7 @@ $sqlSum = "SELECT SUM(pbi.price) AS total_price
         }
     
         // Check if a record exists in in_ex table
-        $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 16 AND subcategory_id = 57";
+        $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 16 AND subcategory_id = 57 AND status = '1'";
         $resultCheck = $con->query($sqlCheck);
     
         if ($resultCheck->num_rows > 0) {
@@ -55,14 +55,14 @@ $sqlUpdate = "UPDATE in_ex
                   category_id=16, 
                   subcategory_id=57, 
                   remark='', 
-                  amount=$sumPaidAmount 
-              WHERE date='" . $currentDate . "' AND category_id=16 AND subcategory_id=57";
+                  amount='$sumPaidAmount' 
+              WHERE date='" . $currentDate . "' AND category_id=16 AND subcategory_id=57 AND status = '1'";
 
             $con->query($sqlUpdate);
             $d=2;
         } else {
             // Insert new record
-            $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', '16', '57','', $sumPaidAmount)";
+            $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount,status) VALUES ('Income', '$currentDate', '$currentTime','Auto', '16', '57','', '$sumPaidAmount','1')";
             $con->query($sqlInsert);
             $d=3;
         }

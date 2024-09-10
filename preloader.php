@@ -91,15 +91,15 @@
 </style>
 </head>
 <body>
-<div id="preloader">
-<div class="preloader-wrap">
-  <div class="preloader">
-    <div class="loading-circle loading-circle-one"></div>
-    <div class="loading-circle loading-circle-two"></div>
-    <div class="loading-circle loading-circle-three"></div>
-  </div>
-</div>
-</div>
+<!--<div id="preloader">-->
+<!--<div class="preloader-wrap">-->
+<!--  <div class="preloader">-->
+<!--    <div class="loading-circle loading-circle-one"></div>-->
+<!--    <div class="loading-circle loading-circle-two"></div>-->
+<!--    <div class="loading-circle loading-circle-three"></div>-->
+<!--  </div>-->
+<!--</div>-->
+<!--</div>-->
 
 </body>
 </html>
@@ -107,9 +107,9 @@
 
     <script>
         // JavaScript to hide the preloader when all page assets are loaded
-        window.onload = function () {
-            document.getElementById('preloader').style.display = 'none';
-        };
+        // window.onload = function () {
+        //     document.getElementById('preloader').style.display = 'none';
+        // };
     </script>
 
     <!-- <script>

@@ -749,7 +749,7 @@ $result = $con->query($query);
             });
             
             // console.log(JSON.stringify(formData.items));
-            // console.log(JSON.stringify(formData));
+             console.log(JSON.stringify(formData));
 
             $.ajax({
                 type: "POST",
@@ -781,7 +781,9 @@ $result = $con->query($query);
                         invoicePDFModel.show();
                         document.getElementById("pos_billing").reset();
                     } else {
-                        notificationModel.show();
+                    	//$("#response").html(response);
+                        //notificationModel.show();
+						console.log(response);
                     }
                 },
                 error: function(xhr, status, error) {

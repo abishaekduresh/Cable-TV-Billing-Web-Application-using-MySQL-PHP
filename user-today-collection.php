@@ -128,7 +128,7 @@ if ($result !== false) {
 $sql = "SELECT pb.*, pbi.price
         FROM pos_bill pb
         JOIN pos_bill_items pbi ON pb.pos_bill_id = pbi.pos_bill_id
-        WHERE DATE(pb.entry_timestamp) = '$currentDate' AND pb.token = pbi.token AND pb.status = 1";
+        WHERE DATE(pb.entry_timestamp) = '$currentDate' AND pb.token = pbi.token AND pb.status = 1 AND pb.username = '$session_username' AND pb.username = '$session_username' ";
 
 $pos_amount = 0;
 $result = $con->query($sql);
@@ -275,7 +275,8 @@ if ($result) {
                 <p style="font-family:Arial; font-size:16px"><b>THOOYAVAN PDP CABLE TV</b>
                     <br>260,Udangudi Road, Thisayanvilai
                     <br>Phone : +91 9842181951
-                    <br/><?php echo $currentDate; ?>&nbsp;<?php echo $currentTimeA; ?></p>
+                    <br/><?php echo $currentDate; ?>&nbsp;<?php echo $currentTimeA; ?>
+                    <br/>User: <?= $session_username; ?></p>
             </center>
         </td>
     </tr>
@@ -317,7 +318,7 @@ if ($result) {
     <!--</tr>-->
     <tr>
         <th style="border-right: 1px solid #000;">Income</th>
-        <td>₹&nbsp;<?php echo $sumIncome ; ?></td>
+        <td>₹&nbsp;<?= $sumIncome+=$pos_amount ?></td>
     </tr>
     <tr>
         <th style="border-right: 1px solid #000;">Expense (-)</th>
@@ -329,7 +330,7 @@ if ($result) {
     </tr>
     <tr>
         <th style="border-right: 1px solid #000;">POS Amount</th>
-        <td>₹&nbsp;<?php echo $pos_amount ; ?></td>
+        <td>₹&nbsp;<?php echo $pos_amount; ?></td>
     </tr>
     <tr>
         <th style="border-right: 1px solid #000;">Indiv.Cash</th>

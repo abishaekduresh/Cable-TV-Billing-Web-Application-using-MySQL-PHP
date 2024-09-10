@@ -9,8 +9,8 @@ if(isset($_POST['save_category']))
     $category = mysqli_real_escape_string($con, $_POST['category']);
     $in_ex = mysqli_real_escape_string($con, $_POST['in_ex']);
 
-    $query = "INSERT INTO in_ex_category (createdBy,category,in_ex) 
-    VALUES ('$session_username','$category','$in_ex')";
+    $query = "INSERT INTO in_ex_category (createdBy,category,in_ex,status) 
+    VALUES ('$session_username','$category','$in_ex','1')";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)
@@ -44,7 +44,7 @@ if(isset($_POST['update_category']))
     $in_ex = mysqli_real_escape_string($con, $_POST['in_ex']);
 
     $query = "UPDATE in_ex_category SET category='$category', in_ex='$in_ex'
-                WHERE category_id='$category_id'";
+                WHERE category_id='$category_id',status='1'";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)
@@ -72,7 +72,7 @@ if(isset($_GET['category_id']))
 {
     $category_id = mysqli_real_escape_string($con, $_GET['category_id']);
 
-    $query = "SELECT * FROM in_ex_category WHERE category_id='$category_id'";
+    $query = "SELECT * FROM in_ex_category WHERE category_id='$category_id' AND status = '1'";
     $query_run = mysqli_query($con, $query);
 
     if(mysqli_num_rows($query_run) == 1)
@@ -103,7 +103,7 @@ if(isset($_POST['delete_category']))
 {
     $category_id = mysqli_real_escape_string($con, $_POST['category_id']);
 
-    $query = "DELETE FROM in_ex_category WHERE category_id='$category_id'";
+    $query = "DELETE FROM in_ex_category WHERE category_id='$category_id' AND status = '1'";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)

@@ -11,8 +11,8 @@ if(isset($_POST['save_subcategory']))
     $category_id = mysqli_real_escape_string($con, $_POST['category_id']);
     $subcategory = mysqli_real_escape_string($con, $_POST['subcategory']);
 
-    $query = "INSERT INTO in_ex_subcategory (category_id,subcategory) 
-    VALUES ('$category_id','$subcategory')";
+    $query = "INSERT INTO in_ex_subcategory (category_id,subcategory,status) 
+    VALUES ('$category_id','$subcategory','1')";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)
@@ -46,7 +46,7 @@ if(isset($_POST['update_subcategory']))
     $subcategory = mysqli_real_escape_string($con, $_POST['subcategory']);
 
 
-    $query = "UPDATE in_ex_subcategory SET category_id ='$category_id', subcategory='$subcategory' WHERE subcategory_id='$subcategory_id'";
+    $query = "UPDATE in_ex_subcategory SET category_id ='$category_id', subcategory='$subcategory', status ='1' WHERE subcategory_id='$subcategory_id'";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)
@@ -74,7 +74,7 @@ if(isset($_GET['subcategory_id']))
 {
     $subcategory_id = mysqli_real_escape_string($con, $_GET['subcategory_id']);
 
-    $query = "SELECT * FROM in_ex_subcategory WHERE subcategory_id='$subcategory_id'";
+    $query = "SELECT * FROM in_ex_subcategory WHERE subcategory_id='$subcategory_id' AND status = '1'";
     $query_run = mysqli_query($con, $query);
 
     if(mysqli_num_rows($query_run) == 1)
@@ -105,7 +105,7 @@ if(isset($_POST['delete_subcategory']))
 {
     $subcategory_id = mysqli_real_escape_string($con, $_POST['subcategory_id']);
 
-    $query = "DELETE FROM in_ex_subcategory WHERE subcategory_id='$subcategory_id'";
+    $query = "DELETE FROM in_ex_subcategory WHERE subcategory_id='$subcategory_id' AND status = '1'";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)

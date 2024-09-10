@@ -121,16 +121,16 @@ $status = 'approve';
                 $sumPaidAmount = $row["total_Rs"];
 
                 // Check if a record exists in in_ex table
-                $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 36";
+                $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 36 AND status = 1";
                 $resultCheck = $con->query($sqlCheck);
 
                 if ($resultCheck->num_rows > 0) {
                     // Update existing record
-                    $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = 12, subcategory_id = 36, remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 36";
+                    $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = 12, subcategory_id = 36, remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 36 AND status = 1";
                     $con->query($sqlUpdate);
                 } else {
                     // Insert new record
-                    $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', 12, 36,'', $sumPaidAmount)";
+                    $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount, status) VALUES ('Income', '$currentDate', '$currentTime','Auto', 12, 36,'', $sumPaidAmount,'1')";
                     $con->query($sqlInsert);
                 }
                 

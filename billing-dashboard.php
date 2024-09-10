@@ -195,7 +195,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 // Execute the SQL statement
                 if ($con->query($sql) === TRUE) {
                     // Data inserted successfully
-                //  $q= "SELECT date,sum(paid_amount) TotAmt FROM `bill` where date='2023-06-01' group by date";
                 
                     // Calculate sum of paid_amount for the current date
                     $sqlSum = "SELECT SUM(Rs) AS total_Rs FROM bill WHERE date = '$currentDate' AND status = 'approve'";
@@ -204,28 +203,29 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     $sumPaidAmount = $row["total_Rs"];
 
                     // Check if a record exists in in_ex table
-                    $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35";
+                    $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35 AND status = 1";
                     $resultCheck = $con->query($sqlCheck);
 
                     if ($resultCheck->num_rows > 0) {
                         // Update existing record
-                        $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = '12', subcategory_id = '35', remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35";
+                        $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = '12', subcategory_id = '35', remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35 AND status = 1";
                         $con->query($sqlUpdate);
                     } else {
                         // Insert new record
-                        $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount) VALUES ('Income', '$currentDate', '$currentTime','Auto', '12', '35','', $sumPaidAmount)";
+                        $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount, status) VALUES ('Income', '$currentDate', '$currentTime','Auto', '12', '35','', $sumPaidAmount,'1')";
                         $con->query($sqlInsert);
                     }
                     
                     $bill_status = "approve";
                     $sms_res = sms_api($name, $phone, $billNo, $currentDateTime, $stbno, $pMode, $bill_status);
-                    
+                    $sms_res_array = json_decode($sms_res, true);
+					$sms_res_array_status = $sms_res_array['status'];
                     if (isset($_SESSION['id']) && $sms_res == true) {
                         // Get the user information before destroying the session
                         $userId = $_SESSION['id'];
                         $username = $_SESSION['username'];
                         $role = $_SESSION['role'];
-                        $action = "Bill Approve SMS Send to $phone - $stbno";
+                        $action = "Indiv Bill SMS Status: $sms_res_array_status | $phone - $stbno - $sms_res_array_status";
                     
                         // Call the function to insert user activity log
                         logUserActivity($userId, $username, $role, $action);
@@ -242,7 +242,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                         $userId = $_SESSION['id'];
                         $username = $_SESSION['username'];
                         $role = $_SESSION['role'];
-                        $action = "Bill Failed - $pMode - $stbno";
+                        $action = "Indiv Bill Failed - $pMode - $stbno";
                     
                         // Call the function to insert user activity log
                         logUserActivity($userId, $username, $role, $action);

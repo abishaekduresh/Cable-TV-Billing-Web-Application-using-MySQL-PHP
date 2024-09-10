@@ -28,11 +28,11 @@
     </div>
     <div class="col">
       <a href="pos-billing.php"><button type="button" class="btn btn-primary position-relative">
-          POS Billing
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+		  <b>POS Billing</b>
+          <!--span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
             New
             <span class="visually-hidden">unread messages</span>
-          </span>
+          </span-->
         </button>
       </a>
     </div>

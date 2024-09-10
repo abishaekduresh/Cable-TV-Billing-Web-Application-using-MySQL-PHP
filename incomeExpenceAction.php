@@ -67,7 +67,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save Category</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </form>
         </div>
@@ -107,7 +107,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Update Category</button>
+                <button type="submit" class="btn btn-primary">Update</button>
             </div>
         </form>
         </div>
@@ -156,7 +156,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     <select name="category_id" class="form-select">
                         <option value="select" selected disabled>Select</option>
                         <?php
-                            $query = "SELECT * FROM in_ex_category";
+                            $query = "SELECT * FROM in_ex_category WHERE AND status = '1'";
                             $result = mysqli_query($con, $query);
                             $selectedValue = isset($_GET['subcategory']) ? $_GET['subcategory'] : ''; // Get the selected value from the URL
 
@@ -205,7 +205,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     <select name="category_id" class="form-select">
                         <option value="select" selected disabled>Select</option>
                         <?php
-                            $query = "SELECT * FROM in_ex_category";
+                            $query = "SELECT * FROM in_ex_category WHERE AND status = '1'";
                             $result = mysqli_query($con, $query);
                             $selectedValue = isset($_GET['category_id']) ? $_GET['category_id'] : ''; // Get the selected value from the URL
 
@@ -227,7 +227,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Update subcategory</button>
+                <button type="submit" class="btn btn-primary">Update</button>
             </div>
         </form>
         </div>
@@ -302,6 +302,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                     $query = "SELECT *
                                     FROM in_ex_category
                                     INNER JOIN in_ex_subcategory ON in_ex_category.category_id = in_ex_subcategory.category_id
+									WHERE in_ex_subcategory.status = '1' AND in_ex_category.status = '1'
                                     ";
                                     $query_run = mysqli_query($con, $query);
 
@@ -375,7 +376,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                             <tbody>
                                 <?php 
 
-                                    $query = "SELECT * FROM in_ex_category";
+                                    $query = "SELECT * FROM in_ex_category WHERE AND status = '1'";
                                     $query_run = mysqli_query($con, $query);
 
                                     if(mysqli_num_rows($query_run) > 0)

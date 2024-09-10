@@ -3,7 +3,7 @@
   include('dbconfig.php');
  
   $category_id = $_POST['id'];
-  $sql = "SELECT * FROM in_ex_subcategory WHERE category_id= '$category_id' ";
+  $sql = "SELECT * FROM in_ex_subcategory WHERE category_id= '$category_id' AND status = '1'";
   $result = mysqli_query($con,$sql);
  
   $out='';

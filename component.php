@@ -30,7 +30,7 @@ function logUserActivity($userId, $username, $role, $action) {
     mysqli_query($con, $insertSql);
 }
 
-function fetchGroupName($groupid) {
+/*function fetchGroupName($groupid) {
     include 'dbconfig.php';
 
     $query = "SELECT groupName FROM groupinfo WHERE group_id != '2' AND group_id='$groupid'";
@@ -39,7 +39,25 @@ function fetchGroupName($groupid) {
     while ($row = $result->fetch_assoc()) {
         echo $row['groupName'];
     }
+}*/
+function fetchGroupName($groupId) {
+    include 'dbconfig.php';
+
+    // Sanitize the input to prevent SQL injection
+    $groupId = mysqli_real_escape_string($con, $groupId);
+
+    // Query to fetch the group name
+    $query = "SELECT groupName FROM groupinfo WHERE group_id != '2' AND group_id='$groupId'";
+    $result = mysqli_query($con, $query);
+
+    // Check if the query returned any rows
+    if ($row = $result->fetch_assoc()) {
+        return $row['groupName'];
+    } else {
+        return 'Unknown Group'; // Default value if no match found
+    }
 }
+
 
 function formatDate($formatdate) {
     include 'dbconfig.php';
@@ -435,6 +453,23 @@ function getPayModeName($pay_mode_id) {
     } else {
         return "Not found or Deactive";
     }
+}
+
+function separateDate($date) {
+    // Create a DateTime object from the date string
+    $dateTime = new DateTime($date);
+
+    // Extract day, month, and year
+    $day = $dateTime->format('d');
+    $month = $dateTime->format('m');
+    $year = $dateTime->format('Y');
+
+    // Return the result as an associative array
+    return array(
+        'day' => $day,
+        'month' => $month,
+        'year' => $year
+    );
 }
 
 

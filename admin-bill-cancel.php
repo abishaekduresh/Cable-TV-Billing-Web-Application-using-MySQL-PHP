@@ -84,7 +84,7 @@
                                     <label style="font-weight: bold;"><u>Bill By :</u></label><br>
                                     <label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="23A002"> Duresh</label>
                                     <label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="23A001"> Baskar Raj</label>
-                                    <label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="23E001"> Kannika</label>
+                                    <label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="23E005"> Divya</label>
                                     <br>
                                     <label style="font-weight: bold;"><u>Bill Status :</u></label>
                                     <br>

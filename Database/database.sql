@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Jul 15, 2024 at 12:55 AM
--- Server version: 5.7.44-log
--- PHP Version: 8.1.28
+-- Host: localhost:3306
+-- Generation Time: Sep 10, 2024 at 07:08 PM
+-- Server version: 10.3.38-MariaDB-cll-lve
+-- PHP Version: 8.3.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `pdpcabletv`
+-- Database: `pdpctvUHBUHjj`
 --
 
 -- --------------------------------------------------------
@@ -47,7 +47,7 @@ CREATE TABLE `bill` (
   `adv_status` int(5) NOT NULL COMMENT 'Yes=1 No=0',
   `status` varchar(10) NOT NULL,
   `printStatus` int(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -66,7 +66,7 @@ CREATE TABLE `billgroup` (
   `name` varchar(60) NOT NULL,
   `remark` varchar(60) NOT NULL,
   `status` varchar(7) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -89,7 +89,7 @@ CREATE TABLE `billgroupdetails` (
   `discount` int(2) NOT NULL,
   `Rs` int(2) NOT NULL,
   `status` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -109,7 +109,7 @@ CREATE TABLE `customer` (
   `description` varchar(100) NOT NULL,
   `amount` int(5) NOT NULL,
   `rc_dc` int(2) NOT NULL COMMENT 'rc=1;dc=0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -124,7 +124,7 @@ CREATE TABLE `customer_log` (
   `phone` varchar(12) NOT NULL,
   `stbno` varchar(30) NOT NULL,
   `activity` varchar(60) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -138,9 +138,9 @@ CREATE TABLE `groupinfo` (
   `date` date NOT NULL,
   `time` time NOT NULL,
   `groupName` varchar(25) NOT NULL,
-  `phone` bigint(10) NOT NULL DEFAULT '0',
+  `phone` bigint(10) NOT NULL DEFAULT 0,
   `billAmt` int(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -158,7 +158,7 @@ CREATE TABLE `incomeExpence` (
   `category` varchar(15) NOT NULL,
   `remark` varchar(50) NOT NULL,
   `amount` int(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -175,8 +175,9 @@ CREATE TABLE `in_ex` (
   `category_id` int(5) NOT NULL,
   `subcategory_id` int(5) NOT NULL,
   `remark` varchar(50) NOT NULL,
-  `amount` int(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `amount` int(5) NOT NULL,
+  `status` tinyint(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -188,8 +189,9 @@ CREATE TABLE `in_ex_category` (
   `category_id` int(5) NOT NULL,
   `createdBy` varchar(10) NOT NULL,
   `category` varchar(25) NOT NULL,
-  `in_ex` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `in_ex` varchar(10) NOT NULL,
+  `status` tinyint(4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -200,8 +202,9 @@ CREATE TABLE `in_ex_category` (
 CREATE TABLE `in_ex_subcategory` (
   `subcategory_id` int(5) NOT NULL,
   `category_id` int(5) NOT NULL,
-  `subcategory` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `subcategory` varchar(30) NOT NULL,
+  `status` tinyint(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -213,7 +216,7 @@ CREATE TABLE `pay_mode` (
   `pay_mode_id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL DEFAULT '0',
   `status` varchar(50) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -223,17 +226,17 @@ CREATE TABLE `pay_mode` (
 
 CREATE TABLE `pos_bill` (
   `pos_bill_id` int(11) NOT NULL,
-  `entry_timestamp` timestamp NOT NULL,
-  `bill_no` int(11) NOT NULL DEFAULT '0',
+  `entry_timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `bill_no` int(11) NOT NULL DEFAULT 0,
   `username` varchar(50) NOT NULL DEFAULT '0',
   `cus_name` varchar(50) NOT NULL DEFAULT '0',
-  `cus_phone` bigint(20) NOT NULL DEFAULT '0',
-  `discount` int(11) NOT NULL DEFAULT '0',
-  `amount` int(11) DEFAULT '0',
+  `cus_phone` bigint(20) NOT NULL DEFAULT 0,
+  `discount` int(11) NOT NULL DEFAULT 0,
+  `amount` int(11) DEFAULT 0,
   `token` varchar(50) NOT NULL DEFAULT '0',
-  `pay_mode` tinyint(4) NOT NULL DEFAULT '0',
+  `pay_mode` tinyint(4) NOT NULL DEFAULT 0,
   `status` tinyint(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -243,15 +246,15 @@ CREATE TABLE `pos_bill` (
 
 CREATE TABLE `pos_bill_items` (
   `pos_bill_items_id` int(11) NOT NULL,
-  `entry_timestamp` timestamp NOT NULL,
+  `entry_timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `username` varchar(50) NOT NULL,
-  `pos_bill_id` int(11) NOT NULL DEFAULT '0',
-  `pos_product_id` int(11) NOT NULL DEFAULT '0',
-  `r_or_hs` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'r=0; hs=1',
-  `price` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `qty` int(11) NOT NULL DEFAULT '0',
+  `pos_bill_id` int(11) NOT NULL DEFAULT 0,
+  `pos_product_id` int(11) NOT NULL DEFAULT 0,
+  `r_or_hs` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'r=0; hs=1',
+  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `qty` int(11) NOT NULL DEFAULT 0,
   `token` varchar(50) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -264,10 +267,10 @@ CREATE TABLE `pos_product` (
   `entry_timestamp` datetime DEFAULT NULL,
   `username` varchar(50) NOT NULL DEFAULT '',
   `product_name` varchar(50) NOT NULL DEFAULT '',
-  `r_price` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `hs_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `r_price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `hs_price` decimal(10,2) NOT NULL DEFAULT 0.00,
   `stock` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -287,7 +290,7 @@ CREATE TABLE `settings` (
   `prtFooter2` varchar(60) NOT NULL,
   `lastUpdateBy` varchar(20) NOT NULL,
   `latestUpdate` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -302,7 +305,14 @@ CREATE TABLE `user` (
   `password` varchar(50) NOT NULL,
   `role` varchar(10) NOT NULL,
   `status` int(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `name`, `username`, `password`, `role`, `status`) VALUES
+(1, 'Admin', '23A002', '21232f297a57a5a743894a0e4a801fc3', 'admin', 1);
 
 -- --------------------------------------------------------
 
@@ -318,7 +328,7 @@ CREATE TABLE `user_activity` (
   `userName` varchar(20) NOT NULL,
   `role` varchar(10) NOT NULL,
   `action` varchar(90) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Indexes for dumped tables
@@ -528,7 +538,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(2) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `user_activity`

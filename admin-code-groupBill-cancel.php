@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if($selectedValue == 'cancel'){ /// UPDATE DATA INTO in_ex Table
                 
-            $sqlSum = "SELECT amount FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 36";
+            $sqlSum = "SELECT amount FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 36 AND status = 1";
             $result = $con->query($sqlSum);
             $row = $result->fetch_assoc();
             $oldAmount = $row["amount"];
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($result->num_rows > 0) {
                 // Update existing record
-                $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = 12, subcategory_id = 36, remark='', amount = '$updatedAmount' WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 36";
+                $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = 12, subcategory_id = 36, remark='', amount = '$updatedAmount' WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 36 AND status = 1";
                 $con->query($sqlUpdate);
 
                 if (isset($_SESSION['id'])) {

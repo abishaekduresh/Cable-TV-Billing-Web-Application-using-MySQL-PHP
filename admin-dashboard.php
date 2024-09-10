@@ -7,7 +7,7 @@
       
     if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         $session_username = $_SESSION['username']; 
-        ?>
+?>
   
 
 <!DOCTYPE html>
@@ -272,131 +272,6 @@ h1
         
 
         </div>
-
-
-        <!-- Right Column (empty) -->
-        <!--<div class="col-lg-6">-->
-            <!--<p>Testing</p>-->
-            
-    <!--<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
-    <!--<script type="text/javascript">-->
-    <!--  // Sample JSON data for Red Sox Attendance and Amount-->
-    <!--  var jsonData = [-->
-    <!--    {"date": "2022-01", "attendance": 35000, "amount": 4000},-->
-    <!--    {"date": "2022-04", "attendance": 35000, "amount": 4000},-->
-    <!--    {"date": "2023-04", "attendance": 36000, "amount": 2000},-->
-    <!--    {"date": "2023-04", "attendance": 17000, "amount": 4050},-->
-    <!--    {"date": "2023-05", "attendance": 38000, "amount": 1000},-->
-    <!--    {"date": "2024-05", "attendance": 2500, "amount": 4000}-->
-    <!--    // Add more data points as needed-->
-    <!--  ];-->
-
-    <!--  // Load the Google Charts library-->
-    <!--  google.charts.load('current', {'packages':['corechart']});-->
-
-    <!--  // Set a callback function to run when the Google Charts library is loaded-->
-    <!--  google.charts.setOnLoadCallback(drawChart);-->
-
-    <!--  function drawChart() {-->
-    <!--    // Convert JSON data to DataTable format-->
-    <!--    var data = new google.visualization.DataTable();-->
-    <!--    data.addColumn('string', 'Date');-->
-    <!--    data.addColumn('number', 'Attendance');-->
-    <!--    data.addColumn('number', 'Amount');-->
-
-    <!--    jsonData.forEach(function(row) {-->
-    <!--      data.addRow([row.date, row.attendance, row.amount]);-->
-    <!--    });-->
-
-    <!--    // Define chart options-->
-    <!--    var options = {-->
-    <!--      title: 'Red Sox Attendance and Amount',-->
-    <!--      curveType: 'function',-->
-    <!--      legend: { position: 'bottom' },-->
-    <!--      series: {-->
-    <!--        0: { targetAxisIndex: 0 },-->
-    <!--        1: { targetAxisIndex: 1 }-->
-    <!--      },-->
-    <!--      vAxes: {-->
-    <!--        0: { title: 'Attendance' },-->
-    <!--        1: { title: 'Amount' }-->
-    <!--      }-->
-    <!--    };-->
-
-    <!--    // Create and draw the combination chart-->
-    <!--    var chart = new google.visualization.LineChart(document.getElementById('attendance_chart'));-->
-    <!--    chart.draw(data, options);-->
-    <!--  }-->
-    <!--</script>-->
-    <!--<div id="attendance_chart" style="width: 900px; height: 500px;"></div>-->
-    
-    
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--  <head>-->
-<!--    <title>Red Sox Attendance and Amount Chart</title>-->
-<!--    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
-<!--    <script type="text/javascript">-->
-<!--      // Sample JSON data for Red Sox Attendance and Amount-->
-<!--      var jsonData = [-->
-<!--        {"date": "2022-01", "attendance": 35000, "amount": 4000},-->
-<!--        {"date": "2022-04", "attendance": 35000, "amount": 4000},-->
-<!--        {"date": "2023-04", "attendance": 36000, "amount": 2000},-->
-<!--        {"date": "2023-04", "attendance": 17000, "amount": 4050},-->
-<!--        {"date": "2023-05", "attendance": 38000, "amount": 1000},-->
-<!--        {"date": "2024-05", "attendance": 2500, "amount": 4000}-->
-<!--        // Add more data points as needed-->
-<!--      ];-->
-
-<!--      // Load the Google Charts library-->
-<!--      google.charts.load('current', {'packages':['corechart']});-->
-
-<!--      // Set a callback function to run when the Google Charts library is loaded-->
-<!--      google.charts.setOnLoadCallback(drawChart);-->
-
-<!--      function drawChart() {-->
-        <!--// Convert JSON data to DataTable format-->
-<!--        var data = new google.visualization.DataTable();-->
-<!--        data.addColumn('string', 'Date');-->
-<!--        data.addColumn('number', 'Attendance');-->
-<!--        data.addColumn('number', 'Amount');-->
-
-<!--        jsonData.forEach(function(row) {-->
-<!--          data.addRow([row.date, row.attendance, row.amount]);-->
-<!--        });-->
-
-        <!--// Define chart options-->
-<!--        var options = {-->
-<!--          title: 'Red Sox Attendance and Amount',-->
-<!--          legend: { position: 'bottom' },-->
-<!--          seriesType: 'bars',-->
-<!--          series: {-->
-<!--            0: { targetAxisIndex: 0 },-->
-<!--            1: { targetAxisIndex: 1 }-->
-<!--          },-->
-<!--          vAxes: {-->
-<!--            0: { title: 'Attendance' },-->
-<!--            1: { title: 'Amount' }-->
-<!--          },-->
-<!--          bar: { groupWidth: '75%' }-->
-<!--        };-->
-
-        <!--// Create and draw the bar chart-->
-<!--        var chart = new google.visualization.ComboChart(document.getElementById('attendance_chart'));-->
-<!--        chart.draw(data, options);-->
-<!--      }-->
-<!--    </script>-->
-<!--  </head>-->
-<!--  <body>-->
-    <!-- Div where the chart will be rendered -->
-<!--    <div id="attendance_chart" style="width: 900px; height: 500px;"></div>-->
-<!--  </body>-->
-<!--</html>-->
-
-
-
-            
-        <!--</div>-->
     </div>
 </div>
 
@@ -414,7 +289,7 @@ function checkPasscode() {
     var passcode = prompt("Please enter the passcode:");
     
     // Replace with your actual passcode validation logic
-    if (passcode === "sarojaammal") {
+    if (passcode === "admin") {
         // Show the item
         document.getElementById("dashboard-data").style.display = "block";
         document.getElementById("passcode_btn").style.display = "none";
