@@ -26,14 +26,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     if ($stmt->execute()) {
         $d=1;
-$sqlSum = "SELECT SUM(pbi.price) AS total_price
-           FROM pos_bill pb
-           LEFT JOIN pos_bill_items pbi ON pb.pos_bill_id = pbi.pos_bill_id
-           WHERE DATE(pb.entry_timestamp) = '$currentDate' AND pb.status = '1'";
 
-        
-        $result = $con->query($sqlSum);
-        $row = $result->fetch_assoc();
+	$sqlSum = "SELECT SUM(pbi.price * pbi.qty) - pb.discount AS total_price
+			   FROM pos_bill pb
+			   JOIN pos_bill_items pbi ON pb.pos_bill_id = pbi.pos_bill_id
+			   WHERE DATE(pb.entry_timestamp) = ? 
+			   AND pb.status = ?";
+
+		$stmt = $con->prepare($sqlSum);
+		$active_status = "1'";
+		$stmt->bind_param("ss", $currentDate,$active_status); // Assuming $currentDate is a string in 'Y-m-d' format
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$row = $result->fetch_assoc();
         $sumPaidAmount = $row["total_price"];
         // $sumPaidAmount = 9;
         if($sumPaidAmount == null){

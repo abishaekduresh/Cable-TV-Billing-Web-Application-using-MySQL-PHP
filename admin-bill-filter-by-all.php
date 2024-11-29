@@ -23,6 +23,23 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                 text-decoration: none; /* Remove underline */
                 color: white; /* Change color to red */
             }
+
+/* Add this CSS to your styles.css or inside a <style> block in your HTML */
+.checkbox-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping of elements */
+}
+
+.checkbox-container label {
+    width: 33.33%; /* Each checkbox will take up 33.33% of the row, resulting in 3 columns */
+    box-sizing: border-box; /* Ensure padding and margins are included in the width */
+    margin-bottom: 10px; /* Space between rows */
+}
+
+.checkbox-container label:nth-child(3n) {
+    margin-right: 0; /* Remove the margin for every third checkbox (last in each row) */
+}
+
         </style>
     </head>
 
@@ -96,16 +113,39 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 <b>
     
                                                 <label><u>Bill By :</u></label><br>
-                                            <label><input type="checkbox" name="filter[]" value="23A002">
-                                                Duresh</label>
-                                            <label><input type="checkbox" name="filter[]" value="23A001">
-                                                Baskar Raj</label>
-                                            <label><input type="checkbox" name="filter[]" value="23E005">
-                                                Divya</label>
-                                            <label><input type="checkbox" name="filter[]" value="23E002">
-                                                Santhanam</label>
-                                            <label><input type="checkbox" name="filter[]" value="23E003">
-                                                Thatha</label>
+                                            <?php
+                                            // Your database connection code should be here
+                                            // Assuming $con is the established database connection
+
+                                            $sql = "SELECT * FROM user WHERE status = 1"; // Replace 'user' with your actual table name
+                                            $result = $con->query($sql);
+
+                                            // Step 3: Check if any data was fetched and loop through the results
+                                            if ($result->num_rows > 0) {
+                                                // Start the container for the checkbox layout
+                                                echo '<div class="checkbox-container">';
+                                                
+                                                // Step 4: Loop through each record and generate HTML with checkboxes
+                                                $counter = 0; // Counter to track columns
+                                                while ($row = $result->fetch_assoc()) {
+                                                    // Assuming 'username' is the value and 'name' is the label text
+                                                    echo '<label><input type="checkbox" name="filter[]" value="' . htmlspecialchars($row['username']) . '">';
+                                                    echo htmlspecialchars($row['name']) . '</label>';
+
+                                                    // After every third checkbox, insert a line break (to create three columns per row)
+                                                    $counter++;
+                                                    if ($counter % 3 == 0) {
+                                                        echo '<br>';
+                                                    }
+                                                }
+                                                
+                                                // End the container for the checkbox layout
+                                                echo '</div>';
+                                            } else {
+                                                echo "No records found.";
+                                            }
+                                            ?>
+
                                             <br>
                                             <label><u>Bill Status :</u></label>
                                             <br>

@@ -7,8 +7,7 @@ require "component.php";
 
 require 'vendor/autoload.php';
 
-$session_username = $_SESSION['username'];
-$session_id = $_SESSION['id'];
+$session_username = isset($_SESSION['username']) ? $_SESSION['username'] : 'session username not set';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -260,8 +259,92 @@ if(isset($_POST['update_customer']))
 // }
 
 
-if(isset($_POST['save_student']))
-{
+// if (isset($_POST['save_student'])) {
+//     // Sanitize inputs
+//     $cusGroup = mysqli_real_escape_string($con, $_POST['groupName']);
+//     $mso = mysqli_real_escape_string($con, $_POST['mso']);
+//     $stbno = mysqli_real_escape_string($con, $_POST['stbno']);
+//     $name = mysqli_real_escape_string($con, $_POST['name']);
+//     $phone = mysqli_real_escape_string($con, $_POST['phone']);
+//     $description = mysqli_real_escape_string($con, $_POST['description']);
+//     $amount = mysqli_real_escape_string($con, $_POST['amount']);
+
+//     // Check if required fields are provided
+//     if (empty($stbno) || empty($phone) || empty($cusGroup) || empty($mso) || empty($name)) {
+//         $res = [
+//             'status' => 422,
+//             'message' => 'All fields are mandatory'
+//         ];
+//         echo json_encode($res);
+//         return;
+//     }
+
+//     // Prepare and execute the SQL query
+//     $query = "INSERT INTO customer (date, time, cusGroup, mso, stbno, name, phone, description, amount, rc_dc) 
+//               VALUES ('$currentDate', '$currentTime', '$cusGroup', '$mso', '$stbno', '$name', '$phone', '$description', '$amount', '1')";
+//     $query_run = mysqli_query($con, $query);
+
+//     if ($query_run) {
+//         // Log activity for success
+//         if (isset($_SESSION['id'])) {
+//             $userId = $_SESSION['id'];
+//             $role = $_SESSION['role'];
+//             $session_username = isset($_SESSION['username']) ? $_SESSION['username'] : 'session username not set';
+//             $action = "Customer Created Successfully - $stbno";
+        
+//             // Insert user activity log
+//             $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) 
+//                           VALUES ('$userId', '$currentDate', '$currentTime', '$session_username', '$role', '$action')";
+//             $quer_res = mysqli_query($con, $insertSql);
+//             if (!$quer_res) {
+//                 // Handle activity log failure
+//                 $res = [
+//                     'status' => 500,
+//                     'message' => 'Failed to log user activity'
+//                 ];
+//                 echo json_encode($res);
+//                 return;
+//             }
+//         }
+
+//         // Return success response
+//         $res = [
+//             'status' => 200,
+//             'message' => 'Customer Created Successfully'
+//         ];
+//         echo json_encode($res);
+//         return;
+//     } else {
+//         // Log activity for failure
+//         if (isset($_SESSION['id'])) {
+//             $userId = $_SESSION['id'];
+//             $role = $_SESSION['role'];
+//             $session_username = $_SESSION['username'];
+//             $action = "Customer Creation Failed - $stbno";
+        
+//             // Insert user activity log
+//             $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) 
+//                           VALUES ('$userId', '$currentDate', '$currentTime', '$session_username', '$role', '$action')";
+//             mysqli_query($con, $insertSql);
+//         }
+
+//         // Return error response
+//         $res = [
+//             'status' => 500,
+//             'message' => 'Customer Not Created'
+//         ];
+//         echo json_encode($res);
+//         return;
+//     }
+// }
+
+
+if (isset($_POST['save_student'])) {
+    
+    // Set MySQLi to throw exceptions
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+    // Sanitize inputs
     $cusGroup = mysqli_real_escape_string($con, $_POST['groupName']);
     $mso = mysqli_real_escape_string($con, $_POST['mso']);
     $stbno = mysqli_real_escape_string($con, $_POST['stbno']);
@@ -270,34 +353,40 @@ if(isset($_POST['save_student']))
     $description = mysqli_real_escape_string($con, $_POST['description']);
     $amount = mysqli_real_escape_string($con, $_POST['amount']);
 
-    // if($stbno == NULL || $phone == NULL)
-    // {
-    //     $res = [
-    //         'status' => 422,
-    //         'message' => 'All fields are mandatory'
-    //     ];
-    //     echo json_encode($res);
-    //     return;
-    // }
+    // Check if required fields are provided
+    if (empty($stbno) || empty($phone) || empty($cusGroup) || empty($mso) || empty($name)) {
+        $res = [
+            'status' => 422,
+            'message' => 'All fields are mandatory'
+        ];
+        echo json_encode($res);
+        return;
+    }
 
-    $query = "INSERT INTO customer (date, time, cusGroup, mso, stbno, name, phone, description, amount, rc_dc) VALUES ('$currentDate', '$currentTime', '$cusGroup', '$mso', '$stbno', '$name', '$phone', '$description', '$amount', '1')";
-    $query_run = mysqli_query($con, $query);
+    try {
+        // Prepare and execute the SQL query
+        $query = "INSERT INTO customer (date, time, cusGroup, mso, stbno, name, phone, description, amount, rc_dc) 
+                  VALUES ('$currentDate', '$currentTime', '$cusGroup', '$mso', '$stbno', '$name', '$phone', '$description', '$amount', '1')";
 
-    if($query_run)
-    {
+        if (!mysqli_query($con, $query)) {
+            throw new Exception('Failed to insert customer into the database.');
+        }
+
+        // Log activity for success
+        if (isset($_SESSION['id'])) {
+            $userId = $_SESSION['id'];
+            $role = $_SESSION['role'];
+            $action = "Customer Created Successfully - $stbno";
         
-                // Activity Log
-                if (isset($_SESSION['id'])) {
-                // Get the user information before destroying the session
-                $userId = $_SESSION['id'];
-                $role = $_SESSION['role'];
-                $action = "Customer Created Successfully - $stbno";
-            
-                // Insert user logout activity
-                $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$session_username', '$role', '$action')";
-                mysqli_query($con, $insertSql);
-                }
-        
+            // Insert user activity log
+            $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) 
+                          VALUES ('$userId', '$currentDate', '$currentTime', '$session_username', '$role', '$action')";
+            if (!mysqli_query($con, $insertSql)) {
+                throw new Exception('Failed to insert user activity log.');
+            }
+        }
+
+        // Return success response
         $res = [
             'status' => 200,
             'message' => 'Customer Created Successfully'
@@ -305,30 +394,30 @@ if(isset($_POST['save_student']))
         echo json_encode($res);
         return;
 
-    }
-    else
-    {
+    } catch (Exception $e) {
+        // Log activity for failure
+        if (isset($_SESSION['id'])) {
+            $userId = $_SESSION['id'];
+            $role = $_SESSION['role'];
+            $session_username = $_SESSION['username'];
+            $action = "Customer Creation Failed - $stbno";
         
-                // Activity Log
-                if (isset($_SESSION['id'])) {
-                // Get the user information before destroying the session
-                $userId = $_SESSION['id'];
-                $role = $_SESSION['role'];
-                $action = "Customer Creation Failed - $stbno";
-            
-                // Insert user logout activity
-                $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) VALUES ('$userId', '$currentDate', '$currentTime', '$session_username', '$role', '$action')";
-                mysqli_query($con, $insertSql);
-                }
-        
+            // Insert user activity log
+            $insertSql = "INSERT INTO user_activity (userId, date, time, userName, role, action) 
+                          VALUES ('$userId', '$currentDate', '$currentTime', '$session_username', '$role', '$action')";
+            mysqli_query($con, $insertSql); // Log even on failure
+        }
+
+        // Return error response with exception message
         $res = [
             'status' => 500,
-            'message' => 'Customer Not Created'
+            'message' => 'STB No Already Available!!! - Customer Not Created: ' . $e->getMessage()
         ];
         echo json_encode($res);
         return;
     }
 }
+
 
 
 ////////////////////Edit Customer///// Ajax/////////////////////////
@@ -419,14 +508,14 @@ if (isset($_POST['delete_student'])) {
     if ($query_run) {
         $res = [
             'status' => 200,
-            'message' => 'Student Deleted Successfully'
+            'message' => 'Customer Deleted Successfully'
         ];
         echo json_encode($res);
         return;
     } else {
         $res = [
             'status' => 500,
-            'message' => 'Student Not Deleted'
+            'message' => 'Customer Not Deleted'
         ];
         echo json_encode($res);
         return;

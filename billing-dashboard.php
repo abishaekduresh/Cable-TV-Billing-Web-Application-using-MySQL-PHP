@@ -12,7 +12,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
         echo '<br>';
         include 'admin-menu-btn.php';
         $session_username = $_SESSION['username'];
-    } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
+    } else{
         include 'menu-bar.php';
         ?><br><?php
         include 'sub-menu-btn.php';
@@ -217,7 +217,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     }
                     
                     $bill_status = "approve";
-                    $sms_res = sms_api($name, $phone, $billNo, $currentDateTime, $stbno, $pMode, $bill_status);
+                    $sms_res = send_INDIV_BILL_SMS($name, $phone, $billNo, $currentDateTime, $stbno, $pMode, $bill_status);
                     $sms_res_array = json_decode($sms_res, true);
 					$sms_res_array_status = $sms_res_array['status'];
                     if (isset($_SESSION['id']) && $sms_res == true) {
@@ -495,11 +495,11 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                     
                                                     $disableButton2 = (mysqli_num_rows($nestedQuery2_run) > 0) ? true : false;
                                                     
-                                                    if ($currentDay <= 10) {
-                                                        $discountValue = 10; // Set discount to 10 if current day is less than 5
-                                                    } else {
+                                                    // if ($currentDay <= 10) {
+                                                    //     $discountValue = 10; // Set discount to 10 if current day is less than 5
+                                                    // } else {
                                                             $discountValue = 0;
-                                                    }
+                                                    // }
 
                                                     ?>
                                                     
@@ -511,7 +511,9 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                         
                                                         <td style="font-weight: bold; font-size: 16px;"><?= $serial_number++; ?></td>
                                                     
-                                                        <td><b><?= fetchIndivPreMonthPaidStatus($customer['stbno']) ?></b></td>
+                                                        <td><b><?php
+                                                        $IndivPreMonthPaidStatus=fetchIndivPreMonthPaidStatus($customer['stbno'], $currentDate);
+                                                        echo $IndivPreMonthPaidStatus['html_code'] ?></b></td>
                                                         
                                                         <td>
                                                             <?php if (!$disableButton): ?>

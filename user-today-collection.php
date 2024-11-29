@@ -20,16 +20,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     <!--</table>-->
 
     <?php
-    include "dbconfig.php";
-
-
-    $totalBill = 0;
-    $totalBillAmount = 0;
-    $totalDiscount = 0;
-    $totalRs = 0;
-    $groupTotalBillAmount = 0;
-    $groupTotalDiscount = 0;
-    $groupTotalRs = 0;
+    require_once "dbconfig.php";
     
 // Query to count the number of items
     $sql = "SELECT COUNT(*) AS count FROM bill WHERE date = '$currentDate' AND bill_by = '$session_username' AND status = 'approve'";
@@ -48,16 +39,31 @@ if ($result) {
 }
 
 
-// Query to fetch all values from table
-$sql = "SELECT * FROM bill WHERE date = '$currentDate' AND bill_by = '$session_username' AND status = 'approve'";
+// Initialize the totals
+$totalBillAmount = 0;
+$totalDiscount = 0;
+$totalRs = 0;
+
+// Prepare the query (preferably with prepared statements to avoid SQL injection)
+$sql = "SELECT paid_amount, discount, Rs FROM bill WHERE date = ? AND bill_by = ? AND status = 'approve'";
+
+// Prepare the statement
+$stmt = $con->prepare($sql);
+
+// Bind parameters to the prepared statement
+$stmt->bind_param("ss", $currentDate, $session_username);
 
 // Execute the query
-$result = $con->query($sql);
+$stmt->execute();
+
+// Get the result
+$result = $stmt->get_result();
 
 // Check if the query was successful
 if ($result) {
-    // Fetch each row and calculate the sum
+    // Fetch each row and calculate the totals
     while ($row = $result->fetch_assoc()) {
+        // Sum the amounts for each column if the values are set
         if (isset($row['paid_amount'])) {
             $totalBillAmount += $row['paid_amount'];
         }
@@ -68,64 +74,106 @@ if ($result) {
             $totalRs += $row['Rs'];
         }
     }
+
+    // // Optionally, output the results for debugging
+    // echo "Total Bill Amount: " . $totalBillAmount . "<br>";
+    // echo "Total Discount: " . $totalDiscount . "<br>";
+    // echo "Total Rs: " . $totalRs . "<br>";
+
 } else {
-    echo "Error executing the query: " . $con->error;
+    // Echo an error message if the query fails
+    echo "Error executing the query: " . $stmt->error . "<br>";
 }
 
-// Payment Mode
-$cashAmt = 0;
-$GpayAmt = 0;
-$PaytmAmt = 0;
-$CreditAmt = 0;
-$PaytmCount = 0;
-$CashCount = 0;
-$CreditCount = 0;
-$GpayCount = 0;
+// Close the statement
+$stmt->close();
 
-$sql = "SELECT Rs, COUNT(Rs) as CashCount FROM bill WHERE date = '$currentDate' AND bill_by = '$session_username' AND pMode= 'cash' AND status = 'approve'";
+
+// Prepare the query (preferably with prepared statements to avoid SQL injection)
+$sql = "SELECT Rs FROM bill WHERE date = ? AND bill_by = ? AND pMode = 'cash' AND status = 'approve'";
+
+// Prepare the statement
+$stmt = $con->prepare($sql);
+
+// Bind parameters to the prepared statement
+$stmt->bind_param("ss", $currentDate, $session_username);
 
 // Execute the query
-$result = $con->query($sql);
+$stmt->execute();
+
+// Get the result
+$result = $stmt->get_result();
 
 // Check if the query was successful
-if ($result !== false) {
+if ($result) {
+    $CashCount = 0;   // Initialize the count variable
+    $cashAmt = 0;     // Initialize the sum variable
+
     // Fetch each row and calculate the sum
     while ($row = $result->fetch_assoc()) {
         if (isset($row['Rs'])) {
-            $cashAmt += $row['Rs'];
-            $CashCount += $row['CashCount'];
+            $cashAmt += $row['Rs'];  // Add Rs to the total amount
+            $CashCount++;            // Increment the count for each row
         }
     }
-    
+
+    // // Output the results (for debugging or user info)
+    // echo "Total Cash Count: " . $CashCount . "<br>";
+    // echo "Total Cash Amount: " . $cashAmt . "<br>";
+
 } else {
     // Echo an error message if the query fails
-    echo "Error executing the Cash query: " . $con->error . "<br>";
+    echo "Error executing the Cash query: " . $stmt->error . "<br>";
     echo "Query: " . $sql;
 }
 
+// Close the statement
+$stmt->close();
 
-$sql = "SELECT Rs, COUNT(Rs) as GpayCount FROM bill WHERE date = '$currentDate' AND bill_by = '$session_username' AND pMode= 'gpay' AND status = 'approve'";
+
+// Prepare the query (preferably with prepared statements to avoid SQL injection)
+$sql = "SELECT Rs FROM bill WHERE date = ? AND bill_by = ? AND pMode = 'gpay' AND status = 'approve'";
+
+// Prepare the statement
+$stmt = $con->prepare($sql);
+
+// Bind parameters to the prepared statement
+$stmt->bind_param("ss", $currentDate, $session_username);
 
 // Execute the query
-$result = $con->query($sql);
+$stmt->execute();
+
+// Get the result
+$result = $stmt->get_result();
 
 // Check if the query was successful
-if ($result !== false) {
+if ($result) {
+    $GpayCount = 0;
+    $GpayAmt = 0;
+
     // Fetch each row and calculate the sum
     while ($row = $result->fetch_assoc()) {
         if (isset($row['Rs'])) {
-            $GpayAmt += $row['Rs'];
-            $GpayCount += $row['GpayCount'];
+            $GpayAmt += $row['Rs']; // Add Rs amount to the total
+            $GpayCount++;           // Increment the count of gpay transactions
         }
     }
     
+    // // You now have the total count and the total amount
+    // echo "Total GPay Count: " . $GpayCount . "<br>";
+    // echo "Total GPay Amount: " . $GpayAmt . "<br>";
+
 } else {
     // Echo an error message if the query fails
-    echo "Error executing the Cash query: " . $con->error . "<br>";
+    echo "Error executing the Cash query: " . $stmt->error . "<br>";
     echo "Query: " . $sql;
 }
 
-$sql = "SELECT pb.*, pbi.price
+// Close the statement
+$stmt->close();
+
+
+$sql = "SELECT pb.*, SUM(pbi.price * pbi.qty) - pb.discount AS total_price
         FROM pos_bill pb
         JOIN pos_bill_items pbi ON pb.pos_bill_id = pbi.pos_bill_id
         WHERE DATE(pb.entry_timestamp) = '$currentDate' AND pb.token = pbi.token AND pb.status = 1 AND pb.username = '$session_username' AND pb.username = '$session_username' ";
@@ -138,7 +186,7 @@ if ($result !== false) {
     // Fetch each row and calculate the sum
     while ($row = $result->fetch_assoc()) {
         // Use correct key to access price
-        $pos_amount += $row['price'];
+        $pos_amount += $row['total_price'];
     }
 } else {
     // Echo an error message if the query fails
@@ -146,48 +194,93 @@ if ($result !== false) {
     echo "Query: " . $sql;
 }
 
-$sql = "SELECT Rs, COUNT(Rs) as PaytmCount FROM bill WHERE date = '$currentDate' AND bill_by = '$session_username' AND pMode= 'Paytm' AND status = 'approve'";
+// Initialize the variables to store totals
+$PaytmAmt = 0;
+$PaytmCount = 0;
+
+// Prepare the query (preferably with prepared statements to avoid SQL injection)
+$sql = "SELECT Rs FROM bill WHERE date = ? AND bill_by = ? AND pMode = 'Paytm' AND status = 'approve'";
+
+// Prepare the statement
+$stmt = $con->prepare($sql);
+
+// Bind parameters to the prepared statement
+$stmt->bind_param("ss", $currentDate, $session_username);
 
 // Execute the query
-$result = $con->query($sql);
+$stmt->execute();
+
+// Get the result
+$result = $stmt->get_result();
 
 // Check if the query was successful
-if ($result !== false) {
-    // Fetch each row and calculate the sum
+if ($result) {
+    // Fetch each row and calculate the totals
     while ($row = $result->fetch_assoc()) {
         if (isset($row['Rs'])) {
+            // Sum the Rs amount for Paytm transactions
             $PaytmAmt += $row['Rs'];
-            $PaytmCount += $row['PaytmCount'];
+            // Increment the count of Paytm transactions
+            $PaytmCount++;
         }
     }
-    
+
+    // // Optionally, output the results for debugging
+    // echo "Total Paytm Amount: " . $PaytmAmt . "<br>";
+    // echo "Total Paytm Count: " . $PaytmCount . "<br>";
+
 } else {
     // Echo an error message if the query fails
-    echo "Error executing the Cash query: " . $con->error . "<br>";
-    echo "Query: " . $sql;
+    echo "Error executing the query: " . $stmt->error . "<br>";
 }
 
+// Close the statement
+$stmt->close();
 
-$sql = "SELECT Rs, COUNT(Rs) as CreditCount FROM bill WHERE date = '$currentDate' AND bill_by = '$session_username' AND pMode= 'Credit' AND status = 'approve'";
+
+// Initialize the variables to store totals
+$CreditAmt = 0;
+$CreditCount = 0;
+
+// Prepare the query (preferably with prepared statements to avoid SQL injection)
+$sql = "SELECT Rs FROM bill WHERE date = ? AND bill_by = ? AND pMode = 'Credit' AND status = 'approve'";
+
+// Prepare the statement
+$stmt = $con->prepare($sql);
+
+// Bind parameters to the prepared statement
+$stmt->bind_param("ss", $currentDate, $session_username);
 
 // Execute the query
-$result = $con->query($sql);
+$stmt->execute();
+
+// Get the result
+$result = $stmt->get_result();
 
 // Check if the query was successful
-if ($result !== false) {
-    // Fetch each row and calculate the sum
+if ($result) {
+    // Fetch each row and calculate the totals
     while ($row = $result->fetch_assoc()) {
         if (isset($row['Rs'])) {
+            // Sum the Rs amount for Credit transactions
             $CreditAmt += $row['Rs'];
-            $CreditCount += $row['CreditCount'];
+            // Increment the count of Credit transactions
+            $CreditCount++;
         }
     }
-    
+
+    // // Optionally, output the results for debugging
+    // echo "Total Credit Amount: " . $CreditAmt . "<br>";
+    // echo "Total Credit Count: " . $CreditCount . "<br>";
+
 } else {
     // Echo an error message if the query fails
-    echo "Error executing the Cash query: " . $con->error . "<br>";
-    echo "Query: " . $sql;
+    echo "Error executing the query: " . $stmt->error . "<br>";
 }
+
+// Close the statement
+$stmt->close();
+
 
 
 
@@ -207,16 +300,31 @@ $totalGroupBillCount = $row['groupBillCount'];
 echo "Error executing the query: " . $con->error;
 }
 
-// Query to fetch all values from table
-$sql = "SELECT * FROM billgroupdetails WHERE date = '$currentDate' AND billBy = '$session_username' AND status = 'approve'";
+// Initialize the total variables
+$groupTotalBillAmount = 0;
+$groupTotalDiscount = 0;
+$groupTotalRs = 0;
+
+// Prepare the query (preferably with prepared statements to avoid SQL injection)
+$sql = "SELECT billAmount, discount, Rs FROM billgroupdetails WHERE date = ? AND billBy = ? AND status = 'approve'";
+
+// Prepare the statement
+$stmt = $con->prepare($sql);
+
+// Bind parameters to the prepared statement
+$stmt->bind_param("ss", $currentDate, $session_username);
 
 // Execute the query
-$result = $con->query($sql);
+$stmt->execute();
+
+// Get the result
+$result = $stmt->get_result();
 
 // Check if the query was successful
 if ($result) {
-    // Fetch each row and calculate the sum
+    // Fetch each row and calculate the totals
     while ($row = $result->fetch_assoc()) {
+        // Sum the billAmount, discount, and Rs
         if (isset($row['billAmount'])) {
             $groupTotalBillAmount += $row['billAmount'];
         }
@@ -227,9 +335,20 @@ if ($result) {
             $groupTotalRs += $row['Rs'];
         }
     }
+
+    // // Optionally, output the results for debugging
+    // echo "Total Bill Amount: " . $groupTotalBillAmount . "<br>";
+    // echo "Total Discount: " . $groupTotalDiscount . "<br>";
+    // echo "Total Rs: " . $groupTotalRs . "<br>";
+
 } else {
-    echo "Error executing the query: " . $con->error;
+    // Echo an error message if the query fails
+    echo "Error executing the query: " . $stmt->error . "<br>";
 }
+
+// Close the statement
+$stmt->close();
+
 
 ?>
 

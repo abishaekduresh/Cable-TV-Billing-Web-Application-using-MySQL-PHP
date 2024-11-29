@@ -4,7 +4,7 @@ include "dbconfig.php";
 require "component.php";
 include 'preloader.php';
 
-if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role'])) {
     $session_username = $_SESSION['username'];
     ?>
 
@@ -30,9 +30,15 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 
 <?php
 
-    include 'admin-menu-bar.php';
-    ?><br><?php
-    include 'admin-menu-btn.php';
+    if($_SESSION['role']=='admin'){
+        include 'admin-menu-bar.php';
+        ?><br><?php
+        include 'admin-menu-btn.php';
+    }else{
+        include 'menu-bar.php';
+        ?><br><?php
+        include 'sub-menu-btn.php';
+    }
 
 ?>
 
@@ -246,6 +252,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 <?php include 'footer.php'?>
 
 <?php } else {
-    header("Location: index.php");
+    header("Location: logout.php");
 }
 ?>

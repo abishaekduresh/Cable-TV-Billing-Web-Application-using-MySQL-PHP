@@ -78,24 +78,6 @@ foreach ($requiredFields as $field) {
         }
     }
     
-// foreach ($data['items'] as $item) {
-//     $pos_product_id = $item['pos_product_id'];
-//     $qty = $item['qty'];
-//     $stock = $item['stock'];
-//     $productName = getProductName($pos_product_id);
-
-//     if ($qty > $stock) {
-//         $response = array(
-//             "status" => "failed",
-//             "message" => "Quantity exceeds available stock for {$productName}",
-//             "code" => "405"
-//         );
-//         echo json_encode($response);
-//         exit;
-//     }
-// }
-
-// $bill_no = '99';
 $username = validateInput($data['username']);
 $timestamp = validateInput($data['timestamp']);
 $cus_name = isset($data['cus_name']) ? validateInput($data['cus_name']) : '-';
@@ -146,10 +128,11 @@ if ($insertStmt->execute()) {
         if ($result->num_rows > 0) {
             if (!empty($items) && is_array($items)) {
                 foreach ($items as $item) {
+					$qty = $price = $total = 0;
                     $qty = $item['qty'];
                     $pos_product_id = $item['pos_product_id'];
                     $price = $item['price'];
-					$total = $price * $qty;
+					// $total = $price * $qty;
         
                     $insertItemsStmt = $con->prepare("INSERT INTO pos_bill_items (entry_timestamp, username, pos_bill_id, pos_product_id, qty, r_or_hs, price, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                     if (!$insertItemsStmt) {
@@ -161,7 +144,7 @@ if ($insertStmt->execute()) {
                         echo json_encode($response);
                         exit;
                     }
-                    $insertItemsStmt->bind_param("sssssiss", $timestamp, $username, $pos_bill_id, $pos_product_id, $qty, $r_or_hs, $total, $unic_token);
+                    $insertItemsStmt->bind_param("sssssiss", $timestamp, $username, $pos_bill_id, $pos_product_id, $qty, $r_or_hs, $price, $unic_token);
         
                     if (!$insertItemsStmt->execute()) {
                         $insertItemsStmt->close();
@@ -223,12 +206,14 @@ if ($insertStmt->execute()) {
 		$con->query($sqlInsert);
 	}*/
 	
-	$sqlSum = "SELECT SUM(pbi.price) AS total_price
+	$sqlSum = "SELECT SUM(pbi.price * pbi.qty) - pb.discount AS total_price
 			   FROM pos_bill pb
 			   JOIN pos_bill_items pbi ON pb.pos_bill_id = pbi.pos_bill_id
-			   WHERE DATE(pb.entry_timestamp) = ? AND pb.status = '1'";
+			   WHERE DATE(pb.entry_timestamp) = ? 
+			   AND pb.status = ?";
 	$stmt = $con->prepare($sqlSum);
-	$stmt->bind_param("s", $currentDate); // Assuming $currentDate is a string in 'Y-m-d' format
+	$active_status = "1'";
+	$stmt->bind_param("ss", $currentDate,$active_status); // Assuming $currentDate is a string in 'Y-m-d' format
 	$stmt->execute();
 	$result = $stmt->get_result();
 	$row = $result->fetch_assoc();

@@ -2,7 +2,7 @@
 
 function sms_credit(){
     // URL to retrieve JSON data
-    $url = 'https://sms.textspeed.in/vb/http-credit.php?apikey=i1JdnQyj9tFYW6S7&route_id=1&format=json';
+    $url = 'https://sms.textspeed.in/vb/http-credit.php?apikey=CpyZ6bypXgAhnqSP&route_id=1&format=json';
     
     // Fetch JSON data from the URL
     $json_data = file_get_contents($url);

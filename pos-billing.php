@@ -787,6 +787,7 @@ $result = $con->query($query);
                     }
                 },
                 error: function(xhr, status, error) {
+                        confirmModel.hide();
                     console.error('Error:', status);
                     console.error('Error:', error);
                     $("#response").html(error);

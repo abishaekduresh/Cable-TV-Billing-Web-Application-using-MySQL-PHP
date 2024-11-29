@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             logUserActivity($userId, $username, $role, $action);
         }
             $bill_status = "cancel";
-            $sms_res = sms_api($name, $phone, $billNo, $due_month_timestamp, $stbNo, $pMode, $bill_status);
+            $sms_res = send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbNo, $pMode, $bill_status);
 			$sms_res_array = json_decode($sms_res, true);
 			$sms_res_array_status = $sms_res_array['status'];
 			if (isset($_SESSION['id']) && $sms_res == true) {
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$userId = $_SESSION['id'];
 				$username = $_SESSION['username'];
 				$role = $_SESSION['role'];
-				$action = "Indiv Bill SMS Status: $sms_res_array_status | $phone - $stbno";
+				$action = "Indiv Bill SMS Status: $sms_res_array_status | $phone - $stbNo";
 
 				// Call the function to insert user activity log
 				logUserActivity($userId, $username, $role, $action);
@@ -114,7 +114,7 @@ function redirect($url)
     echo "<script>
             setTimeout(function(){
                 window.location.href = '$url';
-            }, 200);
+            }, 300);
         </script>";
 }
 

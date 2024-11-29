@@ -1,10 +1,10 @@
 <?php
-$con = mysqli_connect("localhost", "root", "", "cabletv"); // host, db username, db password, database name
+$con = mysqli_connect("localhost", "ujl8kvvqjhauz", "pd+*1@b15k[#", "dbj8ikofivgxgi");
 
 // Check if connection is null
 if (!$con) {
     header("Location: db-connection-error.php");
-    //exit(); // Terminate script after redirect
+    exit(); // Terminate script after redirect
 }
 
 // Check connection
@@ -30,7 +30,23 @@ $currentDay = $datetime->format('d');
 $currentMonth = $datetime->format('m');
 $currentYear = $datetime->format('Y');
 
-// $sms_api_key = urlencode('i1JdnQyj9tFYW6S7');
+// $session_username = $_SESSION['username'];
 
+$SMS_GATEWAY_URL = "https://sms.textspeed.in/vb/apikey.php";
+$SMS_API_KEY = urlencode('xxxx');
+$SMS_INDIV_BILLING_SENDER_ID = urlencode('xxx');
+$SMS_INDIV_BILLING_TEMP_ID = urlencode('xxxx');
+// Use only 2 variables
+$SMS_INDIV_BILLING_TEMP = 'Dear Customer, Your Cable TV bill for STB No: {#var1#}, has been {#var2#}.';
+// ------------------------------------------------------------
+$SMS_LOGIN_SENDER_ID = urlencode('xxx');
+$SMS_LOGIN_TEMP_ID = urlencode('xxx');
+// Use only 1 Variable
+$SMS_LOGIN_TEMP = 'Your OTP is {#var1#} to securely access your account. Software by DURESH TECH.';
+
+$SMS_LOC_SENDER_ID = urlencode('xxx');
+$SMS_LOC_TEMP_ID = urlencode('xxxx');
+// Use only 1 Variable
+$SMS_LOC_TEMP = 'Dear Customer, Your Cable TV LOC bill for {#var#}. For more details, please contact us.';
 
 ?>

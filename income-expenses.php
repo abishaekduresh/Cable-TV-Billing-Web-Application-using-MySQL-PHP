@@ -145,11 +145,11 @@ if(isset($_POST['submitIncome'])) {
                     <select class="form-select" name="category" id="categoryID" required>
                         <option selected disabled>Select Category</option>
                         <?php
-                        $sql = "SELECT * FROM in_ex_category WHERE in_ex='Expense' AND status = '1'";
-                        $result = mysqli_query($con, $sql);
-                        while($row = mysqli_fetch_assoc($result)) {
-                            echo '<option value="' . $row['category_id'] . '">' . $row['category'] . '</option>';
-                        }
+                            $sql = "SELECT * FROM in_ex_category WHERE in_ex='Expense' OR in_ex='Both' AND status = '1'";
+                            $result = mysqli_query($con, $sql);
+                            while($row = mysqli_fetch_assoc($result)) {
+                                echo '<option value="' . $row['category_id'] . '">' . $row['category'] . '</option>';
+                            }
                         ?>
                     </select>
                 </div>            

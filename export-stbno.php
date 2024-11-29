@@ -5,7 +5,7 @@
 //   include 'component.php';
 //   include 'component2.php';
       
-    if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+    if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role'])) {
         $session_username = $_SESSION['username']; 
         ?>
   
@@ -21,18 +21,24 @@
 </head>
 <body>
     
-    <?php include 'admin-menu-bar.php'?>
-    <?php include 'admin-menu-btn.php'?>
+    <?php if($_SESSION['role'] == 'admin'){
+        include 'admin-menu-bar.php';
+        include 'admin-menu-btn.php';
+    }else{
+        include 'menu-bar.php';
+        include 'sub-menu-btn.php';
+    }
+    ?>
     
 
     <div class="container mt-1">
         <!-- Nav Tabs -->
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#indiv-bill" data-bs-toggle="tab">Indiv Bill</a>
+                <a class="nav-link active" aria-current="page" href="#indiv-bill" data-bs-toggle="tab"><b>&nbsp;&nbsp;Indiv Bill&nbsp;&nbsp;</b></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#group-bill" data-bs-toggle="tab">Group Bill</a>
+				<a class="nav-link" href="#group-bill" data-bs-toggle="tab"><b>&nbsp;&nbsp;Group Bill&nbsp;&nbsp;</b></a>
             </li>
         </ul>
 

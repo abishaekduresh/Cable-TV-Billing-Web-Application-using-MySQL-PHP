@@ -1,0 +1,4 @@
+[16-Nov-2024 10:55:32 Asia/Kolkata] PHP Warning:  Undefined global variable $_SESSION in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 10:55:32 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 10:58:04 Asia/Kolkata] PHP Warning:  Undefined global variable $_SESSION in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 10:58:04 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33

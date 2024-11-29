@@ -358,9 +358,9 @@ include 'preloader.php';
                         alertify.set('notifier','position', 'top-right');
                         alertify.success(res.message);
 
-          setTimeout(function() {
-            location.reload();
-          }, 600);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
 
                     }else if(res.status == 500) {
                         alert(res.message);
@@ -445,11 +445,7 @@ $(document).on('click', '.editStudentBtn', function () {
                 success: function (response) {
                     
                     var res = jQuery.parseJSON(response);
-                    if(res.status == 422) {
-                        $('#errorMessageUpdate').removeClass('d-none');
-                        $('#errorMessageUpdate').text(res.message);
-
-                    }else if(res.status == 200){
+                    if(res.status == 200) {
 
                         $('#errorMessageUpdate').addClass('d-none');
 
@@ -458,15 +454,17 @@ $(document).on('click', '.editStudentBtn', function () {
                         
                         $('#studentEditModal').modal('hide');
                         $('#updateStudent')[0].reset();
-
-                        // $('#myTable').load(location.href + " #myTable");
-                          setTimeout(function() {
+                        setTimeout(function() {
                             location.reload();
-                          }, 200);
-
-                    }else if(res.status == 500) {
+                          }, 1000);
+                    } else {
                         alert(res.message);
                     }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error cases
+                    console.error('AJAX error:', error);  // Log the error for debugging
+                    alert('An error occurred: ' + error); // Display a user-friendly message
                 }
             });
 
@@ -499,7 +497,10 @@ $(document).on('click', '.editStudentBtn', function () {
                     alertify.success(res.message);
         
                     // Reload the page after successful deletion
-                    location.reload();
+
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
                   }
                 }
               });

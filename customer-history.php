@@ -318,56 +318,56 @@ if(mysqli_num_rows($query_run1) > 0)
     $row = mysqli_fetch_assoc($query_run1);
 ?>
 
-    <!--<div class="container">-->
-    <!--    <div class="row">-->
-    <!--        <div class="col-md-12">-->
-    <!--            <div class="card mt-4">-->
-    <!--                <div class="card-body">-->
-    <!--                    <h3><center>-->
-    <!--                        <u>Make bill after bill : <?= $session_username ?></u>-->
-    <!--                    </center></h3>-->
-    <!--                    <form method="POST" action="">-->
+     <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h3><center>
+                            <u>Make bill after bill : <?= $session_username ?></u>
+                        </center></h3>
+                        <form method="POST" action="">
                             
-    <!--                        <div class="mb-3">-->
-    <!--                            <label for="mso" class="form-label">MSO :</label>-->
-    <!--                            <input readonly type="text" name="mso" value="<?= $row['mso']; ?>" class="form-control" required>-->
-    <!--                        </div>-->
-    <!--                        <div class="mb-3">-->
-    <!--                            <label for="stbno" class="form-label">STB No:</label>-->
-    <!--                            <input readonly type="text" name="stbno" value="<?= $row['stbno']; ?>" class="form-control" required>-->
-    <!--                        </div>-->
-    <!--                        <div class="mb-3">-->
-    <!--                            <label for="name" class="form-label">Name :</label>-->
-    <!--                            <input readonly type="text" name="name" value="<?= $row['name']; ?>" class="form-control" required>-->
-    <!--                        </div>-->
-    <!--                        <div class="mb-3">-->
-    <!--                            <label for="phone" class="form-label">Phone :</label>-->
-    <!--                            <input readonly type="number" name="phone" value="<?= $row['phone']; ?>" class="form-control" required>-->
-    <!--                        </div>-->
-    <!--                        <div class="mb-3">-->
-    <!--                            <label for="pMode" class="form-label">pMode :</label>-->
-    <!--                            <select name="pMode" class="form-select fw-bold">-->
-    <!--                                <option value="cash" selected class="fw-bold">Cash</option>-->
-    <!--                                <option value="gpay" class="fw-bold">G Pay</option>-->
-    <!--                                <option value="credit" class="fw-bold">Credit</option>-->
-    <!--                            </select>-->
-    <!--                        </div>-->
-    <!--                        <div class="mb-3">-->
-    <!--                            <label for="description" class="form-label">Remark :</label>-->
-                                <!--<textarea name="message" id="message" class="form-control" required></textarea>-->
-    <!--                            <input type="text" name="description" class="form-control" required>-->
-    <!--                        </div>-->
-    <!--                        <div class="mb-3">-->
-    <!--                            <label for="paid_amount" class="form-label">Amount :</label>-->
-    <!--                            <input type="number" name="paid_amount" class="form-control" required>-->
-    <!--                        </div>-->
-    <!--                        <button type="submit" class="btn btn-primary">Submit</button>-->
-    <!--                    </form>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </div>-->
-    <!--</div>-->
+                            <div class="mb-3">
+                                <label for="mso" class="form-label">MSO :</label>
+                                <input readonly type="text" name="mso" value="<?= $row['mso']; ?>" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="stbno" class="form-label">STB No:</label>
+                                <input readonly type="text" name="stbno" value="<?= $row['stbno']; ?>" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name :</label>
+                                <input readonly type="text" name="name" value="<?= $row['name']; ?>" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone :</label>
+                                <input readonly type="number" name="phone" value="<?= $row['phone']; ?>" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="pMode" class="form-label">pMode :</label>
+                                <select name="pMode" class="form-select fw-bold">
+                                    <option value="cash" selected class="fw-bold">Cash</option>
+                                    <option value="gpay" class="fw-bold">G Pay</option>
+                                    <option value="credit" class="fw-bold">Credit</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Remark :</label>
+                                <!--textarea name="message" id="message" class="form-control" required></textarea-->
+                                <input type="text" name="description" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="paid_amount" class="form-label">Amount :</label>
+                                <input type="number" name="paid_amount" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
 
 
 <?php

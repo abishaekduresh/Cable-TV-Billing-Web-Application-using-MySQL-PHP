@@ -28,6 +28,16 @@
       </button></a>
     </div>
     <div class="col">
+      <a href="pos-billing.php"><button type="button" class="btn btn-primary position-relative">
+		  <b>POS Billing</b>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            New
+            <span class="visually-hidden">unread messages</span>
+          </span>
+        </button>
+      </a>
+    </div>
+    <div class="col">
       <a href="customer-history.php"><button type="button" class="btn btn-secondary"><b>Indiv Customer History</b></button></a>
     </div>
     <div class="col">
@@ -45,9 +55,9 @@
     <div class="col">
       <a href="IndivDuplicateBill.php" class="btn btn-info position-relative">
         <b>Indiv Duplicate Bill</b>
-        <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">
+        <!--span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">
           New
-        </span>
+        </span-->
       </a>
     </div>
 

@@ -55,6 +55,9 @@
       <a href="groupaction.php"><button type="button" class="btn btn-info"><b>Add | Edit Group</b></button></a>
     </div>
     <div class="col">
+      <a href="loc/dashboard.php?page=new-bill"><button type="button" class="btn btn-warning"><b>LOC</b></button></a>
+    </div>
+    <div class="col">
       <a href="IndivDuplicateBill.php" class="btn btn-info position-relative">
         <b>Indiv Duplicate Bill</b>
       </a>

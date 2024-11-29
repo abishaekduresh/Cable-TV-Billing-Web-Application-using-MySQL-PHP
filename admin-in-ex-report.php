@@ -191,7 +191,7 @@
                                     }
 
                                 
-                                    $query = "SELECT * FROM in_ex WHERE date BETWEEN '$from_date' AND '$to_date' $filterCondition $statusFilterCondition";
+                                    $query = "SELECT * FROM in_ex WHERE date BETWEEN '$from_date' AND '$to_date' $filterCondition $statusFilterCondition AND status = 1";
                                     $query_run = mysqli_query($con, $query);
                                     
                                     $in_sum = 0;
@@ -294,8 +294,11 @@
                                 }
                                     ?>
                                         <tr>
-                                            <td colspan="6"></td>
-                                            <td style="font-weight: bold; font-size: 20px;">Total:</td>
+											<td></td>
+											<td style="font-weight: bold; font-size: 20px;">Profit:</td>
+											<td style="font-weight: bold; font-size: 20px;"><?= (isset($in_sum) && isset($ex_sum) ? '₹ '.floatval($in_sum) - floatval($ex_sum) : '') ?></td>
+                                            <td colspan="4"></td>
+                                            <!--td style="font-weight: bold; font-size: 20px;">Total:</td-->
                                             <td style="font-size: 20px;">
                                             <!-- color: #0012C3;  color: #05A210; -->
                                                 <b><?= '₹' . $in_sum ?></b>
@@ -303,7 +306,6 @@
                                             <td style="font-size: 20px;">
                                                 <b><?= '₹' . $ex_sum ?></b>
                                             </td>
-                                            <td></td>
                                         </tr>
                             </tbody>
                         </table>

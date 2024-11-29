@@ -3,6 +3,12 @@ session_start();
 require "dbconfig.php";
 require "component.php";
 
+if (isset($_GET['error'])) {
+    $error = isset($_GET['error']) ? '?error=' . $_GET['error'] : '';
+} else {
+    $error = '?error=Logged out...';
+}
+
 if (isset($_SESSION['id'])) {
     // Get the user information before destroying the session
     $userId = $_SESSION['id'];
@@ -21,7 +27,7 @@ $_SESSION = array();
 session_destroy();
 
 // Redirect to a different page after session termination
-header("Location: index.php");
+header("Location: index.php" . $error);
 exit();
 ?>
 

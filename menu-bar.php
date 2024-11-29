@@ -92,19 +92,13 @@ if ($result->num_rows > 0) {
              <div class="dropdown-divider"></div>
              <a class="dropdown-item" href="bill-filter-by-user.php">Bill by You</a>
              <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="rptposinvoice.php">POS Report</a>
+                <div class="dropdown-divider"></div>
              <a class="dropdown-item" href="user-today-collection.php" target="blank">Today Collection</a>
             </div>
         </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Download
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <!--<a class="dropdown-item" href="bill-export.php">Download Bill Report</a>-->
-            <a class="dropdown-item" onclick="openBill_Export()">Download Bill Report</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="bill-group-export.php">Download Group Bill</a>
-            <div class="dropdown-divider"></div>
+        <li class="nav-item">
+            <li class="nav-item"><a class="nav-link" href="export-stbno.php">EC</a>
         </li>
         <li class="nav-item">
             <li class="nav-item"><a class="nav-link" href="#"><b><?php echo $session_username ?></b></a>
@@ -145,5 +139,5 @@ if ($result->num_rows > 0) {
 </html>
 
 <?php }else{
-	header("Location: index.php");
+	header("Location: logout.php");
 } ?>

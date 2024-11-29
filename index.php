@@ -1,7 +1,24 @@
+<?php
+// Place this PHP code in your script where you want to clear the storage
+echo "<script>
+    // Check if localStorage is available and clear it
+    if (typeof localStorage !== 'undefined') {
+        localStorage.clear();
+        console.log('Local storage cleared');
+    }
+    
+    // Check if sessionStorage is available and clear it
+    if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.clear();
+        console.log('Session storage cleared');
+    }
+</script>";
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Cable TV Software | Login</title>
+	<title>PDP Cable TV | Login</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 <style>
 body {
@@ -67,7 +84,7 @@ body {
         <div class="card border-0 shadow rounded-3 my-5">
           <div class="card-body p-4 p-sm-5">
           <h4 class="text-center">CABLE TV Billing Software</h4><br/>
-			<form action="check-login.php" method="post" >
+			<form action="verify-otp.php" method="post" >
       	      <?php if (isset($_GET['error'])) { ?>
       	      <div class="alert alert-danger" role="alert">
 				  <?=$_GET['error']?>
@@ -105,7 +122,7 @@ body {
                 </button> -->
               </div>
 		          <center><h6>Powered by <a href="https://www.dureshtech.com/" target="_blank" style="text-decoration: none;">Duresh Tech</a></h6></center>
-    <p align="center">13th-Commit</p>
+    <p align="center">~th-Commit</p>
             </form>
           </div>
         </div>

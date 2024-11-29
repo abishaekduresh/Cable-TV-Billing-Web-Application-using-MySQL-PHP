@@ -16,7 +16,7 @@ if ($result->num_rows > 0) {
         $appName2 = $row['appName2'];
     }
 } else {
-    $appName2 = 'Cable TV Software';
+    echo "No data found.";
 }
 
 ?>
@@ -120,7 +120,7 @@ if ($result->num_rows > 0) {
                     </div>
                 </li-->
                 <li class="nav-item">
-                    <li class="nav-item"><a class="nav-link" href="export-stbno.php">EC</a>
+                    <li class="nav-item"><a class="nav-link" href="export-stbno.php"><b>EC</b></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

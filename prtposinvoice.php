@@ -7,7 +7,7 @@ require 'domPDF_lib/vendor/autoload.php';
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-if (isset($_SESSION['username'], $_SESSION['id'], $_SESSION['role']) && $_SESSION['role'] == 'admin') {
+if (isset($_SESSION['username'], $_SESSION['id'], $_SESSION['role'])) {
     $session_userid = $_SESSION['username'];
 } else {
     header("Location: index.php");

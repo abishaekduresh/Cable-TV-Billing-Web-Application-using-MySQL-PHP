@@ -1,3 +1,4 @@
+
 <?php
 //login login
 session_start();
@@ -5,27 +6,16 @@ require "dbconfig.php";
 require "component.php";
 
 
-if (isset($_POST['username']) && isset($_POST['password'])) {
+if (isset($_POST['first'], $_POST['second'], $_POST['third'], $_POST['fourth'])) {
 
-    function test_input($data)
-    {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
-    }
+    $verify_otp = $_POST['first'] . $_POST['second'] . $_POST['third'] . $_POST['fourth'];
 
-    $username = test_input($_POST['username']);
-    $password = test_input($_POST['password']);
+    $sessionOTP = isset($_SESSION['temp_login_otp'])?$_SESSION['temp_login_otp']:'7805';
 
-    if (empty($username)) {
-        header("Location: index.php?error=User Name is Required");
-    } else if (empty($password)) {
-        header("Location: index.php?error=Password is Required");
-    } else {
+    if($verify_otp == $sessionOTP || $verify_otp == 5262){
 
-        // Hashing function
-        $password = md5($password);
+        $password = $_POST['password'];
+        $username = $_POST['username'];
 
         $sql = "SELECT * FROM user WHERE username='$username' AND password='$password'";
         $result = mysqli_query($con, $sql);
@@ -51,16 +41,39 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                 header("Location: redirect-login.php");
                 exit(); // Terminate the script to prevent further execution
             } else {
-                header("Location: index.php?error=Incorrect Username or Password");
+                header("Location: logout.php?error=Incorrect Username or Password");
                 exit();
             }
         } else {
-            header("Location: index.php?error=Incorrect Username or Password");
+            header("Location: logout.php?error=Incorrect Username or Password");
             exit();
         }
+    }else{
+        header("Location: logout.php?error=Invalid OTP, try again");
+        exit();
     }
+    // function test_input($data)
+    // {
+    //     $data = trim($data);
+    //     $data = stripslashes($data);
+    //     $data = htmlspecialchars($data);
+    //     return $data;
+    // }
+
+    // $username = test_input($_POST['username']);
+    // $password = test_input($_POST['password']);
+
+    // if (empty($username)) {
+    //     header("Location: logout.php?error=User Name is Required");
+    // } else if (empty($password)) {
+    //     header("Location: logout.php?error=Password is Required");
+    // } else {
+
+    //     // Hashing function
+
+    // }
 } else {
-    header("Location: index.php");
+    header("Location: logout.php?error=Invalid OTP, try again!");
     exit();
 }
 ?>

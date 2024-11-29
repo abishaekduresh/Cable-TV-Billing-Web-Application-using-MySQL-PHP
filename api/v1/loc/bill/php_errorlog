@@ -1,0 +1,51 @@
+[16-Nov-2024 10:46:17 Asia/Kolkata] PHP Warning:  Undefined global variable $_SESSION in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 10:46:17 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 10:55:43 Asia/Kolkata] PHP Warning:  Undefined global variable $_SESSION in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 10:55:43 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 10:58:01 Asia/Kolkata] PHP Warning:  Undefined global variable $_SESSION in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 10:58:01 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 11:13:08 Asia/Kolkata] PHP Warning:  Undefined global variable $_SESSION in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 11:13:08 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 11:13:19 Asia/Kolkata] PHP Warning:  Undefined global variable $_SESSION in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 11:13:19 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 11:13:19 Asia/Kolkata] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/get-pending-due.php on line 37
+[16-Nov-2024 11:14:04 Asia/Kolkata] PHP Warning:  Undefined global variable $_SESSION in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 11:14:04 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 11:14:04 Asia/Kolkata] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/get-pending-due.php on line 37
+[16-Nov-2024 11:14:08 Asia/Kolkata] PHP Warning:  Undefined global variable $_SESSION in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 11:14:08 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 11:14:08 Asia/Kolkata] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/get-pending-due.php on line 37
+[16-Nov-2024 11:14:10 Asia/Kolkata] PHP Warning:  Undefined global variable $_SESSION in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 11:14:10 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/dbconfig.php on line 33
+[16-Nov-2024 11:14:10 Asia/Kolkata] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/get-pending-due.php on line 37
+[16-Nov-2024 11:14:21 Asia/Kolkata] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/get-pending-due.php on line 37
+[16-Nov-2024 11:14:24 Asia/Kolkata] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/get-pending-due.php on line 37
+[16-Nov-2024 14:56:42 Asia/Kolkata] PHP Warning:  Undefined variable $gen_bill_id in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php on line 171
+[16-Nov-2024 14:56:42 Asia/Kolkata] PHP Warning:  Undefined array key "due_month" in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php on line 173
+[16-Nov-2024 14:56:42 Asia/Kolkata] PHP Warning:  Undefined array key "due_year" in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php on line 173
+[16-Nov-2024 14:57:41 Asia/Kolkata] PHP Warning:  Undefined variable $gen_bill_id in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php on line 171
+[16-Nov-2024 14:57:41 Asia/Kolkata] PHP Warning:  Undefined array key "due_month" in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php on line 173
+[16-Nov-2024 14:57:41 Asia/Kolkata] PHP Warning:  Undefined array key "due_year" in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php on line 173
+[16-Nov-2024 14:59:12 Asia/Kolkata] PHP Warning:  Undefined variable $gen_bill_id in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php on line 171
+[16-Nov-2024 14:59:12 Asia/Kolkata] PHP Warning:  Undefined array key "due_month" in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php on line 173
+[16-Nov-2024 14:59:12 Asia/Kolkata] PHP Warning:  Undefined array key "due_year" in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php on line 173
+[16-Nov-2024 15:01:35 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function format() on bool in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/component.php:928
+Stack trace:
+#0 /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php(89): loc_sms_api(7708443543, '112021', 'still pending', NULL)
+#1 {main}
+  thrown in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/component.php on line 928
+[16-Nov-2024 15:03:06 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function format() on bool in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/component.php:928
+Stack trace:
+#0 /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php(89): loc_sms_api(7708443543, '112021', 'still pending', NULL)
+#1 {main}
+  thrown in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/component.php on line 928
+[16-Nov-2024 15:03:20 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function format() on bool in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/component.php:928
+Stack trace:
+#0 /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php(89): loc_sms_api(7708443543, '112021', 'still pending', NULL)
+#1 {main}
+  thrown in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/component.php on line 928
+[16-Nov-2024 15:03:36 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function format() on bool in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/component.php:928
+Stack trace:
+#0 /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/api/v1/loc/bill/new-bill.php(89): loc_sms_api(7708443543, '112021', 'still pending', NULL)
+#1 {main}
+  thrown in /home/customer/www/php.abishaek.com/public_html/pdpctv/v3/component.php on line 928
