@@ -17,6 +17,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
 body
@@ -109,6 +110,83 @@ h1
 /*our-team-main*/
 
 
+</style>
+<style>
+    /* SweetAlert2 Styling */
+    .swal2-popup {
+        font-family: 'Arial', sans-serif;
+        font-size: 1rem;
+        padding: 0;
+        background: #f4f7fc;
+        border-radius: 20px;
+        max-width: 600px;
+    }
+
+    .swal2-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #1e293b;
+        margin-top: 20px;
+    }
+
+    .swal2-html-container {
+        padding: 20px;
+    }
+
+    .modern-card {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        background: #ffffff;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .modern-card .card-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: #f4f7fc;
+        border-radius: 10px;
+        padding: 15px;
+        border: 1px solid #e0e7ff;
+    }
+
+    .card-item h3 {
+        font-size: 1rem;
+        color: #1e293b;
+        margin-bottom: 5px;
+    }
+
+    .card-item span {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #0ea5e9;
+    }
+
+    .highlight-section {
+        text-align: center;
+        padding: 15px;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #10b981, #34d399);
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .swal2-confirm {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        cursor: pointer;
+    }
 </style>
 </head>
 <body >
@@ -269,137 +347,59 @@ h1
                     </button>
                 </div>
             </div>
-        
-
         </div>
 
-
         <!-- Right Column (empty) -->
-        <!--<div class="col-lg-6">-->
-            <!--<p>Testing</p>-->
-            
-    <!--<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
-    <!--<script type="text/javascript">-->
-    <!--  // Sample JSON data for Red Sox Attendance and Amount-->
-    <!--  var jsonData = [-->
-    <!--    {"date": "2022-01", "attendance": 35000, "amount": 4000},-->
-    <!--    {"date": "2022-04", "attendance": 35000, "amount": 4000},-->
-    <!--    {"date": "2023-04", "attendance": 36000, "amount": 2000},-->
-    <!--    {"date": "2023-04", "attendance": 17000, "amount": 4050},-->
-    <!--    {"date": "2023-05", "attendance": 38000, "amount": 1000},-->
-    <!--    {"date": "2024-05", "attendance": 2500, "amount": 4000}-->
-    <!--    // Add more data points as needed-->
-    <!--  ];-->
+        <div class="col-lg-6">
+            <div class="row pt-4">
+                <!-- First Column (Date Input) -->
+                <div class="col-md-4 mb-3">
+                    <label for="dueMonthDate" class="form-label">Select Due Date</label>
+                    <input type="date" class="form-control" value="<?= $currentDate ?>" id="dueMonthDate">
+                </div>
+                
+                <!-- Second Column (billType Select) -->
+                <div class="col-md-4 mb-3">
+                    <label for="billType" class="form-label">Group/Indiv Bills</label>
+                    <select class="form-select" name="billType" id="billType" required>
+                        <option value="1" selected>Indiv Bills</option>
+                        <option value="2">Group Bills</option>
+                    </select>
+                </div>
+                
+                <!-- Third Column (Username Select) -->
+                <div class="col-md-4 mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <select class="form-select" name="username" id="username" required>
+                        <!-- <option value="" disabled selected>Select</option> -->
+                        <?php
+                            // Query to fetch data from the database (assuming you're fetching usernames)
+                            $sql = "SELECT username, name FROM user WHERE status = 1"; // Replace 'users' with your table name
+                            $result = $con->query($sql);
 
-    <!--  // Load the Google Charts library-->
-    <!--  google.charts.load('current', {'packages':['corechart']});-->
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo '<option value="' . $row['username'] . '">' . htmlspecialchars($row['name']) . '</option>';
+                                }
+                            } else {
+                                echo '<option value="" selected>No users found</option>';
+                            }
 
-    <!--  // Set a callback function to run when the Google Charts library is loaded-->
-    <!--  google.charts.setOnLoadCallback(drawChart);-->
+                            $con->close();
+                        ?>
+                    </select>
+                </div>
+            </div>
 
-    <!--  function drawChart() {-->
-    <!--    // Convert JSON data to DataTable format-->
-    <!--    var data = new google.visualization.DataTable();-->
-    <!--    data.addColumn('string', 'Date');-->
-    <!--    data.addColumn('number', 'Attendance');-->
-    <!--    data.addColumn('number', 'Amount');-->
-
-    <!--    jsonData.forEach(function(row) {-->
-    <!--      data.addRow([row.date, row.attendance, row.amount]);-->
-    <!--    });-->
-
-    <!--    // Define chart options-->
-    <!--    var options = {-->
-    <!--      title: 'Red Sox Attendance and Amount',-->
-    <!--      curveType: 'function',-->
-    <!--      legend: { position: 'bottom' },-->
-    <!--      series: {-->
-    <!--        0: { targetAxisIndex: 0 },-->
-    <!--        1: { targetAxisIndex: 1 }-->
-    <!--      },-->
-    <!--      vAxes: {-->
-    <!--        0: { title: 'Attendance' },-->
-    <!--        1: { title: 'Amount' }-->
-    <!--      }-->
-    <!--    };-->
-
-    <!--    // Create and draw the combination chart-->
-    <!--    var chart = new google.visualization.LineChart(document.getElementById('attendance_chart'));-->
-    <!--    chart.draw(data, options);-->
-    <!--  }-->
-    <!--</script>-->
-    <!--<div id="attendance_chart" style="width: 900px; height: 500px;"></div>-->
-    
-    
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--  <head>-->
-<!--    <title>Red Sox Attendance and Amount Chart</title>-->
-<!--    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
-<!--    <script type="text/javascript">-->
-<!--      // Sample JSON data for Red Sox Attendance and Amount-->
-<!--      var jsonData = [-->
-<!--        {"date": "2022-01", "attendance": 35000, "amount": 4000},-->
-<!--        {"date": "2022-04", "attendance": 35000, "amount": 4000},-->
-<!--        {"date": "2023-04", "attendance": 36000, "amount": 2000},-->
-<!--        {"date": "2023-04", "attendance": 17000, "amount": 4050},-->
-<!--        {"date": "2023-05", "attendance": 38000, "amount": 1000},-->
-<!--        {"date": "2024-05", "attendance": 2500, "amount": 4000}-->
-<!--        // Add more data points as needed-->
-<!--      ];-->
-
-<!--      // Load the Google Charts library-->
-<!--      google.charts.load('current', {'packages':['corechart']});-->
-
-<!--      // Set a callback function to run when the Google Charts library is loaded-->
-<!--      google.charts.setOnLoadCallback(drawChart);-->
-
-<!--      function drawChart() {-->
-        <!--// Convert JSON data to DataTable format-->
-<!--        var data = new google.visualization.DataTable();-->
-<!--        data.addColumn('string', 'Date');-->
-<!--        data.addColumn('number', 'Attendance');-->
-<!--        data.addColumn('number', 'Amount');-->
-
-<!--        jsonData.forEach(function(row) {-->
-<!--          data.addRow([row.date, row.attendance, row.amount]);-->
-<!--        });-->
-
-        <!--// Define chart options-->
-<!--        var options = {-->
-<!--          title: 'Red Sox Attendance and Amount',-->
-<!--          legend: { position: 'bottom' },-->
-<!--          seriesType: 'bars',-->
-<!--          series: {-->
-<!--            0: { targetAxisIndex: 0 },-->
-<!--            1: { targetAxisIndex: 1 }-->
-<!--          },-->
-<!--          vAxes: {-->
-<!--            0: { title: 'Attendance' },-->
-<!--            1: { title: 'Amount' }-->
-<!--          },-->
-<!--          bar: { groupWidth: '75%' }-->
-<!--        };-->
-
-        <!--// Create and draw the bar chart-->
-<!--        var chart = new google.visualization.ComboChart(document.getElementById('attendance_chart'));-->
-<!--        chart.draw(data, options);-->
-<!--      }-->
-<!--    </script>-->
-<!--  </head>-->
-<!--  <body>-->
-    <!-- Div where the chart will be rendered -->
-<!--    <div id="attendance_chart" style="width: 900px; height: 500px;"></div>-->
-<!--  </body>-->
-<!--</html>-->
-
-
-
-            
-        <!--</div>-->
+            <!-- Button Row (Adjusted Position) -->
+            <div class="row pt-3">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-primary w-100" onclick="fetchUsersData()" style="padding: 12px 25px; font-size: 1rem; border-radius: 10px; background: linear-gradient(90deg, #0ea5e9, #3b82f6); color: white; border: none; cursor: pointer;">Search</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
 
     
     
@@ -409,6 +409,138 @@ h1
 
     
 <script type="text/javascript">
+
+async function fetchUsersData() {
+    const billType = document.getElementById('billType').value;
+    const username = document.getElementById('username').value;
+    const dueMonthDate = document.getElementById('dueMonthDate').value;
+
+    // Check the value of billType
+    if (billType == 1) {
+        try {
+            // Define the JSON data to send
+            const requestData = {
+                dueMonthDate: dueMonthDate,
+                username: username
+            };
+
+            // Make the API call with POST method
+            const response = await fetch('api/v1/users/getUserIndivBillingData.php', {
+                method: 'POST', // Specify the method
+                headers: {
+                    'Content-Type': 'application/json' // Set content type to JSON
+                },
+                body: JSON.stringify(requestData) // Convert the JSON data to a string
+            });
+
+            // Check if the response is okay
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Parse the response JSON
+            const resData = await response.json();
+
+            // Extract data for rendering
+            const userData = resData.data.userData.data[0];
+            const cashData = resData.data.cashData;
+            const gpayData = resData.data.gpayData;
+            const paytmData = resData.data.paytmData;
+            const creditData = resData.data.creditData;
+            const posData = resData.data.pos;
+            const incomeExpense = resData.data.incomeExpense;
+
+            const sumTotal =
+                cashData.amt +
+                gpayData.amt +
+                paytmData.amt +
+                creditData.amt +
+                posData.amt;
+
+            const data = {
+                username: `${userData.username} (${userData.name})`,
+                dueMonthDate: resData.data.dueMonthDate,
+                cash: `₹${cashData.amt} ~> ${cashData.count}`,
+                paytm: `₹${paytmData.amt} ~> ${paytmData.count}`,
+                gpay: `₹${gpayData.amt} ~> ${gpayData.count}`,
+                credit: `₹${creditData.amt} ~> ${creditData.count}`,
+                expense: `₹${incomeExpense.sumExpense}`,
+                pos: `₹${posData.amt}`,
+                total: `₹${sumTotal} - ₹${incomeExpense.sumExpense} = ₹${sumTotal - incomeExpense.sumExpense}`
+            };
+
+            // Create content for SweetAlert
+            const content = `
+                <div class="modern-card">
+                    <div class="card-item">
+                        <h3>User ID</h3>
+                        <span>${data.username}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>Billing Date</h3>
+                        <span>${data.dueMonthDate}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>Cash</h3>
+                        <span>${data.cash}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>Paytm</h3>
+                        <span>${data.paytm}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>GPay</h3>
+                        <span>${data.gpay}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>Credit</h3>
+                        <span>${data.credit}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>Expense</h3>
+                        <span>${data.expense}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>POS Amount</h3>
+                        <span>${data.pos}</span>
+                    </div>
+                </div>
+                <div class="highlight-section">
+                    Total - Expense: ${data.total}
+                </div>
+            `;
+
+            // Show SweetAlert
+            Swal.fire({
+                html: content,
+                width: 'auto',
+                showCloseButton: true,
+                showConfirmButton: false,
+            });
+        } catch (error) {
+            // Handle any errors
+            console.error('Error fetching data:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to fetch user data. Please try again later.',
+                showConfirmButton: true,
+            });
+        }
+    } else {
+        // Show SweetAlert for group bill
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Group Bill Under Construction',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    }
+}
+
 
 function checkPasscode() {
     var passcode = prompt("Please enter the passcode:");

@@ -1,0 +1,15 @@
+{
+  "name": "abishaekduresh/pdpctv-billing-soft",
+  "description": "j",
+  "authors": [
+    {
+      "name": "abishaekduresh",
+      "email": "abishaekduresh@gmail.com"
+    }
+  ],
+  "require": {
+    "twbs/bootstrap": "^5.3",
+    "phpoffice/phpspreadsheet": "^1.29",
+    "vlucas/phpdotenv": "^5.6"
+  }
+}

@@ -1044,5 +1044,223 @@ function send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbn
 }
 
 
+function getUserIndivBillPayModeData($currentDate, $username, $pMode) {
+    global $con;
+    $amt = 0; // Initialize total amount
+    $count = 0; // Initialize total count
+
+    // SQL query to fetch data
+    $sql = "SELECT Rs 
+            FROM bill 
+            WHERE date = '$currentDate' 
+            AND bill_by = '$username' 
+            AND pMode = '$pMode' 
+            AND status = 'approve'";
+
+    // Execute the query
+    $result = $con->query($sql);
+
+    // Check if the query was successful
+    if ($result !== false) {
+        // Fetch each row and calculate the sum and count
+        while ($row = $result->fetch_assoc()) {
+            if (isset($row['Rs'])) {
+                $amt += $row['Rs']; // Add the Rs value to total amount
+                $count++; // Increment count for each row
+            }
+        }
+        // Return data as an associative array
+        return [
+            'status' => true,
+            'pMode' => $pMode,
+            'amt' => $amt,
+            'count' => $count
+        ];
+    } else {
+        // Handle query errors
+        return [
+            'status' => false,
+            'message' => "Error executing the query: " . $con->error,
+            'query' => $sql
+        ];
+    }
+}
+
+function getUserIncomeExpenseSum($currentDate, $username) {
+    global $con;
+    // Initialize variables with default values
+    $sumIncome = 0;
+    $sumExpense = 0;
+    
+    // Prepare SQL query to get sum of income and expense
+    $sql = "SELECT
+                (SELECT SUM(amount) FROM in_ex WHERE date = ? AND type = 'Income' AND username = ?) AS sumIncome,
+                (SELECT SUM(amount) FROM in_ex WHERE date = ? AND type = 'Expense' AND username = ?) AS sumExpense";
+    
+    // Prepare the statement
+    if ($stmt = mysqli_prepare($con, $sql)) {
+        // Bind parameters to the SQL query
+        mysqli_stmt_bind_param($stmt, "ssss", $currentDate, $username, $currentDate, $username);
+        
+        // Execute the query
+        if (mysqli_stmt_execute($stmt)) {
+            // Bind the result to variables
+            mysqli_stmt_bind_result($stmt, $sumIncome, $sumExpense);
+            
+            // Fetch the result
+            if (mysqli_stmt_fetch($stmt)) {
+                // If sumIncome or sumExpense is null, set them to 0
+                $sumIncome = !empty($sumIncome) ? $sumIncome : 0;
+                $sumExpense = !empty($sumExpense) ? $sumExpense : 0;
+            }
+        } else {
+            // Query execution failed, return an error
+            return [
+                "status" => false,
+                "message" => "Error executing the query: " . mysqli_error($con)
+            ];
+        }
+        
+        // Close the prepared statement
+        mysqli_stmt_close($stmt);
+    } else {
+        // SQL preparation failed, return an error
+        return [
+            "status" => false,
+            "message" => "Error preparing the query: " . mysqli_error($con)
+        ];
+    }
+
+    // Return the sums as an associative array with success status
+    return [
+        "status" => true,        
+        "sumIncome" => $sumIncome,
+        "sumExpense" => $sumExpense
+    ];
+}
+
+function getUserPosAmount($currentDate, $username) {
+    global $con;
+    // Initialize the total amount
+    $pos_amount = 0;
+
+    // Prepare SQL query (selecting only the total_price)
+    $sql = "SELECT SUM(pbi.price * pbi.qty) - pb.discount AS total_price
+            FROM pos_bill pb
+            JOIN pos_bill_items pbi ON pb.pos_bill_id = pbi.pos_bill_id
+            WHERE DATE(pb.entry_timestamp) = ? AND pb.token = pbi.token 
+            AND pb.status = 1 AND pb.username = ?";
+
+    // Prepare the statement
+    if ($stmt = $con->prepare($sql)) {
+        // Bind the parameters
+        $stmt->bind_param("ss", $currentDate, $username);
+        
+        // Execute the query
+        if ($stmt->execute()) {
+            // Bind the result to the variable $total_price
+            $stmt->bind_result($total_price);
+            
+            // Fetch the result
+            if ($stmt->fetch()) {
+                // Add the result to pos_amount
+                $pos_amount += $total_price;
+            }
+
+            // Close the statement
+            $stmt->close();
+
+            // Return the result as a JSON object
+            return [
+                "status" => true,
+                "message" => "Total amount fetched successfully",
+                "amt" => $pos_amount
+            ];
+
+        } else {
+            // If the query execution failed
+            $stmt->close();
+            return [
+                "status" => false,
+                "message" => "Error executing the query: " . $con->error
+            ];
+        }
+    } else {
+        // If SQL preparation failed
+        return [
+            "status" => false,
+            "message" => "Error preparing the query: " . $con->error
+        ];
+    }
+}
+
+function getUserData($username) {
+    global $con;
+    
+    // Prepare SQL query (selecting all user data for the given username)
+    $sql = "SELECT id, name, phone, username, role, status FROM user WHERE username = ?"; 
+
+    // Prepare the statement
+    if ($stmt = $con->prepare($sql)) {
+        // Bind the parameter (username)
+        $stmt->bind_param("s", $username);
+        
+        // Execute the query
+        if ($stmt->execute()) {
+            // Bind the result to variables
+            $stmt->store_result();
+            
+            // Check if any row exists
+            if ($stmt->num_rows > 0) {
+                // Bind the result to variables (this will fetch the user data)
+                $stmt->bind_result($id, $name, $phone, $username, $role, $status);
+                
+                // Fetch all user data
+                $userData = [];
+                while ($stmt->fetch()) {
+                    $userData[] = [
+                        'id' => $id,
+                        'name' => $name,
+                        'username' => $username,
+                        'phone' => $phone,
+                        'role' => $role,
+                        'status' => $status
+                    ];
+                }
+
+                // Close the statement
+                $stmt->close();
+
+                // Return the result as an associative array
+                return [
+                    "status" => true,
+                    "message" => "User data fetched successfully",
+                    "data" => $userData
+                ];
+            } else {
+                // If no user found
+                $stmt->close();
+                return [
+                    "status" => false,
+                    "message" => "No user found with the given username"
+                ];
+            }
+        } else {
+            // If the query execution failed
+            $stmt->close();
+            return [
+                "status" => false,
+                "message" => "Error executing the query: " . $con->error
+            ];
+        }
+    } else {
+        // If SQL preparation failed
+        return [
+            "status" => false,
+            "message" => "Error preparing the query: " . $con->error
+        ];
+    }
+}
+
 ?>
 

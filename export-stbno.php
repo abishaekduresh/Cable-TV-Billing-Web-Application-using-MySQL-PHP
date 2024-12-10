@@ -40,6 +40,9 @@
             <li class="nav-item">
 				<a class="nav-link" href="#group-bill" data-bs-toggle="tab"><b>&nbsp;&nbsp;Group Bill&nbsp;&nbsp;</b></a>
             </li>
+            <li class="nav-item">
+				<a class="nav-link" href="new/pages/ec/compare.php" target="_blank"><b>&nbsp;&nbsp;Compare STB No&nbsp;&nbsp;</b></a>
+            </li>
         </ul>
 
         <!-- Tab Content -->

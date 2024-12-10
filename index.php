@@ -99,12 +99,12 @@ body {
                 <label for="password">Password</label>
               </div>
 
-              <!-- <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" value="" id="rememberPasswordCheck">
-                <label class="form-check-label" for="rememberPasswordCheck">
-                  Remember password
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" value="1" id="sendOTP" name="sendOTP" >
+                <label class="form-check-label" for="sendOTP">
+                  Click Send OTP
                 </label>
-              </div> -->
+              </div>
               <div class="d-grid">
                 <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">
 					Sign in

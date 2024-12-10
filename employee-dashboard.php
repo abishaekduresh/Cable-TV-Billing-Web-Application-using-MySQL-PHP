@@ -2,6 +2,7 @@
    session_start();
    include "dbconfig.php";
    include 'preloader.php';
+   require_once 'component.php';
    
    if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
@@ -20,113 +21,6 @@
     }
 
 ?>
-            
-
-<?php
-
-// Initialize variables with default values or null
-$sumBillAmt = 0;
-$sumDiscount = 0;
-$sumRs = 0;
-
-
-
-
-$sumQuery ="SELECT
-  (SELECT SUM(paid_amount) FROM bill WHERE date = '$currentDate' AND bill_by = '$session_username') AS sumBillAmt,
-  (SELECT SUM(discount) FROM bill WHERE date = '$currentDate' AND bill_by = '$session_username') AS sumDiscount,
-  (SELECT SUM(Rs) FROM bill WHERE date = '$currentDate' AND bill_by = '$session_username') AS sumRs";
-
-$result = mysqli_query($con, $sumQuery);
-
-// Check if the query executed successfully
-if ($result) {
-    // Fetch the result row
-    $row = mysqli_fetch_assoc($result);
-
-    // Assign the sum value to the variables if available
-    if ($row) {
-        $sumBillAmt = $row['sumBillAmt'];
-        $sumDiscount = $row['sumDiscount'];
-        $sumRs = $row['sumRs'];
-    }
-
-    // Use the sum values as needed
-    // echo "The sum of the column is: " . $sumBillAmt;
-} else {
-    // Query execution failed
-    echo "Error executing the query: " . mysqli_error($con);
-}
-
-$todayCount = 0;
-$todayCancel = 0;
-$totalCashCount = 0;
-$totalOnlineCount = 0;
-
-$countQuery="SELECT 
-          COUNT(CASE WHEN status = 'approve' AND date = '$currentDate' AND bill_by = '$session_username' THEN 1 END) AS todayCount,
-          COUNT(CASE WHEN status = 'cancel' AND date = '$currentDate' AND bill_by = '$session_username' THEN 1 END) AS todayCancel,
-          COUNT(CASE WHEN pMode = 'cash' AND date = '$currentDate' AND status = 'approve' AND bill_by = '$session_username' THEN 1 END) AS totalCashCount,
-          COUNT(CASE WHEN pMode = 'gpay' AND  date = '$currentDate' AND status = 'approve' AND bill_by = '$session_username' THEN 1 END) AS totalOnlineCount
-            FROM bill";
-
-$countresult = mysqli_query($con, $countQuery);
-
-// Check if the query executed successfully
-if ($countresult) {
-    // Fetch the result row
-    $row = mysqli_fetch_assoc($countresult);
-
-    // Assign the sum value to the variables if available
-    if ($row) {
-        $todayCount = $row['todayCount'];
-        $todayCancel = $row['todayCancel'];
-        $totalCashCount = $row['totalCashCount'];
-        $totalOnlineCount = $row['totalOnlineCount'];
-    }
-
-    // Use the sum values as needed
-    // echo "The sum of the column is: " . $sumBillAmt;
-} else {
-    // Query execution failed
-    echo "Error executing the query: " . mysqli_error($con);
-}
-
-$totalCreditCount = 0;
-$totalCreditRsSum = 0;
-
-$sql ="SELECT 
-  COUNT(CASE WHEN pMode = 'credit' AND status = 'approve' THEN 1 END) AS totalCreditCount,
-  (SELECT SUM(Rs) FROM bill WHERE pMode = 'credit' AND  date = '$currentDate') AS totalCreditRsSum
-FROM bill";
-
-$result2 = mysqli_query($con, $sql);
-
-// Check if the query executed successfully
-if ($result2) {
-    // Fetch the result row
-    $row = mysqli_fetch_assoc($result2);
-
-    // Assign the sum value to the variables if available
-    if ($row) {
-        $totalCreditCount = $row['totalCreditCount'];
-        $totalCreditRsSum = $row['totalCreditRsSum'];
-    }
-
-    // Use the sum values as needed
-    // echo "The sum of the column is: " . $sumBillAmt;
-} else {
-    // Query execution failed
-    echo "Error executing the query: " . mysqli_error($con);
-}
-
-// Close the database connection
-mysqli_close($con);
-
-
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -134,328 +28,269 @@ mysqli_close($con);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
- <style>
-.img-account-profile {
-    height: 10rem;
-}
-.rounded-circle {
-    border-radius: 50% !important;
-}
-.card {
-    box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
-}
-.card .card-header {
-    font-weight: 500;
-}
-.card-header:first-child {
-    border-radius: 0.35rem 0.35rem 0 0;
-}
-.card-header {
-    padding: 1rem 1.35rem;
-    margin-bottom: 0;
-    background-color: rgba(33, 40, 50, 0.03);
-    border-bottom: 1px solid rgba(33, 40, 50, 0.125);
-}
-.form-control, .dataTable-input {
-    display: block;
-    width: 100%;
-    padding: 0.875rem 1.125rem;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1;
-    color: #69707a;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #c5ccd6;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border-radius: 0.35rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-.nav-borders .nav-link.active {
-    color: #0061f2;
-    border-bottom-color: #0061f2;
-}
-.nav-borders .nav-link {
-    color: #69707a;
-    border-bottom-width: 0.125rem;
-    border-bottom-style: solid;
-    border-bottom-color: transparent;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: 1rem;
-    margin-right: 1rem;
-}
-.fa-2x {
-    font-size: 2em;
-}
-
-.table-billing-history th, .table-billing-history td {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    padding-left: 1.375rem;
-    padding-right: 1.375rem;
-}
-.table > :not(caption) > * > *, .dataTable-table > :not(caption) > * > * {
-    padding: 0.75rem 0.75rem;
-    background-color: var(--bs-table-bg);
-    border-bottom-width: 1px;
-    box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
-}
-
-.border-start-primary {
-    border-left-color: #0061f2 !important;
-}
-.border-start-secondary {
-    border-left-color: #6900c7 !important;
-}
-.border-start-success {
-    border-left-color: #00ac69 !important;
-}
-.border-start-lg {
-    border-left-width: 0.25rem !important;
-}
-.h-100 {
-    height: 100% !important;
-}
-
-</style>
 
 </head>
+<style>
+    /* SweetAlert2 Styling */
+    .swal2-popup {
+        font-family: 'Arial', sans-serif;
+        font-size: 1rem;
+        padding: 0;
+        background: #f4f7fc;
+        border-radius: 20px;
+        max-width: 600px;
+    }
+
+    .swal2-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #1e293b;
+        margin-top: 20px;
+    }
+
+    .swal2-html-container {
+        padding: 20px;
+    }
+
+    .modern-card {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        background: #ffffff;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .modern-card .card-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: #f4f7fc;
+        border-radius: 10px;
+        padding: 15px;
+        border: 1px solid #e0e7ff;
+    }
+
+    .card-item h3 {
+        font-size: 1rem;
+        color: #1e293b;
+        margin-bottom: 5px;
+    }
+
+    .card-item span {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #0ea5e9;
+    }
+
+    .highlight-section {
+        text-align: center;
+        padding: 15px;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #10b981, #34d399);
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .swal2-confirm {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+</style>
 <body >
 
         
       
-<div class="container-xl px-4 mt-4">
-    <!--<hr class="mt-0 mb-4">-->
-    <div class="row">
-        <div class="col-lg-4 mb-4">
-            <!-- Billing card 1-->
-            <div class="card h-10 border-start-lg border-start-primary">
-                <div class="card-body">
-                    <div class="small text-muted">Today Bill Amount</div>
-                    <!--<div class="h3">₹ <span id="password"><?php echo $sumBillAmt; ?></span>&nbsp;<i class="bi bi-eye-slash" id="togglePassword"></i></div>-->
-                    <div class="h3">₹
-                      <span id="TodayBillAmount" data-value="<?php echo $sumBillAmt; ?>">****</span>
-                      <i class="bi bi-eye-slash" id="toggleTodayBillAmount"></i>
-                    </div>
+<div class="container d-flex justify-content-center align-items-center pt-2">
+    <div class="row w-100">
+        <!-- Parent Column (Full Width) -->
+        <div class="col-12">
+            <!-- First Row (Bill Type Select and Search Button) -->
+            <div class="row mb-3">
+                <!-- First Column (Bill Type Select) -->
+                <div class="col-md-6 col-12 mb-3">
+                    <!-- Hidden Input for Username -->
+                    <input type="hidden" name="username" id="username" value="<?= htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8') ?>" required>
+
+                    <!-- Label and Select for Bill Type -->
+                    <label for="billType" class="form-label">Group/Individual Bills</label>
+                    <select class="form-select" name="billType" id="billType" required>
+                        <option value="1" selected>Individual Bills</option>
+                        <option value="2">Group Bills</option>
+                    </select>
+
+                    <!-- Hidden Input for Current Date -->
+                    <input type="hidden" name="dueMonthDate" value="<?= htmlspecialchars($currentDate, ENT_QUOTES, 'UTF-8') ?>" id="dueMonthDate">
                 </div>
-            </div>
-        </div>
-        <div class="col-lg-4 mb-4">
-            <!-- Billing card 2-->
-            <div class="card h-100 border-start-lg border-start-secondary">
-                <div class="card-body">
-                    <div class="small text-muted">Today Discount</div>
-                    <!--<div class="h3" id="password">₹ <?php echo $sumDiscount?></div>-->
-                    <div class="h3">₹
-                      <span id="TodayDiscount" data-value="<?php echo $sumDiscount; ?>">****</span>
-                      <i class="bi bi-eye-slash" id="toggleTodayDiscount"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 mb-4">
-            <!-- Billing card 3-->
-            <div class="card h-100 border-start-lg border-start-success">
-                <div class="card-body">
-                    <div class="small text-muted">Today Collection (Rs)</div>
-                    <!--<div class="h3 d-flex align-items-center">₹ <?php echo $sumRs?></div>-->
-                    <div class="h3">₹
-                      <span id="TodayCollection" data-value="<?php echo $sumRs; ?>">****</span>
-                      <i class="bi bi-eye-slash" id="toggleTodayCollection"></i>
-                    </div>
+
+                <!-- Second Column (Search Button) -->
+                <div class="col-md-6 col-12 mb-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary w-100" onclick="fetchUsersData()" style="padding: 12px 25px; font-size: 1rem; border-radius: 10px; background: linear-gradient(90deg, #0ea5e9, #3b82f6); color: white; border: none; cursor: pointer;">Search</button>
                 </div>
             </div>
         </div>
     </div>
-<!--</div>   -->
+</div>
+
+
+
+
+
     
     
-<!--<div class="container-xl px-4 mt-4">-->
-    <!--<hr class="mt-0 mb-4">-->
-    <div class="row">
-        <div class="col-lg-4 mb-4">
-            <!-- Billing card 1-->
-            <div class="card h-100 border-start-lg border-start-primary">
-                <div class="card-body">
-                    <div class="small text-muted">Today Bill Count</div>
-                    <!--<div class="h3">₹ <?php echo $todayCount?></div>-->
-                    <div class="h3">
-                      <span id="TodayBillCount" data-value="<?php echo $todayCount; ?>">****</span>
-                      <i class="bi bi-eye-slash" id="toggleTodayBillCount"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 mb-4">
-            <!-- Billing card 2-->
-            <div class="card h-100 border-start-lg border-start-secondary">
-                <div class="card-body">
-                    <div class="small text-muted">Today Cancel Bill</div>
-                    <!--<div class="h3">₹ <?php echo $todayCancel?></div>-->
-                    <div class="h3">
-                      <span id="TodayCancelBill" data-value="<?php echo $todayCancel; ?>">****</span>
-                      <i class="bi bi-eye-slash" id="toggleTodayCancelBill"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-            <!--<div class="col-lg-4 mb-4">-->
-            <!--    <div class="card h-100 border-start-lg border-start-success">-->
-            <!--         <div class="card-body">-->
-            <!--            <div class="small text-muted">Overall Crdit Bill Pending</div>-->
-            <!--            <div class="h3 d-flex align-items-center"> <?php echo $totalCreditCount?>   -- ₹ <?php echo $totalCreditRsSum?></div>-->
-                        <!--<div class="h3">₹-->
-                        <!--  <span id="TodayCollection" data-value="<?php echo $sumRs; ?>">****</span>-->
-                        <!--  <i class="bi bi-eye-slash" id="toggleTodayCollection"></i>-->
-                        <!--</div>-->
-            <!--        </div>-->
-            <!--    </div>-->
-            <!--</div>-->
-    <!--</div>-->
-    <!--<hr class="my-4">-->
-</div>  
+<!-- Bootstrap JS Bundle (including Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 
-<!--<div class="container-xl px-4 mt-4">-->
-    <!--<hr class="mt-0 mb-4">-->
-    <div class="row">
-        <div class="col-lg-4 mb-4">
-            <!-- Billing card 1-->
-            <div class="card h-10 border-start-lg border-start-primary">
-                <div class="card-body">
-                    <div class="small text-muted">Today Cash Bill</div>
-                    <div class="h3">
-                      <span id="TodayCashCount" data-value="<?php echo $totalCashCount; ?>">****</span>
-                      <i class="bi bi-eye-slash" id="toggleTodayCashCount"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 mb-4">
-            <!-- Billing card 2-->
-            <div class="card h-100 border-start-lg border-start-secondary">
-                <div class="card-body">
-                    <div class="small text-muted">Today GPay Bill</div>
-                    <!--<div class="h3">₹ <span id="password"><?php echo $sumBillAmt; ?></span>&nbsp;<i class="bi bi-eye-slash" id="togglePassword"></i></div>-->
-                    <div class="h3">
-                      <span id="TodayGpay" data-value="<?php echo $totalOnlineCount; ?>">****</span>
-                      <i class="bi bi-eye-slash" id="toggleTodayGpay"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
     
+<script type="text/javascript">
 
+async function fetchUsersData() {
+    const billType = document.getElementById('billType').value;
+    const username = document.getElementById('username').value;
+    const dueMonthDate = document.getElementById('dueMonthDate').value;
 
-<!---------------------------------Visibility toggle------------>
-<script>
-  const toggleTodayBillAmount = document.querySelector("#toggleTodayBillAmount");
-  const todayBillAmount = document.querySelector("#TodayBillAmount");
+    // Check the value of billType
+    if (billType == 1) {
+        try {
+            // Define the JSON data to send
+            const requestData = {
+                dueMonthDate: dueMonthDate,
+                username: username
+            };
 
-  toggleTodayBillAmount.addEventListener("click", function() {
-    // toggle the visibility of the password value
-    const isTodayBillAmountVisible = todayBillAmount.classList.toggle("TodayBillAmount-visible");
-    todayBillAmount.textContent = isTodayBillAmountVisible ? todayBillAmount.getAttribute("data-value") : "****";
+            // Make the API call with POST method
+            const response = await fetch('api/v1/users/getUserIndivBillingData.php', {
+                method: 'POST', // Specify the method
+                headers: {
+                    'Content-Type': 'application/json' // Set content type to JSON
+                },
+                body: JSON.stringify(requestData) // Convert the JSON data to a string
+            });
 
-    // toggle the icon
-    this.classList.toggle("bi-eye");
-    this.classList.toggle("bi-eye-slash");
-  });
+            // Check if the response is okay
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
-  // Additional toggle operation for Today Discount
-  const toggleTodayDiscount = document.querySelector("#toggleTodayDiscount");
-  const todayDiscount = document.querySelector("#TodayDiscount");
+            // Parse the response JSON
+            const resData = await response.json();
 
-  toggleTodayDiscount.addEventListener("click", function() {
-    // toggle the visibility of the Today Discount value
-    const isTodayDiscountVisible = todayDiscount.classList.toggle("TodayDiscount-visible");
-    todayDiscount.textContent = isTodayDiscountVisible ? todayDiscount.getAttribute("data-value") : "****";
+            // Extract data for rendering
+            const userData = resData.data.userData.data[0];
+            const cashData = resData.data.cashData;
+            const gpayData = resData.data.gpayData;
+            const paytmData = resData.data.paytmData;
+            const creditData = resData.data.creditData;
+            const posData = resData.data.pos;
+            const incomeExpense = resData.data.incomeExpense;
 
-    // toggle the icon
-    this.classList.toggle("bi-eye");
-    this.classList.toggle("bi-eye-slash");
-  });
- 
-  // Additional toggle operation for Today Discount
-  const toggleTodayCollection = document.querySelector("#toggleTodayCollection");
-  const TodayCollection = document.querySelector("#TodayCollection");
+            const sumTotal =
+                cashData.amt +
+                gpayData.amt +
+                paytmData.amt +
+                creditData.amt +
+                posData.amt;
 
-  toggleTodayCollection.addEventListener("click", function() {
-    // toggle the visibility of the Today Discount value
-    const isTodayCollectionVisible = TodayCollection.classList.toggle("TodayCollection-visible");
-    TodayCollection.textContent = isTodayCollectionVisible ? TodayCollection.getAttribute("data-value") : "****";
+            const data = {
+                username: `${userData.username} (${userData.name})`,
+                dueMonthDate: resData.data.dueMonthDate,
+                cash: `₹${cashData.amt} ~> ${cashData.count}`,
+                paytm: `₹${paytmData.amt} ~> ${paytmData.count}`,
+                gpay: `₹${gpayData.amt} ~> ${gpayData.count}`,
+                credit: `₹${creditData.amt} ~> ${creditData.count}`,
+                expense: `₹${incomeExpense.sumExpense}`,
+                pos: `₹${posData.amt}`,
+                total: `₹${sumTotal} - ₹${incomeExpense.sumExpense} = ₹${sumTotal - incomeExpense.sumExpense}`
+            };
 
-    // toggle the icon
-    this.classList.toggle("bi-eye");
-    this.classList.toggle("bi-eye-slash");
-  });
-  
-   // Additional toggle operation for Today Discount
-  const toggleTodayBillCount = document.querySelector("#toggleTodayBillCount");
-  const TodayBillCount = document.querySelector("#TodayBillCount");
+            // Create content for SweetAlert
+            const content = `
+                <div class="modern-card">
+                    <div class="card-item">
+                        <h3>User ID</h3>
+                        <span>${data.username}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>Billing Date</h3>
+                        <span>${data.dueMonthDate}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>Cash</h3>
+                        <span>${data.cash}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>Paytm</h3>
+                        <span>${data.paytm}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>GPay</h3>
+                        <span>${data.gpay}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>Credit</h3>
+                        <span>${data.credit}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>Expense</h3>
+                        <span>${data.expense}</span>
+                    </div>
+                    <div class="card-item">
+                        <h3>POS Amount</h3>
+                        <span>${data.pos}</span>
+                    </div>
+                </div>
+                <div class="highlight-section">
+                    Total - Expense: ${data.total}
+                </div>
+            `;
 
-  toggleTodayBillCount.addEventListener("click", function() {
-    // toggle the visibility of the Today Discount value
-    const isTodayBillCountVisible = TodayBillCount.classList.toggle("TodayBillCount-visible");
-    TodayBillCount.textContent = isTodayBillCountVisible ? TodayBillCount.getAttribute("data-value") : "****";
+            // Show SweetAlert
+            Swal.fire({
+                html: content,
+                width: 'auto',
+                showCloseButton: true,
+                showConfirmButton: false,
+            });
+        } catch (error) {
+            // Handle any errors
+            console.error('Error fetching data:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to fetch user data. Please try again later.',
+                showConfirmButton: true,
+            });
+        }
+    } else {
+        // Show SweetAlert for group bill
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Group Bill Under Construction',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    }
+}
 
-    // toggle the icon
-    this.classList.toggle("bi-eye");
-    this.classList.toggle("bi-eye-slash");
-  });
-  
-  // Additional toggle operation for Today Discount
-  const toggleTodayCancelBill = document.querySelector("#toggleTodayCancelBill");
-  const TodayCancelBill = document.querySelector("#TodayCancelBill");
-
-  toggleTodayCancelBill.addEventListener("click", function() {
-    // toggle the visibility of the Today Discount value
-    const isTodayCancelBillVisible = TodayCancelBill.classList.toggle("TodayCancelBill-visible");
-    TodayCancelBill.textContent = isTodayCancelBillVisible ? TodayCancelBill.getAttribute("data-value") : "****";
-
-    // toggle the icon
-    this.classList.toggle("bi-eye");
-    this.classList.toggle("bi-eye-slash");
-  });
-  
-  // Additional toggle operation for Today Discount
-  const toggleTodayCashCount = document.querySelector("#toggleTodayCashCount");
-  const TodayCashCount = document.querySelector("#TodayCashCount");
-
-  toggleTodayCashCount.addEventListener("click", function() {
-    // toggle the visibility of the Today Discount value
-    const isTodayCashCountVisible = TodayCashCount.classList.toggle("TodayCashCount-visible");
-    TodayCashCount.textContent = isTodayCashCountVisible ? TodayCashCount.getAttribute("data-value") : "****";
-
-    // toggle the icon
-    this.classList.toggle("bi-eye");
-    this.classList.toggle("bi-eye-slash");
-  });
-  
-
-   // Additional toggle operation for Today Discount
-  const toggleTodayGpay = document.querySelector("#toggleTodayGpay");
-  const TodayGpay = document.querySelector("#TodayGpay");
-
-  toggleTodayGpay.addEventListener("click", function() {
-    // toggle the visibility of the Today Discount value
-    const isTodayGpayVisible = TodayGpay.classList.toggle("TodayGpay-visible");
-    TodayGpay.textContent = isTodayGpayVisible ? TodayGpay.getAttribute("data-value") : "****";
-
-    // toggle the icon
-    this.classList.toggle("bi-eye");
-    this.classList.toggle("bi-eye-slash");
-  });
-  
-  
- </script>
+</script>
 
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

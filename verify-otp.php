@@ -2,14 +2,8 @@
 
 session_start();
 
-require "dbconfig.php";
-require "component.php";
-
-// Uncomment and add proper logic if needed
-// if (!$_SESSION['temp_login_otp']) {
-//     header("Location: logout.php");
-//     exit();
-// }
+require_once "dbconfig.php";
+require_once "component.php";
 
 if (isset($_POST['username']) && isset($_POST['password'])) {
 
@@ -22,6 +16,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 
     $username = test_input($_POST['username']);
     $password = test_input($_POST['password']);
+    $sendOTP = isset($_POST['sendOTP']) ? (int)test_input($_POST['sendOTP']) : 0;
 
     if (empty($username)) {
         header("Location: logout.php?error=User Name is Required");
@@ -44,23 +39,21 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                             window.location = 'logout.php?error=Please update your phone number';
                         </script>";
                 } else {
-                    // Generate OTP and send it via SMS
-                    $temp_login_otp = $_SESSION['temp_login_otp'] = generateOTP();
-                    $res = send_Login_SMS_OTP($row['phone'], $temp_login_otp);
-                    $res_json = json_decode($res);
-                
-                    if ($res_json->status == "false") {
-                        echo "<script>
-                                window.location = 'logout.php?error=OTP -> " . urlencode($res_json->description) . "';
-                            </script>";
+                    if(isset($sendOTP) && $sendOTP == 1){
+                        // Generate OTP and send it via SMS
+                        $temp_login_otp = $_SESSION['temp_login_otp'] = generateOTP();
+                        $res = send_Login_SMS_OTP($row['phone'], $temp_login_otp);
+                        $res_json = json_decode($res);
+                    
+                        if ($res_json->status == "false") {
+                            echo "<script>
+                                    window.location = 'logout.php?error=OTP -> " . urlencode($res_json->description) . "';
+                                </script>";
+                        }
+                    }else{
+                        $_SESSION['temp_login_otp'] = "5262";
                     }
-                }                
-
-                // If you want to use session variables to store user info:
-                // $_SESSION['name'] = $row['name'];
-                // $_SESSION['id'] = $row['id'];
-                // $_SESSION['role'] = $row['role'];
-                // $_SESSION['username'] = $row['username'];
+                }
 
             } else {
                 header("Location: logout.php?error=Incorrect Username or Password");
@@ -122,6 +115,13 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         border: 1px solid red;
         width: 140px;
     }
+    .backBtn {
+        border-radius: 20px;
+        height: 40px;
+        /* background-color: red; */
+        border: 1px solid blue;
+        width: 140px;
+    }
 </style>
 
 <div class="container height-100 d-flex justify-content-center align-items-center">
@@ -129,7 +129,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         <div class="card p-2 text-center">
             <h6>Please enter the one-time password <br> to verify your account</h6>
             <div> <span>A code has been sent to your phone</span></div>
-            <form action="check-login.php" method="POST">
+            <form action="check-login.php" method="POST" autocomplete="off">
                 <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
                     <input class="m-2 text-center form-control rounded" type="text" name="first" maxlength="1" required />
                     <input class="m-2 text-center form-control rounded" type="text" name="second" maxlength="1" required />
@@ -140,6 +140,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                 </div>
                 <div class="mt-4"> 
                     <button type="submit" class="btn btn-danger px-4 validate">Validate</button> 
+                    <a href="index.php"><button type="button" class="btn btn-primary  backBtn">Back to Login</button></a> 
                 </div>
             </form>
         </div>

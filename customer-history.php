@@ -348,6 +348,7 @@ if(mysqli_num_rows($query_run1) > 0)
                                 <label for="pMode" class="form-label">pMode :</label>
                                 <select name="pMode" class="form-select fw-bold">
                                     <option value="cash" selected class="fw-bold">Cash</option>
+                                    <option value="paytm" class="fw-bold">Paytm</option>
                                     <option value="gpay" class="fw-bold">G Pay</option>
                                     <option value="credit" class="fw-bold">Credit</option>
                                 </select>

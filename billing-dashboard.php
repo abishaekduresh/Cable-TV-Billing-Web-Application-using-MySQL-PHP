@@ -295,7 +295,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             <h5 class="modal-title" id="exampleModalLabel">Edit Customer</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form id="updateStudent">
+        <form id="updateStudent" autocomplete="off">
             <div class="modal-body">
 
                 <div id="errorMessageUpdate" class="alert alert-warning d-none"></div>
@@ -381,6 +381,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
 
 
+
 <style>
     .custom-container {
         max-width: 90%;
@@ -453,7 +454,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                             <th>STB No</th>
                                             <th>Name</th>
                                             <th>Phone</th>
-                                            <th>Remarks</th>
+                                            <th>Remarks ℹ️</th>
                                             <th>P.Mode</th>
                                             <th>OldBal</th>
                                             <th>BillAmt</th>
@@ -540,7 +541,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                                 <input readonly class="form-control fw-bold" type="text" name="phone[<?= $customer['id']; ?>]" value="<?= $customer['phone']; ?>" style="width: 130px;">
                                                         </td>
                                                         <td style="width: 180px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="description[<?= $customer['id']; ?>]" value="<?= $customer['description']; ?> " style="width: 180px;">
+                                                                <input readonly class="form-control fw-bold" type="text" name="description[<?= $customer['id']; ?>]" value="<?= $customer['description']; ?>" onclick="showDescription('<?= $customer['description']; ?>', '<?= $customer['name']; ?>', '<?= $customer['stbno']; ?>')" style="background-color: #5cc5fa; width: 180px;">
                                                         </td>
                                                         <td>
                                                                 <select name="pMode[<?= $customer['id']; ?>]" class="form-select fw-bold" style="width: 100px; height: 40px;">
@@ -618,6 +619,16 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Autosearch List -->
 <script>  
+
+function showDescription(description, name, stbno) {
+    Swal.fire({
+        title: `${description}`, // Concatenate description and name
+        text: `${name} - ${stbno} - Packages`,
+        icon: 'info',
+        confirmButtonText: 'OK',
+    });
+}
+
  $(document).ready(function(){  
       $('#search').keyup(function(){  
            var query = $(this).val();  

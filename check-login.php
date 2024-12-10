@@ -12,7 +12,7 @@ if (isset($_POST['first'], $_POST['second'], $_POST['third'], $_POST['fourth']))
 
     $sessionOTP = isset($_SESSION['temp_login_otp'])?$_SESSION['temp_login_otp']:'7805';
 
-    if($verify_otp == $sessionOTP || $verify_otp == 5262){
+    if($verify_otp == $sessionOTP){
 
         $password = $_POST['password'];
         $username = $_POST['username'];
