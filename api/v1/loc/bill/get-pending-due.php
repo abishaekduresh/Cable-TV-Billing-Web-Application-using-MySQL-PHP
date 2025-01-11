@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             INNER JOIN loc_gen_bills_log l ON b.loc_gen_bill_log_id = l.loc_gen_bill_log_id
             LEFT JOIN loc_bills bi ON b.loc_gen_bill_id = bi.loc_gen_bill_id
             WHERE b.channel_uid = ? AND b.status = ? AND l.status = ?
-            GROUP BY b.loc_gen_bill_id
+            GROUP BY b.loc_gen_bill_id ORDER BY b.loc_gen_bill_id DESC
         ");
         $stmt->bind_param("sii", $channel_uid, $active_status, $active_status);
         $stmt->execute();

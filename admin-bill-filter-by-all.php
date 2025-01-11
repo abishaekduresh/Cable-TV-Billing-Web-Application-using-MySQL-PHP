@@ -146,14 +146,52 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                             }
                                             ?>
 
-                                            <br>
-                                            <label><u>Bill Status :</u></label>
-                                            <br>
-                                            <label><input type="checkbox" name="status_filter[]" value="cancel">
-                                                Cancel</label>
-                                            <label><input type="checkbox" name="status_filter[]" value="approve" checked>
-                                                Approve</label>
-                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label><u>MSO :</u></label>
+                                                    <br>
+                                                    <div class="col-md">
+                                                        <label>
+                                                            <input type="radio" name="mso_filter" value="ALL" 
+                                                            <?php echo (isset($_GET['mso_filter']) && $_GET['mso_filter'] == 'ALL') ? 'checked' : 'checked'; ?>> 
+                                                            ALL
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-md">
+                                                        <label>
+                                                            <input type="radio" name="mso_filter" value="VK" 
+                                                            <?php echo (isset($_GET['mso_filter']) && $_GET['mso_filter'] == 'VK') ? 'checked' : ''; ?>> 
+                                                            VK DIGITAL
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-md">
+                                                        <label>
+                                                            <input type="radio" name="mso_filter" value="GTPL" 
+                                                            <?php echo (isset($_GET['mso_filter']) && $_GET['mso_filter'] == 'GTPL') ? 'checked' : ''; ?>> 
+                                                            GTPL
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label><u>Bill Status :</u></label>
+                                                    <br>
+                                                    <div class="col-md">
+                                                        <label>
+                                                            <input type="radio" name="status_filter" value="approve" 
+                                                            <?php echo (isset($_GET['status_filter']) && $_GET['status_filter'] == 'approve') ? 'checked' : 'checked'; ?>> 
+                                                            Approve
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-md">
+                                                        <label>
+                                                            <input type="radio" name="status_filter" value="cancel" 
+                                                            <?php echo (isset($_GET['status_filter']) && $_GET['status_filter'] == 'cancel') ? 'checked' : ''; ?>> 
+                                                            Cancel
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <label><u>Bill Payment Mode :</u></label>
                                             <br>
                                             <label><input type="checkbox" name="pMode_filter[]" value="cash">
@@ -211,25 +249,31 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                             $to_date = $_GET['to_date'];
 
 
-$from_billno = isset($_GET['from_billno']) ? $_GET['from_billno'] : '';
-$to_billno = isset($_GET['to_billno']) ? $_GET['to_billno'] : '';
-$billnoFilterCondition = '';
+                                            $from_billno = isset($_GET['from_billno']) ? $_GET['from_billno'] : '';
+                                            $to_billno = isset($_GET['to_billno']) ? $_GET['to_billno'] : '';
+                                            $billnoFilterCondition = '';
 
-if (!empty($from_billno) && !empty($to_billno)) {
-    $billnoFilterCondition = "AND billNo BETWEEN '$from_billno' AND '$to_billno'";
-}
+                                            if (!empty($from_billno) && !empty($to_billno)) {
+                                                $billnoFilterCondition = "AND billNo BETWEEN '$from_billno' AND '$to_billno'";
+                                            }
 
 
                                             // Retrieve selected filter options
                                             $filters = isset($_GET['filter']) ? $_GET['filter'] : array();
-                                            $status_filter = isset($_GET['status_filter']) ? $_GET['status_filter'] : array();
+                                            $status_filter = isset($_GET['status_filter']) ? $_GET['status_filter'] : '';
+                                            $mso_filter = isset($_GET['mso_filter']) ? $_GET['mso_filter'] : '';
                                             $pMode_filter = isset($_GET['pMode_filter']) ? $_GET['pMode_filter'] : array();
 
 
                                             // Build the filter condition
                                             $filterCondition = '';
                                             $statusFilterCondition = '';
-                                            $pModefilterCondition = '';
+                                            $pModeFilterCondition = '';
+                                            $msoFilterCondition = '';
+
+                                            if (!empty($mso_filter) && $mso_filter != 'ALL') {
+                                                $msoFilterCondition = "AND mso = '$mso_filter'";
+                                            }
 
                                             if (!empty($filters)) {
                                                 $filterCondition = "AND bill_by IN ('" . implode("','", $filters) . "')";
@@ -245,14 +289,14 @@ if (!empty($from_billno) && !empty($to_billno)) {
 
                                             if (!empty($pMode_filter)) {
                                                 if (is_array($pMode_filter)) {
-                                                    $pModefilterCondition = "AND pMode IN ('" . implode("','", $pMode_filter) . "')";
+                                                    $pModeFilterCondition = "AND pMode IN ('" . implode("','", $pMode_filter) . "')";
                                                 } else {
-                                                    $pModefilterCondition = "AND pMode = '$pMode_filter'";
+                                                    $pModeFilterCondition = "AND pMode = '$pMode_filter'";
                                                 }
                                             }
 
 
-                                            $query = "SELECT * FROM bill WHERE DATE(due_month_timestamp) BETWEEN '$from_date' AND '$to_date' $billnoFilterCondition $filterCondition $statusFilterCondition $pModefilterCondition";
+                                            $query = "SELECT * FROM bill WHERE DATE(due_month_timestamp) BETWEEN '$from_date' AND '$to_date' $billnoFilterCondition $filterCondition $statusFilterCondition $pModeFilterCondition $msoFilterCondition";
 
                                             $query_run = mysqli_query($con, $query);
                                             $Rs_sum = 0;

@@ -4,26 +4,26 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Start or resume the session
-// session_start();
+// Start or resume the session if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start(); // Start the session if it hasn't been started already
+}
 
-// Set the session timeout period to 3 minutes (180 seconds)
-$timeout = 20 * 60;
+// Set the session timeout period to 10 minutes (600 seconds)
+$timeout = 15 * 60;
 
-// Check if the user is logged in
+// Check if the user is logged in and if the session has timed out
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeout)) {
-    // If the user has been inactive for more than 3 minutes, destroy the session and redirect to login
+    // If the user has been inactive for more than 10 minutes, destroy the session and redirect to logout
     session_unset();
     session_destroy();
-    header("Location: logout.php");
+    header("Location: logout.php"); // Redirect to logout.php (or login page)
     exit;
 }
 
-// Update the last activity timestamp
+// Update the last activity timestamp to the current time
 $_SESSION['last_activity'] = time();
-?>
 
-<?php
 
 function logUserActivity($userId, $username, $role, $action) {
 
@@ -342,7 +342,7 @@ function sms_api($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $
 //     }
 // }
 
-function fetchIndivPreMonthPaidStatus($term, $currentDate) {
+function fetchIndivPreMonthPaidStatus($term, $currentDate = null) {
     global $con;
     global $currentDate;
 
@@ -1048,9 +1048,13 @@ function getUserIndivBillPayModeData($currentDate, $username, $pMode) {
     global $con;
     $amt = 0; // Initialize total amount
     $count = 0; // Initialize total count
+    $discount = 0;
+    $oldMonthBal = 0;
+    $paid_amount = 0;
+    $Rs = 0;
 
     // SQL query to fetch data
-    $sql = "SELECT Rs 
+    $sql = "SELECT oldMonthBal, paid_amount, Rs, discount
             FROM bill 
             WHERE date = '$currentDate' 
             AND bill_by = '$username' 
@@ -1065,15 +1069,20 @@ function getUserIndivBillPayModeData($currentDate, $username, $pMode) {
         // Fetch each row and calculate the sum and count
         while ($row = $result->fetch_assoc()) {
             if (isset($row['Rs'])) {
-                $amt += $row['Rs']; // Add the Rs value to total amount
+                $Rs += $row['Rs']; // Add the Rs value to total amount
+                $oldMonthBal += $row['oldMonthBal'];
+                $paid_amount += $row['paid_amount'];
+                $discount += $row['discount'];
                 $count++; // Increment count for each row
             }
         }
+        $amt = $oldMonthBal + $paid_amount;
         // Return data as an associative array
         return [
             'status' => true,
             'pMode' => $pMode,
             'amt' => $amt,
+            'discount' => $discount,
             'count' => $count
         ];
     } else {
@@ -1137,61 +1146,6 @@ function getUserIncomeExpenseSum($currentDate, $username) {
         "sumIncome" => $sumIncome,
         "sumExpense" => $sumExpense
     ];
-}
-
-function getUserPosAmount($currentDate, $username) {
-    global $con;
-    // Initialize the total amount
-    $pos_amount = 0;
-
-    // Prepare SQL query (selecting only the total_price)
-    $sql = "SELECT SUM(pbi.price * pbi.qty) - pb.discount AS total_price
-            FROM pos_bill pb
-            JOIN pos_bill_items pbi ON pb.pos_bill_id = pbi.pos_bill_id
-            WHERE DATE(pb.entry_timestamp) = ? AND pb.token = pbi.token 
-            AND pb.status = 1 AND pb.username = ?";
-
-    // Prepare the statement
-    if ($stmt = $con->prepare($sql)) {
-        // Bind the parameters
-        $stmt->bind_param("ss", $currentDate, $username);
-        
-        // Execute the query
-        if ($stmt->execute()) {
-            // Bind the result to the variable $total_price
-            $stmt->bind_result($total_price);
-            
-            // Fetch the result
-            if ($stmt->fetch()) {
-                // Add the result to pos_amount
-                $pos_amount += $total_price;
-            }
-
-            // Close the statement
-            $stmt->close();
-
-            // Return the result as a JSON object
-            return [
-                "status" => true,
-                "message" => "Total amount fetched successfully",
-                "amt" => $pos_amount
-            ];
-
-        } else {
-            // If the query execution failed
-            $stmt->close();
-            return [
-                "status" => false,
-                "message" => "Error executing the query: " . $con->error
-            ];
-        }
-    } else {
-        // If SQL preparation failed
-        return [
-            "status" => false,
-            "message" => "Error preparing the query: " . $con->error
-        ];
-    }
 }
 
 function getUserData($username) {
@@ -1261,6 +1215,144 @@ function getUserData($username) {
         ];
     }
 }
+
+function getUserGroupBillPayModeData($currentDate, $username, $pMode) {
+    global $con;
+    $amt = 0; // Initialize total amount
+    $count = 0; // Initialize total count
+    $discount = 0;
+    $oldMonthBal = 0;
+    $billAmount = 0;
+    $Rs = 0;
+
+    // Correct SQL query
+    $sql = "SELECT Rs, discount 
+            FROM billgroupdetails 
+            WHERE date = ? 
+            AND billBy = ? 
+            AND pMode = ? 
+            AND status = 'approve'";
+
+    // Prepare the statement
+    $stmt = $con->prepare($sql);
+    if ($stmt === false) {
+        return [
+            'status' => false,
+            'message' => "Error preparing the query: " . $con->error,
+        ];
+    }
+
+    // Bind parameters to the query
+    $stmt->bind_param("sss", $currentDate, $username, $pMode);
+
+    // Execute the statement
+    if (!$stmt->execute()) {
+        return [
+            'status' => false,
+            'message' => "Error executing the query: " . $stmt->error,
+        ];
+    }
+
+    // Get the result
+    $result = $stmt->get_result();
+
+    // Process the result
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            if (isset($row['Rs'])) {
+                $Rs += $row['Rs']; // Add the Rs value to total amount
+                $oldMonthBal += $row['oldMonthBal'];
+                $billAmount += $row['billAmount'];
+                $discount += $row['discount'];
+                $count++; // Increment count for each row
+            }
+        }
+    }
+
+    // Close the statement
+    $stmt->close();
+    $amt = $oldMonthBal + $billAmount;
+    // Return data as an associative array
+    return [
+        'status' => true,
+        'pMode' => $pMode,
+        'amt' => $amt,
+        'discount' => $discount,
+        'count' => $count
+    ];
+}
+
+// , SUM(pbi.price * pbi.qty) - pb.discount AS total_price
+function getUserPOSBillPayModeData($currentDate, $username, $pMode) {
+    global $con;
+    $amt = 0; // Initialize total amount
+    $count = 0; // Initialize total count
+    $discount = 0;
+
+    // Use prepared statement to prevent SQL injection
+    $sql = "SELECT pbi.*, pb.*
+            FROM pos_bill pb
+            JOIN pos_bill_items pbi ON pb.pos_bill_id = pbi.pos_bill_id
+            WHERE DATE(pb.entry_timestamp) = ? 
+            AND pb.token = pbi.token 
+            AND pb.status = 1 
+            AND pb.username = ? 
+            AND pb.pay_mode = ?";
+
+    // Prepare the SQL statement
+    if ($stmt = $con->prepare($sql)) {
+        // Bind parameters to the prepared statement
+        $stmt->bind_param('sss', $currentDate, $username, $pMode);  // 'sss' means 3 string parameters
+        $payModeName = getPayModeName($pMode); 
+
+        // Execute the statement
+        $stmt->execute();
+
+        // Get the result
+        $result = $stmt->get_result();
+
+        // Check if the query was successful and there are rows
+        if ($result->num_rows > 0) {
+            // Fetch each row and calculate the sum and count
+            while ($row = $result->fetch_assoc()) {
+                if (isset($row['price']) && is_numeric($row['price']) &&
+                    isset($row['qty']) && is_numeric($row['qty']) &&
+                    isset($row['discount']) && is_numeric($row['discount'])) {
+
+                    // Calculate the amount: price * qty - discount
+                    $amt += ($row['price'] * $row['qty']);
+                    $count++; // Increment count for each row
+                    $discount += $row['discount'];
+                }
+            }
+
+            // Return the data
+            return [
+                'status' => true,
+                'payMode' => $payModeName,
+                'amt' => $amt ?? 0,
+                'discount' => $discount ?? 0,
+                'count' => $count ?? 0,
+            ];
+        } else {
+            return [
+                'status' => true,
+                'payMode' => $payModeName,
+                'amt' => $amt ?? 0,
+                'discount' => $discount ?? 0,
+                'count' => $count ?? 0,
+            ];
+        }
+    } else {
+        // Handle SQL preparation errors
+        return [
+            'status' => false,
+            'message' => "Error preparing the query: " . $con->error
+        ];
+    }
+}
+
+
 
 ?>
 

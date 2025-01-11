@@ -1,6 +1,0 @@
-[09-Dec-2024 11:26:58 Asia/Kolkata] PHP Warning:  Undefined array key "id" in /home/customer/www/pdpctv.pdpgroups.in/public_html/v5/api/v1/users/getUserIndivBillingData.php on line 45
-[09-Dec-2024 11:26:58 Asia/Kolkata] PHP Warning:  Undefined array key "username" in /home/customer/www/pdpctv.pdpgroups.in/public_html/v5/api/v1/users/getUserIndivBillingData.php on line 46
-[09-Dec-2024 11:26:58 Asia/Kolkata] PHP Warning:  Undefined array key "role" in /home/customer/www/pdpctv.pdpgroups.in/public_html/v5/api/v1/users/getUserIndivBillingData.php on line 47
-[09-Dec-2024 11:27:01 Asia/Kolkata] PHP Warning:  Undefined array key "id" in /home/customer/www/pdpctv.pdpgroups.in/public_html/v5/api/v1/users/getUserIndivBillingData.php on line 45
-[09-Dec-2024 11:27:01 Asia/Kolkata] PHP Warning:  Undefined array key "username" in /home/customer/www/pdpctv.pdpgroups.in/public_html/v5/api/v1/users/getUserIndivBillingData.php on line 46
-[09-Dec-2024 11:27:01 Asia/Kolkata] PHP Warning:  Undefined array key "role" in /home/customer/www/pdpctv.pdpgroups.in/public_html/v5/api/v1/users/getUserIndivBillingData.php on line 47

@@ -63,7 +63,7 @@
                             
                             <?php 
                                 // $con = mysqli_connect("localhost","root","","phptutorials");
-                                require 'dbconfig.php';
+                                // require 'dbconfig.php';
                                     $discount_sum = 0;
                                     $paid_amount_sum = 0;
                                     $total_sum = 0;
@@ -91,7 +91,7 @@
                                                 <td style="font-weight: bold;"><?= isset($row['rc_dc']) && $row['rc_dc'] == 1 ? '<div style="color: green;">RC</div>' : '
                                                   <div style="color: red;">DC</div>'; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['mso']; ?></td>
-                                                <td style="font-weight: bold;"><?= fetchIndivPreMonthPaidStatus($row['stbno']); ?></td>
+                                                <td style="font-weight: bold;"><?= fetchIndivPreMonthPaidStatus($row['stbno'])['message']; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['stbno']; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['name']; ?></td>
                                                 <td style="font-weight: bold;"><?= $row['phone']; ?></td>

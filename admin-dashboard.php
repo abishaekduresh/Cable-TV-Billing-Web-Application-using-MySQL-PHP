@@ -1,7 +1,7 @@
 <?php 
    session_start();
-   include "dbconfig.php";
-   include 'preloader.php';
+   require_once "dbconfig.php";
+   require_once 'preloader.php';
 //   include 'component.php';
 //   include 'component2.php';
       
@@ -19,6 +19,7 @@
     <title>Admin Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/592a9320b6.js" crossorigin="anonymous"></script>
 <style>
 body
 {
@@ -176,6 +177,8 @@ h1
         color: white;
         font-weight: bold;
         font-size: 1.2rem;
+        width: 100%; /* Full width */
+        word-wrap: break-word; /* Allow wrapping */
     }
 
     .swal2-confirm {
@@ -358,23 +361,13 @@ h1
                     <input type="date" class="form-control" value="<?= $currentDate ?>" id="dueMonthDate">
                 </div>
                 
-                <!-- Second Column (billType Select) -->
-                <div class="col-md-4 mb-3">
-                    <label for="billType" class="form-label">Group/Indiv Bills</label>
-                    <select class="form-select" name="billType" id="billType" required>
-                        <option value="1" selected>Indiv Bills</option>
-                        <option value="2">Group Bills</option>
-                    </select>
-                </div>
-                
-                <!-- Third Column (Username Select) -->
+                <!-- Second Column (Username Select) -->
                 <div class="col-md-4 mb-3">
                     <label for="username" class="form-label">Username</label>
                     <select class="form-select" name="username" id="username" required>
-                        <!-- <option value="" disabled selected>Select</option> -->
                         <?php
                             // Query to fetch data from the database (assuming you're fetching usernames)
-                            $sql = "SELECT username, name FROM user WHERE status = 1"; // Replace 'users' with your table name
+                            $sql = "SELECT username, name FROM user WHERE status = 1"; // Replace 'user' with your table name
                             $result = $con->query($sql);
 
                             if ($result->num_rows > 0) {
@@ -389,12 +382,15 @@ h1
                         ?>
                     </select>
                 </div>
-            </div>
-
-            <!-- Button Row (Adjusted Position) -->
-            <div class="row pt-3">
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-primary w-100" onclick="fetchUsersData()" style="padding: 12px 25px; font-size: 1rem; border-radius: 10px; background: linear-gradient(90deg, #0ea5e9, #3b82f6); color: white; border: none; cursor: pointer;">Search</button>
+                
+                <!-- Third Column (Button) -->
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary w-100 mr-2" 
+                            onclick="fetchUsersBillingData()" 
+                            style="padding: 8px 18px; font-size: 1rem; border-radius: 10px; background: linear-gradient(90deg, #0ea5e9, #3b82f6); color: white; border: none; cursor: pointer;" 
+                            data-origin="button1">
+                        Search
+                    </button>
                 </div>
             </div>
         </div>
@@ -410,137 +406,182 @@ h1
     
 <script type="text/javascript">
 
-async function fetchUsersData() {
-    const billType = document.getElementById('billType').value;
+var resData = null;
+
+async function fetchUsersBillingData() {
     const username = document.getElementById('username').value;
     const dueMonthDate = document.getElementById('dueMonthDate').value;
 
-    // Check the value of billType
-    if (billType == 1) {
-        try {
-            // Define the JSON data to send
-            const requestData = {
-                dueMonthDate: dueMonthDate,
-                username: username
-            };
+    try {
+        // Define the JSON data to send
+        const requestData = {
+            dueMonthDate: dueMonthDate,
+            username: username
+        };
 
-            // Make the API call with POST method
-            const response = await fetch('api/v1/users/getUserIndivBillingData.php', {
-                method: 'POST', // Specify the method
-                headers: {
-                    'Content-Type': 'application/json' // Set content type to JSON
-                },
-                body: JSON.stringify(requestData) // Convert the JSON data to a string
-            });
+        // Make the API call with POST method
+        const response = await fetch('api/v1/users/getUserBillingData.php', {
+            method: 'POST', // Specify the method
+            headers: {
+                'Content-Type': 'application/json' // Set content type to JSON
+            },
+            body: JSON.stringify(requestData) // Convert the JSON data to a string
+        });
 
-            // Check if the response is okay
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            // Parse the response JSON
-            const resData = await response.json();
-
-            // Extract data for rendering
-            const userData = resData.data.userData.data[0];
-            const cashData = resData.data.cashData;
-            const gpayData = resData.data.gpayData;
-            const paytmData = resData.data.paytmData;
-            const creditData = resData.data.creditData;
-            const posData = resData.data.pos;
-            const incomeExpense = resData.data.incomeExpense;
-
-            const sumTotal =
-                cashData.amt +
-                gpayData.amt +
-                paytmData.amt +
-                creditData.amt +
-                posData.amt;
-
-            const data = {
-                username: `${userData.username} (${userData.name})`,
-                dueMonthDate: resData.data.dueMonthDate,
-                cash: `₹${cashData.amt} ~> ${cashData.count}`,
-                paytm: `₹${paytmData.amt} ~> ${paytmData.count}`,
-                gpay: `₹${gpayData.amt} ~> ${gpayData.count}`,
-                credit: `₹${creditData.amt} ~> ${creditData.count}`,
-                expense: `₹${incomeExpense.sumExpense}`,
-                pos: `₹${posData.amt}`,
-                total: `₹${sumTotal} - ₹${incomeExpense.sumExpense} = ₹${sumTotal - incomeExpense.sumExpense}`
-            };
-
-            // Create content for SweetAlert
-            const content = `
-                <div class="modern-card">
-                    <div class="card-item">
-                        <h3>User ID</h3>
-                        <span>${data.username}</span>
-                    </div>
-                    <div class="card-item">
-                        <h3>Billing Date</h3>
-                        <span>${data.dueMonthDate}</span>
-                    </div>
-                    <div class="card-item">
-                        <h3>Cash</h3>
-                        <span>${data.cash}</span>
-                    </div>
-                    <div class="card-item">
-                        <h3>Paytm</h3>
-                        <span>${data.paytm}</span>
-                    </div>
-                    <div class="card-item">
-                        <h3>GPay</h3>
-                        <span>${data.gpay}</span>
-                    </div>
-                    <div class="card-item">
-                        <h3>Credit</h3>
-                        <span>${data.credit}</span>
-                    </div>
-                    <div class="card-item">
-                        <h3>Expense</h3>
-                        <span>${data.expense}</span>
-                    </div>
-                    <div class="card-item">
-                        <h3>POS Amount</h3>
-                        <span>${data.pos}</span>
-                    </div>
-                </div>
-                <div class="highlight-section">
-                    Total - Expense: ${data.total}
-                </div>
-            `;
-
-            // Show SweetAlert
-            Swal.fire({
-                html: content,
-                width: 'auto',
-                showCloseButton: true,
-                showConfirmButton: false,
-            });
-        } catch (error) {
-            // Handle any errors
-            console.error('Error fetching data:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Failed to fetch user data. Please try again later.',
-                showConfirmButton: true,
-            });
+        // Check if the response is okay
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    } else {
-        // Show SweetAlert for group bill
+
+        // Parse the response JSON
+        const res = await response.json();
+        resData = res.data;
+        console.log(resData);
+
+        const data = {
+            username: `${resData.userData.username} (${resData.userData.name})`,
+            dueMonthDate: resData.dueMonthDate,
+            indivCash: `₹${resData.indivData.cash.amt} ~> ${resData.indivData.cash.count}`,
+            indivPaytm: `₹${resData.indivData.paytm.amt} ~> ${resData.indivData.paytm.count}`,
+            indivGpay: `₹${resData.indivData.gpay.amt} ~> ${resData.indivData.gpay.count}`,
+            indivCredit: `₹${resData.indivData.credit.amt} ~> ${resData.indivData.credit.count}`,
+
+            groupCash: `₹${resData.groupData.cash.amt} ~> ${resData.groupData.cash.count}`,
+            groupPaytm: `₹${resData.groupData.paytm.amt} ~> ${resData.groupData.paytm.count}`,
+            groupGpay: `₹${resData.groupData.gpay.amt} ~> ${resData.groupData.gpay.count}`,
+            groupCredit: `₹${resData.groupData.credit.amt} ~> ${resData.groupData.credit.count}`,
+
+            posCash: `₹${resData.posData.cash.amt}-${resData.posData.cash.discount}=${resData.posData.cash.amt - resData.posData.cash.discount} ~> ${resData.posData.cash.count}`,
+            posGpay: `₹${resData.posData.gpay.amt}-${resData.posData.gpay.discount}=${resData.posData.gpay.amt - resData.posData.gpay.discount} ~> ${resData.posData.gpay.count}`,
+            posPaytm: `₹${resData.posData.paytm.amt}-${resData.posData.paytm.discount}=${resData.posData.paytm.amt - resData.posData.paytm.discount} ~> ${resData.posData.paytm.count}`,
+            posCredit: `₹${resData.posData.credit.amt}-${resData.posData.credit.discount}=${resData.posData.credit.amt - resData.posData.credit.discount} ~> ${resData.posData.credit.count}`,
+            
+            incomeExpense: `₹${resData.incomeExpense.sumIncome} / ₹${resData.incomeExpense.sumExpense}`,
+            overall: `₹${resData.totAmt} - ₹${resData.totDis} = ₹${resData.totAmt - resData.totDis}`
+        };
+
+        // console.table(JSON.stringify(data, null, 2));
+
+        // Create content for SweetAlert
+        const content = `
+            <div class="modern-card">
+                <div class="card-item">
+                    <h3>User ID</h3>
+                    <span>${data.username}</span>
+                </div>
+                <div class="card-item">
+                    <h3>Billing Date</h3>
+                    <span>${data.dueMonthDate}</span>
+                </div>
+                <div class="card-item">
+                    <h3>Indiv Cash</h3>
+                    <span>${data.indivCash}</span>
+                    <h3>Group Cash</h3>
+                    <span>${data.groupCash}</span>
+                    <h3>POS Cash</h3>
+                    <span>${data.posCash}</span>
+                </div>
+                <div class="card-item">
+                    <h3>Indiv Paytm</h3>
+                    <span>${data.indivPaytm}</span>
+                    <h3>Group Paytm</h3>
+                    <span>${data.groupPaytm}</span>
+                    <h3>POS Paytm</h3>
+                    <span>${data.posPaytm}</span>
+                </div>
+                <div class="card-item">
+                    <h3>Indiv GPay</h3>
+                    <span>${data.indivGpay}</span>
+                    <h3>Group GPay</h3>
+                    <span>${data.groupGpay}</span>
+                    <h3>POS GPay</h3>
+                    <span>${data.posGpay}</span>
+                </div>
+                <div class="card-item">
+                    <h3>Indiv Credit</h3>
+                    <span>${data.indivCredit}</span>
+                    <h3>Group Credit</h3>
+                    <span>${data.groupCredit}</span>
+                    <h3>POS Credit</h3>
+                    <span>${data.posCredit}</span>
+                </div>
+                <div class="card-item">
+                    <h3>Indiv Total / Discount</h3>
+                    <span>₹${resData.indivData.totAmt} / ₹${resData.indivData.totDis}</span>
+                </div>
+                <div class="card-item">
+                    <h3>Group Total / Discount</h3>
+                    <span>₹${resData.groupData.totAmt} / ₹${resData.groupData.totDis}</span>
+                </div>
+                <div class="card-item">
+                    <h3>POS Total / Discount</h3>
+                    <span>₹${resData.posData.totAmt} / ₹${resData.posData.totDis}</span>
+                </div>
+                <div class="card-item">
+                    <h3>Income / Expense</h3>
+                    <span>${data.incomeExpense}</span>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <div class="highlight-section m-2">
+                            Total - Expense: ₹ ${data.overall}
+                        </div>
+                        <button type="button" class="btn btn-primary w-100" 
+                                onclick="printUsersBillingData()" 
+                                style="padding: 8px 18px; font-size: 1rem; border-radius: 10px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: white; border: none; cursor: pointer; margin-left: 10px;">
+                            <i class="fa-solid fa-print"></i> Print
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Show SweetAlert
         Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'error',
-            title: 'Group Bill Under Construction',
+            html: content,
+            width: 'auto',
+            showCloseButton: true,
             showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
+        });
+
+    } catch (error) {
+        // Handle any errors
+        console.error('Error fetching data:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to fetch user data. Please try again later.',
+            showConfirmButton: true,
         });
     }
 }
 
+async function printUsersBillingData() {
+    Swal.fire({
+        title: `Collection Summary`,
+        html: `
+            <iframe 
+            width="100%" 
+            height="515" 
+            src="prtUserBillingData.php?d=${encodeURIComponent(JSON.stringify(resData))}" 
+            frameborder="0" 
+            allowfullscreen
+            style="max-width: 600px; width: 100%; height: 515px;">
+            </iframe>
+            <button id="myButton" class="swal2-confirm swal2-styled mt-2">Back</button>`,
+        showConfirmButton: false,
+        showCloseButton: true,
+        position: 'top',
+        didOpen: () => {
+            // Add event listener for the button
+            document.getElementById('myButton').addEventListener('click', () => {
+                fetchUsersBillingData();
+            });
+        }
+    });
+}
 
 function checkPasscode() {
     var passcode = prompt("Please enter the passcode:");
@@ -580,8 +621,6 @@ $(document).ready(function(){
     var inputData = {
         date: $("#date").val().trim()
     };
-    
-    console.log(inputData);
 
     $.ajax({
         type: "POST",

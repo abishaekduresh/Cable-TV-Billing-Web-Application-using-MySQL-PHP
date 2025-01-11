@@ -129,7 +129,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                     ?>
                                                  <tr>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
-                                                     <td style="font-weight: bold; font-size: 18px; color: #007DC3;"><?= $row1['date']; ?></td>
+                                                     <td style="font-weight: bold; font-size: 18px; color: #007DC3;"><?= formatDate($row1['date']); ?></td>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $row1['billNo']; ?></td>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $row1['groupName']; ?></td>
                                                      <td style="font-size: 18px; font-weight: bold;"><?= $row1['billBy']; ?></td>

@@ -219,3 +219,84 @@
 [26-Nov-2024 12:47:01 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v4/loc/bill/new-bill.php on line 67
 [26-Nov-2024 12:47:01 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v4/loc/bill/new-bill.php on line 81
 [26-Nov-2024 12:47:01 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v4/loc/bill/new-bill.php on line 81
+[13-Dec-2024 14:55:18 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 14:55:18 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 14:55:18 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 14:56:46 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 14:56:46 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 14:56:46 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 14:58:31 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 14:58:31 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 14:58:31 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 14:58:55 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 14:58:55 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 14:58:55 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:00:12 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 15:00:12 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:00:12 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:00:28 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 15:00:28 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:00:28 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:01:01 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 15:01:01 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:01:01 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:01:56 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 15:01:56 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:01:56 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:04:04 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 15:04:04 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:04:04 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:04:20 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 15:04:20 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:04:20 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:04:42 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 15:04:42 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:04:42 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:04:57 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 15:04:57 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:04:57 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:05:03 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 15:05:03 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:05:03 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:05:45 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 15:05:45 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:05:45 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:10:44 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[13-Dec-2024 15:10:44 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[13-Dec-2024 15:10:44 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:26:14 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[15-Dec-2024 17:26:14 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:26:14 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:26:36 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[15-Dec-2024 17:26:36 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:26:36 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:27:05 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[15-Dec-2024 17:27:05 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:27:05 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:28:03 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[15-Dec-2024 17:28:03 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:28:03 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:28:28 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[15-Dec-2024 17:28:28 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:28:28 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:29:01 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[15-Dec-2024 17:29:01 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:29:01 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:29:18 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[15-Dec-2024 17:29:18 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 17:29:18 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 18:34:08 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[15-Dec-2024 18:34:08 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 18:34:08 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 18:34:24 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 67
+[15-Dec-2024 18:34:24 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[15-Dec-2024 18:34:24 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/bill/new-bill.php on line 81
+[22-Dec-2024 19:40:21 Asia/Kolkata] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/loc/dashboard.php:8) in /home/customer/www/pdpctv.pdpgroups.in/public_html/v7/component.php on line 18
+[09-Jan-2025 12:00:05 Asia/Kolkata] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/customer/www/pdpctv.pdpgroups.in/public_html/v8/loc/dashboard.php:8) in /home/customer/www/pdpctv.pdpgroups.in/public_html/v8/component.php on line 18
+[09-Jan-2025 12:00:08 Asia/Kolkata] PHP Warning:  Undefined array key "id" in /home/customer/www/pdpctv.pdpgroups.in/public_html/v8/loc/new-channel.php on line 63
+[09-Jan-2025 12:00:30 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v8/loc/bill/new-bill.php on line 67
+[09-Jan-2025 12:00:30 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v8/loc/bill/new-bill.php on line 81
+[09-Jan-2025 12:00:30 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v8/loc/bill/new-bill.php on line 81
+[09-Jan-2025 12:00:55 Asia/Kolkata] PHP Warning:  Undefined variable $sno in /home/customer/www/pdpctv.pdpgroups.in/public_html/v8/loc/bill/new-bill.php on line 67
+[09-Jan-2025 12:00:55 Asia/Kolkata] PHP Warning:  Undefined variable $customer in /home/customer/www/pdpctv.pdpgroups.in/public_html/v8/loc/bill/new-bill.php on line 81
+[09-Jan-2025 12:00:55 Asia/Kolkata] PHP Warning:  Trying to access array offset on value of type null in /home/customer/www/pdpctv.pdpgroups.in/public_html/v8/loc/bill/new-bill.php on line 81

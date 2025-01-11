@@ -1,1 +1,0 @@
-[16-Oct-2024 17:48:28 Asia/Kolkata] PHP Warning:  file_get_contents(https://sms.textspeed.in/vb/http-credit.php?apikey=CpyZ6bypXgAhnqSP&amp;route_id=1&amp;format=json): Failed to open stream: Connection timed out in /home/customer/www/pdpctv.pdpgroups.in/public_html/component2.php on line 8
