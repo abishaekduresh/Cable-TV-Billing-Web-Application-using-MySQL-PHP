@@ -95,7 +95,7 @@ if ($result->num_rows > 0) {
              <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="rptposinvoice.php">POS Report</a>
                 <div class="dropdown-divider"></div>
-             <a class="dropdown-item" href="user-today-collection.php" target="blank">Today Collection</a>
+             <!--a class="dropdown-item" href="user-today-collection.php" target="blank">Today Collection</a-->
             </div>
         </li>
         <li class="nav-item">

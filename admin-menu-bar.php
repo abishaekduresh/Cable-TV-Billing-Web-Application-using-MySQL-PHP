@@ -91,8 +91,8 @@ if ($result->num_rows > 0) {
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="admin-in-ex-report.php">Income Expense</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="user-today-collection.php" target="blank">Your Collection</a>
-                        <div class="dropdown-divider"></div>
+                        <!--a class="dropdown-item" href="user-today-collection.php" target="blank">Today Collection</a>
+                        <div class="dropdown-divider"></div-->
                          <a class="dropdown-item" href="bill-filter-by-user.php">Bill by You</a>
                          <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="rptindivcancelledbill.php" target="blank">Cancelled Indiv Bill</a>

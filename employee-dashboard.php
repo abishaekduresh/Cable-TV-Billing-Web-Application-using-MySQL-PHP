@@ -268,9 +268,12 @@ async function fetchUsersBillingData() {
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <div class="highlight-section m-2">
-                            Total - Expense: ${data.overall}
+                        <div class="highlight-section m-2" style="font-size: 18px;">
+                            Indiv/Group/POS/Income (Cash - Discount) Rs: <span style="font-size: 20px;">${resData.cashCollection}</span>
                         </div>
+                        <!--div class="highlight-section m-2">
+                            Total - Expense: ${data.overall}
+                        </div-->
                         <button type="button" class="btn btn-primary w-100" 
                                 onclick="printUsersBillingData()" 
                                 style="padding: 8px 18px; font-size: 1rem; border-radius: 10px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: white; border: none; cursor: pointer; margin-left: 10px;">

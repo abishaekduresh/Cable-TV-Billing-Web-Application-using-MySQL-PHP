@@ -110,8 +110,8 @@ body {
 					Sign in
 				</button>
               </div>
-              <!-- <hr class="my-4">
-              <div class="d-grid mb-2">
+              <hr class="my-4">
+              <!-- <div class="d-grid mb-2">
                 <button class="btn btn-google btn-login text-uppercase fw-bold" type="submit">
                   <i class="fab fa-google me-2"></i> Sign in with Google
                 </button>
@@ -119,10 +119,10 @@ body {
               <div class="d-grid">
                 <button class="btn btn-facebook btn-login text-uppercase fw-bold" type="submit">
                   <i class="fab fa-facebook-f me-2"></i> Sign in with Facebook
-                </button> -->
-              </div>
+                </button>
+              </div> -->
 		          <center><h6>Powered by <a href="https://www.dureshtech.com/" target="_blank" style="text-decoration: none;">Duresh Tech</a></h6></center>
-    <p align="center">~th-Commit</p>
+    <p align="center"></p>
             </form>
           </div>
         </div>
