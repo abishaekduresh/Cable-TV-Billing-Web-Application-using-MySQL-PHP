@@ -112,6 +112,15 @@ try {
     $totalDis = $indivTotalDis + $groupTotalDis + $posTotalDis + $userSumExpense ?? 0;
     $totalCount = $indivTotalCount + $groupTotalCount + $posTotalCount ?? 0;
     $balance = ($totalAmt - $totalDis) ?? 0;
+    $amountInHand = (
+        ($userIndivCashPayModeData['amt'] - $userIndivCashPayModeData['discount']) 
+        - ($userIndivCreditPayModeData['amt'] - $userIndivCreditPayModeData['discount'])
+        + ($userGroupCashPayModeData['amt'] - $userGroupCashPayModeData['discount'])
+        - ($userGroupCreditPayModeData['amt'] - $userGroupCreditPayModeData['discount'])
+        + ($userPOSCashData['amt'] - $userPOSCashData['discount'])
+        - ($userPOSCreditData['amt'] - $userPOSCreditData['discount'])
+        + $userSumIncome - $userSumExpense
+    );    
 
     // Return response as JSON
     echo json_encode([
@@ -154,6 +163,7 @@ try {
             "bal" => $balance,
             "date" => $currentDate,
             "time" => $currentTime,
+            "amountInHand" => $amountInHand
         ]
     ]);
     

@@ -35,7 +35,12 @@ if ($result->num_rows > 0) {
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <!-- FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -112,7 +117,7 @@ if ($result->num_rows > 0) {
                         Download
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <!--<a class="dropdown-item" href="bill-export.php">Download Bill Report</a>
+                        <a class="dropdown-item" href="bill-export.php">Download Bill Report</a>
                         <a class="dropdown-item" onclick="openBill_Export()">Download Indiv Bill</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="bill-group-export.php">Download Group Bill</a>

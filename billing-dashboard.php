@@ -302,7 +302,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
                 <input type="hidden" name="student_id" id="student_id" >
 
-                <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
+                <!-- <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
                 <select style="font-weight: bold;" name="rc_dc" id="rc_dc" class="form-select" required>
                   <option style="font-weight: bold;" value="1" selected>RC</option>
                    <option style="font-weight: bold;" value="0">DC</option> 
@@ -325,7 +325,38 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                 }
                                                 
                                                 ?>
-                                            </select>
+                                            </select> -->
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
+                        <select style="font-weight: bold;" name="rc_dc" id="rc_dc" class="form-select" required>
+                        <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
+                        <option style="font-weight: bold;" value="1" selected>RC</option>
+                        <option style="font-weight: bold;" value="0">DC</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="selectBox" class="form-label">Select Group: *</label>
+                        <select style="font-weight: bold;" name="cusGroup" id="cusGroup" class="form-select" required>
+                            <option value="" selected disabled>Select</option>
+                            <?php
+                            
+                            $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
+                            $result = mysqli_query($con, $query);
+                            
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                $optionValueID = $row['group_id'];
+                                $optionValue = $row['groupName'];
+                                ?>
+                                <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
+                                <?php
+                            }
+                            
+                            ?>
+                        </select>
+                    </div>
+                </div>
                 
                 <label for="selectBox" class="form-label">Select an MSO: *</label>
                 <select style="font-weight: bold;" name="mso" id="mso" class="form-select" required>
@@ -333,7 +364,24 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                   <option style="font-weight: bold;" value="VK" selected>VK DIGITAL</option>
                   <option style="font-weight: bold;" value="GTPL">GTPL</option>
                 </select>
-
+                <label for="editCustomerAreaCode" class="form-label">Customer Area <span class="text-danger">*</span></label>
+                <select style="font-weight: bold;" name="editCustomerAreaCode" id="editCustomerAreaCode" class="form-select" required>
+                    <option value="" selected disabled>Select</option>
+                    <?php
+                    
+                    $query = "SELECT * FROM customer_area WHERE customer_area_status = 'Active'";
+                    $result = mysqli_query($con, $query);
+                    
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $optionValueID = $row['customer_area_code'];
+                        $optionValue = $row['customer_area_code'] . ' - ' .$row['customer_area_name'];
+                        ?>
+                        <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
+                        <?php
+                    }
+                    
+                    ?>
+                </select>
 
                 <div class="mb-3">
                         <label for="stbno">STB No</label>
@@ -347,13 +395,27 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                         <label for="phone">Phone</label>
                         <input style="font-weight: bold;" type="text" name="phone" id="phone" class="form-control" />
                 </div>
+
                 <div class="mb-3">
                         <label for="description">Remark</label>
                         <input style="font-weight: bold;" type="text" name="description" id="description" class="form-control" />
                 </div>
-                <div class="mb-3">
-                        <label for="amount">Amount</label>
-                        <input style="font-weight: bold;" type="text" name="amount" id="amount" class="form-control" />
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="selectAccessories" class="form-label">Select an Accessories: *</label>
+                        <select style="font-weight: bold;" name="accessories" id="accessories" class="form-select" required>
+                            <option style="font-weight: bold;" selected value="-">-</option>
+                            <option style="font-weight: bold;" value="Node">Node</option>
+                            <option style="font-weight: bold;" value="POC">POC</option>
+                            <option style="font-weight: bold;" value="FTTH">FTTH</option>
+                            <option style="font-weight: bold;" value="RF">RF</option>
+                            <option style="font-weight: bold;" value="Node + POC">Node + POC</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="amount">Amount *</label>
+                        <input style="font-weight: bold;" type="text" name="amount" id="amount" class="form-control" required />
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -444,7 +506,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     <div class="card-body">
                         <form action="" method="POST">
                             <div class="table-responsive">
-                                <table class="table table-hover" border="5">
+                                <table class="table table-hover" border="5" style="white-space: nowrap;">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -454,6 +516,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                             <th>STB No</th>
                                             <th>Name</th>
                                             <th>Phone</th>
+                                            <!--th>Area</th-->
+                                            <th>Accessories ℹ️</th>
                                             <th>Remarks ℹ️</th>
                                             <th>P.Mode</th>
                                             <th>OldBal</th>
@@ -535,21 +599,30 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                         </td>
                                                         
                                                         <td style="width: 350px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="name[<?= $customer['id']; ?>]" value="<?= $customer['name']; ?>"  style="width: 300px;">
+                                                                <input readonly class="form-control fw-bold" type="text" name="name[<?= $customer['id']; ?>]" value="<?= $customer['customer_area_code'] . ' - ' . $customer['name']; ?>"  style="width: 300px;">
                                                         </td>
                                                         <td style="width: 110px; font-weight: bold;">
                                                                 <input readonly class="form-control fw-bold" type="text" name="phone[<?= $customer['id']; ?>]" value="<?= $customer['phone']; ?>" style="width: 130px;">
                                                         </td>
+                                                        <!--td style="width: 110px; font-weight: bold;">
+                                                                <input readonly class="form-control fw-bold" type="text" name="customerAreaCode[<?= $customer['id']; ?>]" value="<?= $customer['customer_area_code']; ?>" style="width: 70px;">
+                                                        </td-->
+                                                        <!-- <td>
+                                                            <input type="text" name="accessories[<?= $customer['id']; ?>]" value="<?= $customer['accessories']; ?>" class="form-control fw-bold" style="width: 50px; color: #DD0581;">
+                                                        </td> -->
+                                                        <td style="width: 100px; font-weight: bold;">
+                                                                <input readonly class="form-control fw-bold" type="text" name="accessories[<?= $customer['id']; ?>]" value="<?= $customer['accessories']; ?>" onclick="showDescription('Accessories', '<?= $customer['accessories']; ?>',null, 'Accessories')" style="background-color:rgb(255, 251, 5); width: 100px;">
+                                                        </td>
                                                         <td style="width: 180px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="description[<?= $customer['id']; ?>]" value="<?= $customer['description']; ?>" onclick="showDescription('<?= $customer['description']; ?>', '<?= $customer['name']; ?>', '<?= $customer['stbno']; ?>')" style="background-color: #5cc5fa; width: 180px;">
+                                                                <input readonly class="form-control fw-bold" type="text" name="description[<?= $customer['id']; ?>]" value="<?= $customer['description']; ?>" onclick="showDescription('<?= $customer['description']; ?>', '<?= $customer['name']; ?>', '<?= $customer['stbno']; ?>', 'Packages')" style="background-color: #5cc5fa; width: 180px;">
                                                         </td>
                                                         <td>
-                                                                <select name="pMode[<?= $customer['id']; ?>]" class="form-select fw-bold" style="width: 100px; height: 40px;">
-                                                                    <option value="cash" selected class="fw-bold">Cash</option>
-                                                                    <option value="gpay" class="fw-bold">G Pay</option>
-                                                                    <option value="Paytm" class="fw-bold">Paytm</option>
-                                                                    <option value="credit" class="fw-bold">Credit</option>
-                                                                </select>
+                                                            <select name="pMode[<?= $customer['id']; ?>]" class="form-select fw-bold" style="width: 100px; height: 40px;">
+                                                                <option value="cash" selected class="fw-bold">Cash</option>
+                                                                <option value="gpay" class="fw-bold">G Pay</option>
+                                                                <option value="Paytm" class="fw-bold">Paytm</option>
+                                                                <option value="credit" class="fw-bold">Credit</option>
+                                                            </select>
                                                         </td>
                                                         <td>
                                                             <input type="text" name="oldMonthBal[<?= $customer['id']; ?>]" value="0" class="form-control fw-bold" style="width: 60px; color: #0012C3;">
@@ -620,10 +693,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 <!-- Autosearch List -->
 <script>  
 
-function showDescription(description, name, stbno) {
+function showDescription(description, name, stbno, whatData) {
     Swal.fire({
         title: `${description}`, // Concatenate description and name
-        text: `${name} - ${stbno} - Packages`,
+        text: `${name} - ${stbno} - ${whatData}`,
         icon: 'info',
         confirmButtonText: 'OK',
     });
@@ -676,7 +749,9 @@ $(document).on('click', '.editStudentBtn', function () {
                 $('#name').val(res.data.name);
                 $('#stbno').val(res.data.stbno);
                 $('#phone').val(res.data.phone);
+                $('#editCustomerAreaCode').val(res.data.customer_area_code);
                 $('#description').val(res.data.description);
+                $('#accessories').val(res.data.accessories);
                 $('#amount').val(res.data.amount);
 
                 $('#studentEditModal').modal('show');

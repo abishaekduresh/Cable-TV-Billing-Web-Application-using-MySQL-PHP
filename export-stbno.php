@@ -69,6 +69,15 @@
 													</select>
 												</div>
 											</div>
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+											    	<!-- <label for="indivNeededData" class="form-label">Select an MSO: *</label> -->
+													<select class="form-select" id="indivNeededData" required>
+													  <option value="stbno">STB No</option>
+													  <option value="phone">Phone</option>
+													</select>
+												</div>
+											</div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label for="indivFromDate" class="form-label">From Date: *</label>
@@ -211,16 +220,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>		
-		const indivTextAreaDiv = document.getElementById('indivTextAreaDiv');
-		const indivTextAreaSpan = document.getElementById('indivTextAreaSpan');
-		indivTextAreaDiv.style.display = 'none';
-		const groupTextAreaDiv = document.getElementById('groupTextAreaDiv');
-		const groupTextAreaSpan = document.getElementById('groupTextAreaSpan');
-		groupTextAreaDiv.style.display = 'none';
-		
 			
+            const indivTextAreaDiv = document.getElementById('indivTextAreaDiv');
+            const indivTextAreaSpan = document.getElementById('indivTextAreaSpan');
+            indivTextAreaDiv.style.display = 'none';
+            const groupTextAreaDiv = document.getElementById('groupTextAreaDiv');
+            const groupTextAreaSpan = document.getElementById('groupTextAreaSpan');
+            groupTextAreaDiv.style.display = 'none';
+
         document.getElementById('indivForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent form from submitting the normal way
+            const indivNeededData = document.getElementById('indivNeededData').value;
 			
 			const indivSubmitBtn = document.getElementById('indivSubmitBtn');
 			indivSubmitBtn.textContent = 'Processing...';
@@ -251,13 +261,27 @@
                 // Handle success
 				// console.log('Success:', data);
 				if(data.status == '1'){
-					indivTextAreaDiv.style.display = 'block';
-					indivTextAreaSpan.textContent = ' ';
-					// Convert the response to a comma-separated string
-					const stbnoList = data.result.map(item => item.stbno).join(',');
-					// Set the value of the text area
-					document.getElementById('indivTextArea').value = stbnoList;
-					document.getElementById('indivStbCount').textContent = "Total STB No. Count: "+stbnoList.split(',').length;
+                    console.log(data);
+                    indivTextAreaDiv.style.display = 'block';
+                    // Check what data is needed (either 'stbno' or 'phone')
+                    if (indivNeededData == 'stbno') {
+                        indivTextAreaSpan.textContent = ' ';                        
+                        // Convert the response to a comma-separated string (each stbno separated by commas)
+                        const displayData = data.result.map(item => item.stbno).join(',');                        
+                        // Set the value of the text area
+                        document.getElementById('indivTextArea').value = displayData;                        
+                        // Update the count of STB numbers
+                        document.getElementById('indivStbCount').textContent = "Total STB No. Count: " + data.result.length;
+                    } else if (indivNeededData == 'phone') {
+                        indivTextAreaSpan.textContent = ' ';                        
+                        // Convert the response to a new-line separated string (each phone on a new line)
+                        const displayData = data.result.map(item => item.phone).join('\n');
+                        // Set the value of the text area
+                        document.getElementById('indivTextArea').value = displayData;                        
+                        // Update the count of phone numbers
+                        document.getElementById('indivStbCount').textContent = "Total Phone No. Count: " + data.result.length;
+                    }
+
 					indivSubmitBtn.textContent = 'Submit';
 					indivSubmitBtn.disabled = false;
 					
@@ -268,7 +292,7 @@
 					indivDownloadLink.textContent = 'Download Excel'; // Set the button text
 					
 					// Output the result
-					//console.log(stbnoList);
+					//console.log(displayData);
 				}else{
 					indivTextAreaDiv.style.display = 'none';
 					indivTextAreaSpan.textContent = data.error;
@@ -341,10 +365,10 @@
 					groupTextAreaDiv.style.display = 'block';
 					groupTextAreaSpan.textContent = ' ';
 					// Convert the response to a comma-separated string
-					const stbnoList = data.result.map(item => item.stbNo).join(',');
+					const displayData = data.result.map(item => item.stbNo).join(',');
 					// Set the value of the text area
-					document.getElementById('groupTextArea').value = stbnoList;
-					document.getElementById('groupStbCount').textContent = "Total STB No. Count: "+stbnoList.split(',').length;
+					document.getElementById('groupTextArea').value = displayData;
+					document.getElementById('groupStbCount').textContent = "Total STB No. Count: "+displayData.split(',').length;
 					groupSubmitBtn.textContent = 'Submit';
 					groupSubmitBtn.disabled = false;
 
@@ -355,7 +379,7 @@
 					groupDownloadLink.textContent = 'Download Excel'; // Set the button text
 					
 					// Output the result
-					//console.log(stbnoList);
+					//console.log(displayData);
 				}else{
 					groupTextAreaDiv.style.display = 'none';
 					groupTextAreaSpan.textContent = data.error;

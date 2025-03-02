@@ -261,6 +261,11 @@ $html = '
         <td> ' . $data['bal'] . '</td>
     </tr>
 
+    <tr class="grand-total">
+        <td colspan="4">Amount in Hand</td>
+        <td> ' . $data['amountInHand'] . '</td>
+    </tr>
+
     <tr>
         <td colspan="5" class="footer-cell">
             Printed on ' . $data['date'] . ' at ' . $data['time'] . '

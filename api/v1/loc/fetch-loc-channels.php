@@ -17,9 +17,9 @@ if (isset($_POST['query'])) {
     $query = $_POST['query'];
     
     // SQL query to fetch data
-    $stmt = $con->prepare("SELECT channel_uid, channel_name FROM loc_channels WHERE channel_name LIKE ? AND status = ? LIMIT 10");
+    $stmt = $con->prepare("SELECT channel_uid, channel_name FROM loc_channels WHERE channel_name LIKE ? LIMIT 10");
     $likeQuery = "%" . $query . "%";
-    $stmt->bind_param("si", $likeQuery, $active_status);
+    $stmt->bind_param("s", $likeQuery);
     $stmt->execute();
     $result = $stmt->get_result();
     

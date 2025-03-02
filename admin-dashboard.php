@@ -457,7 +457,7 @@ async function fetchUsersBillingData() {
             posCredit: `₹${resData.posData.credit.amt}-${resData.posData.credit.discount}=${resData.posData.credit.amt - resData.posData.credit.discount} ~> ${resData.posData.credit.count}`,
             
             incomeExpense: `₹${resData.incomeExpense.sumIncome} / ₹${resData.incomeExpense.sumExpense}`,
-            overall: `₹${resData.totAmt} - ₹${resData.totDis} = ₹${resData.totAmt - resData.totDis}`
+            amountInHand: `₹${resData.amountInHand}`
         };
 
         // console.table(JSON.stringify(data, null, 2));
@@ -526,7 +526,7 @@ async function fetchUsersBillingData() {
                 <div class="row">
                     <div class="col">
                         <div class="highlight-section m-2">
-                            Total - Expense: ₹ ${data.overall}
+                            Amount in Hand: ₹ ${data.amountInHand}
                         </div>
                         <button type="button" class="btn btn-primary w-100" 
                                 onclick="printUsersBillingData()" 

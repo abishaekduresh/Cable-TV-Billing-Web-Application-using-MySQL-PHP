@@ -91,7 +91,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                 <div class="container">
 <br>
 
-    <table class="table table-hover" border="5">
+    <table class="table table-hover" border="5" style="white-space: nowrap;">
                                     <thead>
                                         <tr>
                                             <th>#</th>

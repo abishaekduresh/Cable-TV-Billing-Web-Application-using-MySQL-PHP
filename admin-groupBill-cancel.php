@@ -88,7 +88,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                 <div class="container">
 <br>
 
-    <table class="table table-hover" border="5">
+                                <table class="table table-hover" border="5" style="white-space: nowrap;">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -101,7 +101,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                             <th>BillAmt</th>
                                             <th>Disct</th>
                                             <th>Rs</th>
-                                            <th>Print</th>
+                                            <th>P.Mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                            <th>Submit</th>
                                         </tr>
                                     </thead>
                                     <tbody>

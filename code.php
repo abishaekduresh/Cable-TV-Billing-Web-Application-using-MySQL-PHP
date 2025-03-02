@@ -170,8 +170,9 @@ if(isset($_POST['update_customer']))
     $phone = mysqli_real_escape_string($con, $_POST['phone']);
     $description = mysqli_real_escape_string($con, $_POST['description']);
     $amount = mysqli_real_escape_string($con, $_POST['amount']);
+    $editCustomerAreaCode = mysqli_real_escape_string($con, $_POST['editCustomerAreaCode']);
 
-    $query = "UPDATE customer SET cusGroup='$cusGroup', mso='$mso', stbno='$stbno', name='$name', phone='$phone', description='$description', amount='$amount', rc_dc='$rc_dc' WHERE id='$customer_id' ";
+    $query = "UPDATE customer SET cusGroup='$cusGroup', mso='$mso', stbno='$stbno', name='$name', phone='$phone', customer_area_code='$editCustomerAreaCode', description='$description', amount='$amount', rc_dc='$rc_dc' WHERE id='$customer_id' ";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)
@@ -350,8 +351,10 @@ if (isset($_POST['save_student'])) {
     $stbno = mysqli_real_escape_string($con, $_POST['stbno']);
     $name = mysqli_real_escape_string($con, $_POST['name']);
     $phone = mysqli_real_escape_string($con, $_POST['phone']);
+    $accessories = mysqli_real_escape_string($con, $_POST['add-accessories']);
     $description = mysqli_real_escape_string($con, $_POST['description']);
-    $amount = mysqli_real_escape_string($con, $_POST['amount']);
+    $amount = mysqli_real_escape_string($con, $_POST['add-amount']);
+    $newCustomerAreaCode = mysqli_real_escape_string($con, $_POST['newCustomerAreaCode']);
 
     // Check if required fields are provided
     if (empty($stbno) || empty($phone) || empty($cusGroup) || empty($mso) || empty($name)) {
@@ -365,8 +368,8 @@ if (isset($_POST['save_student'])) {
 
     try {
         // Prepare and execute the SQL query
-        $query = "INSERT INTO customer (date, time, cusGroup, mso, stbno, name, phone, description, amount, rc_dc) 
-                  VALUES ('$currentDate', '$currentTime', '$cusGroup', '$mso', '$stbno', '$name', '$phone', '$description', '$amount', '1')";
+        $query = "INSERT INTO customer (date, time, cusGroup, mso, stbno, name, phone, customer_area_code, accessories, description, amount, rc_dc) 
+                  VALUES ('$currentDate', '$currentTime', '$cusGroup', '$mso', '$stbno', '$name', '$phone', '$newCustomerAreaCode', '$accessories', '$description', '$amount', '1')";
 
         if (!mysqli_query($con, $query)) {
             throw new Exception('Failed to insert customer into the database.');
@@ -462,7 +465,9 @@ if(isset($_POST['update_student']))
     $name = mysqli_real_escape_string($con, $_POST['name']);
     $phone = mysqli_real_escape_string($con, $_POST['phone']);
     $description = mysqli_real_escape_string($con, $_POST['description']);
+    $accessories = mysqli_real_escape_string($con, $_POST['accessories']);
     $amount = mysqli_real_escape_string($con, $_POST['amount']);
+    $editCustomerAreaCode = mysqli_real_escape_string($con, $_POST['editCustomerAreaCode']);
 
     if($stbno == NULL || $name == NULL )//|| $phone == NULL || $description == NULL || $amount == NULL
     {
@@ -474,7 +479,7 @@ if(isset($_POST['update_student']))
         return;
     }
  
-    $query = "UPDATE customer SET cusGroup='$cusGroup', mso='$mso', stbno='$stbno', name='$name', phone='$phone', description='$description', amount='$amount', rc_dc='$rc_dc' WHERE id='$student_id'";
+    $query = "UPDATE customer SET cusGroup='$cusGroup', mso='$mso', stbno='$stbno', name='$name', phone='$phone', customer_area_code='$editCustomerAreaCode', accessories='$accessories', description='$description', amount='$amount', rc_dc='$rc_dc' WHERE id='$student_id'";
     $query_run = mysqli_query($con, $query);
 
     if($query_run)

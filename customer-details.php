@@ -63,13 +63,39 @@ include 'preloader.php';
                                                 ?>
                                             </select>
     
-                    <label for="selectBox" class="form-label">Select an MSO: *</label>
-                    <select style="font-weight: bold;" name="mso" class="form-select" required>
-                      <option style="font-weight: bold;" selected disabled>Select ...</option>
-                      <option style="font-weight: bold;" value="VK">VK DIGITAL</option>
-                      <option style="font-weight: bold;" value="GTPL">GTPL</option>
-                    </select>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="phone">Phone *</label>
+                            <input style="font-weight: bold;" type="text" name="phone" class="form-control" pattern="[0-9]{10}" required />                        
+                        </div>
+                        <div class="col-md-6">
+                            <label for="selectBox" class="form-label">Select an MSO: *</label>
+                            <select style="font-weight: bold;" name="mso" class="form-select" required>
+                            <option style="font-weight: bold;" selected disabled>Select ...</option>
+                            <option style="font-weight: bold;" value="VK">VK DIGITAL</option>
+                            <option style="font-weight: bold;" value="GTPL">GTPL</option>
+                            </select>
+                        </div>
+                    </div>
 
+                    <label for="newCustomerAreaCode" class="form-label">Customer Area <span class="text-danger">*</span></label>
+                <select style="font-weight: bold;" name="newCustomerAreaCode" id="newCustomerAreaCode" class="form-select" required>
+                    <option value="" selected disabled>Select</option>
+                    <?php
+                    
+                    $query = "SELECT * FROM customer_area WHERE customer_area_status = 'Active'";
+                    $result = mysqli_query($con, $query);
+                    
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $optionValueID = $row['customer_area_code'];
+                        $optionValue = $row['customer_area_code'] . ' - ' .$row['customer_area_name'];
+                        ?>
+                        <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
+                        <?php
+                    }
+                    
+                    ?>
+                </select>
     
                     <div class="mb-3">
                         <label for="stbno">STB No *</label>
@@ -80,16 +106,25 @@ include 'preloader.php';
                         <input style="font-weight: bold;" type="text" name="name" class="form-control" required />
                     </div>
                     <div class="mb-3">
-                        <label for="phone">Phone *</label>
-                        <input style="font-weight: bold;" type="text" name="phone" class="form-control" pattern="[0-9]{10}" required />
-                    </div>
-                    <div class="mb-3">
                         <label for="description">Remark</label>
                         <input style="font-weight: bold;" type="text" name="description" class="form-control" />
                     </div>
-                    <div class="mb-3">
-                        <label for="amount">Amount *</label>
-                        <input style="font-weight: bold;" type="text" name="amount" class="form-control" required />
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="selectAccessories" class="form-label">Select an Accessories: *</label>
+                            <select style="font-weight: bold;" name="add-accessories" id="add-accessories" class="form-select" required>
+                                <option style="font-weight: bold;" selected value="-">-</option>
+                                <option style="font-weight: bold;" value="Node">Node</option>
+                                <option style="font-weight: bold;" value="POC">POC</option>
+                                <option style="font-weight: bold;" value="FTTH">FTTH</option>
+                                <option style="font-weight: bold;" value="RF">RF</option>
+                                <option style="font-weight: bold;" value="Node + POC">Node + POC</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="amount">Amount *</label>
+                            <input style="font-weight: bold;" type="text" name="add-amount" id="add-amount" class="form-control" required />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -117,39 +152,54 @@ include 'preloader.php';
 
                 <input type="hidden" name="student_id" id="student_id" >
 
-                <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
-                <select style="font-weight: bold;" name="rc_dc" id="rc_dc" class="form-select" required>
-                  <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
-                  <option style="font-weight: bold;" value="1" selected>RC</option>
-                  <option style="font-weight: bold;" value="0">DC</option>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
+                        <select style="font-weight: bold;" name="rc_dc" id="rc_dc" class="form-select" required>
+                        <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
+                        <option style="font-weight: bold;" value="1" selected>RC</option>
+                        <option style="font-weight: bold;" value="0">DC</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="selectBox" class="form-label">Select Group: *</label>
+                        <select style="font-weight: bold;" name="cusGroup" id="cusGroup" class="form-select" required>
+                            <option value="" selected disabled>Select</option>
+                            <?php
+                            
+                            $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
+                            $result = mysqli_query($con, $query);
+                            
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                $optionValueID = $row['group_id'];
+                                $optionValue = $row['groupName'];
+                                ?>
+                                <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
+                                <?php
+                            }
+                            
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <label for="editCustomerAreaCode" class="form-label">Customer Area <span class="text-danger">*</span></label>
+                <select style="font-weight: bold;" name="editCustomerAreaCode" id="editCustomerAreaCode" class="form-select" required>
+                    <option value="" selected disabled>Select</option>
+                    <?php
+                    
+                    $query = "SELECT * FROM customer_area WHERE customer_area_status = 'Active'";
+                    $result = mysqli_query($con, $query);
+                    
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $optionValueID = $row['customer_area_code'];
+                        $optionValue = $row['customer_area_code'] . ' - ' .$row['customer_area_name'];
+                        ?>
+                        <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
+                        <?php
+                    }
+                    
+                    ?>
                 </select>
-
-                <label for="selectBox" class="form-label">Select Group: *</label>
-                <select style="font-weight: bold;" name="cusGroup" id="cusGroup" class="form-select" required>
-                                                <option value="" selected disabled>Select</option>
-                                                <?php
-                                                
-                                                $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
-                                                $result = mysqli_query($con, $query);
-                                                
-                                                while ($row = mysqli_fetch_assoc($result)) {
-                                                    $optionValueID = $row['group_id'];
-                                                    $optionValue = $row['groupName'];
-                                                    ?>
-                                                    <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
-                                                    <?php
-                                                }
-                                                
-                                                ?>
-                                            </select>
-
-                <label for="selectBox" class="form-label">Select MSO: *</label>
-                <select style="font-weight: bold;" name="mso" id="mso" class="form-select" required>
-                  <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
-                  <option style="font-weight: bold;" value="VK" selected>VK DIGITAL</option>
-                  <option style="font-weight: bold;" value="GTPL">GTPL</option>
-                </select>
-
 
                 <div class="mb-3">
                         <label for="stbno">STB No *</label>
@@ -159,18 +209,42 @@ include 'preloader.php';
                         <label for="name">Name *</label>
                         <input style="font-weight: bold;" type="text" name="name" id="name" class="form-control" required />
                 </div>
-                <div class="mb-3">
+                <div class="row mb-3">
+                    <div class="col-md-6">
                         <label for="phone">Phone *</label>
                         <input style="font-weight: bold;" type="text" name="phone" id="phone" class="form-control" pattern="[0-9]{10}" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="selectBox" class="form-label">Select MSO: *</label>
+                        <select style="font-weight: bold;" name="mso" id="mso" class="form-select" required>
+                        <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
+                        <option style="font-weight: bold;" value="VK" selected>VK DIGITAL</option>
+                        <option style="font-weight: bold;" value="GTPL">GTPL</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="mb-3">
                         <label for="description">Remark</label>
                         <input style="font-weight: bold;" type="text" name="description" id="description" class="form-control" />
                 </div>
-                <div class="mb-3">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="selectAccessories" class="form-label">Select an Accessories: *</label>
+                        <select style="font-weight: bold;" name="accessories" id="accessories" class="form-select" required>
+                            <option style="font-weight: bold;" selected value="-">-</option>
+                            <option style="font-weight: bold;" value="Node">Node</option>
+                            <option style="font-weight: bold;" value="POC">POC</option>
+                            <option style="font-weight: bold;" value="FTTH">FTTH</option>
+                            <option style="font-weight: bold;" value="RF">RF</option>
+                            <option style="font-weight: bold;" value="Node + POC">Node + POC</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
                         <label for="amount">Amount *</label>
                         <input style="font-weight: bold;" type="text" name="amount" id="amount" class="form-control" required />
+                    </div>
                 </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -235,7 +309,7 @@ include 'preloader.php';
                 <div class="card mt-4">
                     <div class="card-body">
                         <div class="table-responsive">
-                        <table id="myTable" class="table table-hover" border="5">
+                        <table id="myTable" class="table table-hover" border="5" style="white-space: nowrap;">
                             <thead>
                                 <tr>
                                     <th>S.No.</th>
@@ -245,6 +319,8 @@ include 'preloader.php';
                                     <th>STB No</th>
                                     <th>Name</th>
                                     <th>Phone</th>
+                                    <th>Area</th>
+                                    <th>Accessories</th>
                                     <th>Description</th>
                                     <th>Amount</th>
                                     <th>Action</th>
@@ -287,6 +363,8 @@ include 'preloader.php';
                                                     <td style="font-size: 18px; font-weight: bold;"><?= $customer['stbno']; ?></td>
                                                     <td style="font-size: 18px; font-weight: bold;"><?= $customer['name']; ?></td>
                                                     <td style="font-size: 18px; font-weight: bold;"><?= $customer['phone']; ?></td>
+                                                    <td style="font-size: 18px; font-weight: bold;"><?= $customer['customer_area_code']; ?></td>
+                                                    <td style="font-size: 18px; font-weight: bold;"><?= $customer['accessories']; ?></td>
                                                     <td style="font-size: 18px; font-weight: bold;"><?= $customer['description']; ?></td>
                                                     <td style="font-size: 18px; font-weight: bold;"><?= $customer['amount']; ?></td>
                                                     <td>
@@ -325,6 +403,7 @@ include 'preloader.php';
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
     
@@ -401,32 +480,41 @@ include 'preloader.php';
 
         // });
         
-$(document).on('click', '.editStudentBtn', function () {
-    var student_id = $(this).val();
-    
-    $.ajax({
-        type: "GET",
-        url: "code.php?student_id=" + student_id,
-        success: function (response) {
-            var res = jQuery.parseJSON(response);
-            if (res.status == 404) {
-                alert(res.message);
-            } else if (res.status == 200) {
-                $('#student_id').val(res.data.id);
-                $('#cusGroup').val(res.data.cusGroup);
-                $('#rc_dc').val(res.data.rc_dc);
-                $('#mso').val(res.data.mso);
-                $('#stbno').val(res.data.stbno);
-                $('#name').val(res.data.name);
-                $('#phone').val(res.data.phone);
-                $('#description').val(res.data.description);
-                $('#amount').val(res.data.amount);
+        $(document).on('click', '.editStudentBtn', function () {
+            var student_id = $(this).val();
+            
+            $.ajax({
+                type: "GET",
+                url: "code.php?student_id=" + student_id,
+                success: function (response) {
+                    var res = jQuery.parseJSON(response);
+                    console.log(res);
+                    if (res.status == 404) {
+                        alert(res.message);
+                    } else if (res.status == 200) {
+                        // Log the value to check
+                        console.log(res.data.amount);
 
-                $('#studentEditModal').modal('show');
-            }
-        }
-    });
-});
+                        // Ensure value is trimmed
+                        var accessories = res.data.accessories.trim();
+                        $('#student_id').val(res.data.id);
+                        $('#cusGroup').val(res.data.cusGroup);
+                        $('#editCustomerAreaCode').val(res.data.customer_area_code);
+                        $('#rc_dc').val(res.data.rc_dc);
+                        $('#mso').val(res.data.mso);
+                        $('#stbno').val(res.data.stbno);
+                        $('#name').val(res.data.name);
+                        $('#phone').val(res.data.phone);
+                        $('#accessories').val(accessories); // Set value for accessories
+                        $('#description').val(res.data.description);
+                        $('#amount').val(res.data.amount);
+
+                        // Show modal after the values are set
+                        $('#studentEditModal').modal('show');
+                    }
+                }
+            });
+        });
 
         
         

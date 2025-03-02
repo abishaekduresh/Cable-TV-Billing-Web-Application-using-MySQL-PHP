@@ -47,7 +47,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                        <table class="table table-hover" border="5">
+                        <table class="table table-hover" border="5" style="white-space: nowrap;">
                             <thead>
                                 <tr>
                                     <th>#</th>

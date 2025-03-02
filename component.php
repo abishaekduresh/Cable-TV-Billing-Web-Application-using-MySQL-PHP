@@ -10,7 +10,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // Set the session timeout period to 10 minutes (600 seconds)
-$timeout = 15 * 60;
+$timeout = 25 * 60;
 
 // Check if the user is logged in and if the session has timed out
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $timeout)) {

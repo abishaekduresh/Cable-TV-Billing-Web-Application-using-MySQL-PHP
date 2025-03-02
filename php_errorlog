@@ -11730,3 +11730,337 @@ Stack trace:
 #0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php(478): mysqli_query(Object(mysqli), 'UPDATE customer...')
 #1 {main}
   thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php on line 478
+[29-Jan-2025 14:15:30 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008317000A223D ' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php:478
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php(478): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php on line 478
+[29-Jan-2025 14:15:38 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008317000A223D' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php:478
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php(478): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php on line 478
+[29-Jan-2025 14:15:40 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008317000A223D' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php:478
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php(478): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php on line 478
+[29-Jan-2025 14:15:55 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008317000A223D' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php:478
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php(478): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php on line 478
+[05-Feb-2025 11:10:29 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'TV  8,500/- ONLY', prtFooter2='', lastUpdateBy='23A002', latestUpdate='2025-02-0' at line 1 in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/app-settings.php:78
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/app-settings.php(78): mysqli->query('UPDATE settings...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/app-settings.php on line 78
+[05-Feb-2025 11:10:48 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'TV  8,500/- ONLY', prtFooter2='', lastUpdateBy='23A002', latestUpdate='2025-02-0' at line 1 in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/app-settings.php:78
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/app-settings.php(78): mysqli->query('UPDATE settings...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/app-settings.php on line 78
+[05-Feb-2025 11:11:04 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'TV  8,500/- ONLY', prtFooter2='', lastUpdateBy='23A002', latestUpdate='2025-02-0' at line 1 in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/app-settings.php:78
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/app-settings.php(78): mysqli->query('UPDATE settings...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/app-settings.php on line 78
+[05-Feb-2025 12:28:09 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '000083170007E1CD' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php:478
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php(478): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php on line 478
+[05-Feb-2025 12:28:13 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '000083170007E1CD' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php:478
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php(478): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php on line 478
+[05-Feb-2025 12:28:15 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '000083170007E1CD' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php:478
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php(478): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v9/code.php on line 478
+[09-Feb-2025 22:28:52 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'accessories' in 'field list' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[09-Feb-2025 22:28:53 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'accessories' in 'field list' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[11-Feb-2025 09:00:05 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0000000000' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[11-Feb-2025 09:00:08 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0000000000' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[11-Feb-2025 09:00:11 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0000000000' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[11-Feb-2025 09:00:14 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '0000000000' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[12-Feb-2025 14:01:48 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AND status = '1'' at line 1 in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/incomeExpenceAction.php:160
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/incomeExpenceAction.php(160): mysqli_query(Object(mysqli), 'SELECT * FROM i...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/incomeExpenceAction.php on line 160
+[12-Feb-2025 14:01:55 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AND status = '1'' at line 1 in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/incomeExpenceAction.php:160
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/incomeExpenceAction.php(160): mysqli_query(Object(mysqli), 'SELECT * FROM i...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/incomeExpenceAction.php on line 160
+[13-Feb-2025 10:10:51 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008310000FC18D' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[13-Feb-2025 10:10:55 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008310000FC18D' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[13-Feb-2025 10:10:55 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008310000FC18D' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[14-Feb-2025 13:54:48 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`dbj8ikofivgxgi`.`in_ex`, CONSTRAINT `fk_in_ex_category` FOREIGN KEY (`category_id`) REFERENCES `in_ex_category` (`category_id`)) in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/income-expenses.php:37
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/income-expenses.php(37): mysqli->query('INSERT INTO in_...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/income-expenses.php on line 37
+[15-Feb-2025 11:02:12 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:02:15 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:02:16 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:02:22 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:02:23 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:05:04 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:05:09 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:05:13 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:05:14 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:05:14 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:05:14 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:05:15 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:05:15 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:05:15 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[15-Feb-2025 11:05:15 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 11:03:04 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 11:03:06 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 11:03:56 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 11:03:57 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 11:06:55 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 11:06:56 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 11:09:27 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 11:09:28 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 11:09:28 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 11:09:28 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 11:09:29 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '2941793711' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:33:58 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:34:09 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:34:32 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:34:51 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:37:33 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:39:51 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:39:57 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:40:04 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:40:14 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:44:36 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:45:55 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:46:55 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[21-Feb-2025 12:52:11 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Duplicate entry '00008332000CEB45' for key 'customer.stbno' in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php:480
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php(480): mysqli_query(Object(mysqli), 'UPDATE customer...')
+#1 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/code.php on line 480
+[23-Feb-2025 12:25:09 Asia/Kolkata] PHP Fatal error:  Uncaught ValueError: str_repeat(): Argument #2 ($times) must be greater than or equal to 0 in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php:69
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php(69): str_repeat(' ', -12.0)
+#1 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php(115): centerText('6\xE0\xAE\xAE\xE0\xAE\xBE\xE0\xAE\xA4 \xE0\xAE\x9A\xE0...', 32)
+#2 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php on line 69
+[23-Feb-2025 12:26:09 Asia/Kolkata] PHP Fatal error:  Uncaught ValueError: str_repeat(): Argument #2 ($times) must be greater than or equal to 0 in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php:69
+Stack trace:
+#0 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php(69): str_repeat(' ', -4.0)
+#1 /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php(119): centerText('6\xE0\xAE\xAE\xE0\xAE\xBE\xE0\xAE\xA4 \xE0\xAE\x9A\xE0...', 48)
+#2 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php on line 69
+[23-Feb-2025 12:27:57 Asia/Kolkata] PHP Deprecated:  str_pad(): Passing null to parameter #1 ($string) of type string is deprecated in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php on line 100
+[23-Feb-2025 06:59:13 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function printer_open() in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php on line 5
+[23-Feb-2025 06:59:14 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function printer_open() in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php:5
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php on line 5
+[23-Feb-2025 07:08:12 UTC] PHP Parse error:  syntax error, unexpected token "..." in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php on line 34
+[23-Feb-2025 07:08:17 UTC] PHP Parse error:  syntax error, unexpected token "..." in /home/customer/www/pdpctv.pdpgroups.in/public_html/v10/prtindivbillrpt.php on line 34
+[01-Mar-2025 08:24:48 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/customer/www/pdpctv.dureshtech.com/public_html/v11/dbconfig.php:2
+Stack trace:
+#0 /home/customer/www/pdpctv.dureshtech.com/public_html/v11/dbconfig.php(2): mysqli_connect('localhost', 'root', Object(SensitiveParameterValue), 'pdpctv11')
+#1 /home/customer/www/pdpctv.dureshtech.com/public_html/v11/verify-otp.php(5): require_once('/home/customer/...')
+#2 {main}
+  thrown in /home/customer/www/pdpctv.dureshtech.com/public_html/v11/dbconfig.php on line 2

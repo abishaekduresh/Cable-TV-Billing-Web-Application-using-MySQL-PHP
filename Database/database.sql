@@ -15,11 +15,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Dumping database structure for pdpctv_v9
-CREATE DATABASE IF NOT EXISTS `pdpctv_v9` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `pdpctv_v9`;
+-- Dumping database structure for pdpctv
+CREATE DATABASE IF NOT EXISTS `pdpctv` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `pdpctv`;
 
--- Dumping structure for table pdpctv_v9.bill
+-- Dumping structure for table pdpctv.bill
 CREATE TABLE IF NOT EXISTS `bill` (
   `bill_id` int NOT NULL AUTO_INCREMENT,
   `billNo` int NOT NULL,
@@ -41,11 +41,11 @@ CREATE TABLE IF NOT EXISTS `bill` (
   `status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `printStatus` int NOT NULL,
   PRIMARY KEY (`bill_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=48173 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=50819 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.billgroup
+-- Dumping structure for table pdpctv.billgroup
 CREATE TABLE IF NOT EXISTS `billgroup` (
   `id` int NOT NULL AUTO_INCREMENT,
   `billNo` int NOT NULL,
@@ -58,11 +58,11 @@ CREATE TABLE IF NOT EXISTS `billgroup` (
   `remark` varchar(60) NOT NULL,
   `status` varchar(7) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2221 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2346 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.billgroupdetails
+-- Dumping structure for table pdpctv.billgroupdetails
 CREATE TABLE IF NOT EXISTS `billgroupdetails` (
   `id` int NOT NULL AUTO_INCREMENT,
   `billNo` int NOT NULL,
@@ -79,11 +79,11 @@ CREATE TABLE IF NOT EXISTS `billgroupdetails` (
   `Rs` int NOT NULL,
   `status` varchar(10) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.customer
+-- Dumping structure for table pdpctv.customer
 CREATE TABLE IF NOT EXISTS `customer` (
   `id` int NOT NULL AUTO_INCREMENT,
   `date` date NOT NULL,
@@ -93,16 +93,30 @@ CREATE TABLE IF NOT EXISTS `customer` (
   `stbno` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `name` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `phone` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `customer_area_code` char(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `accessories` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `description` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `amount` int NOT NULL,
   `rc_dc` int NOT NULL COMMENT 'rc=1;dc=0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `stbno` (`stbno`)
-) ENGINE=InnoDB AUTO_INCREMENT=4435 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4478 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.groupinfo
+-- Dumping structure for table pdpctv.customer_area
+CREATE TABLE IF NOT EXISTS `customer_area` (
+  `customer_area_id` int NOT NULL AUTO_INCREMENT,
+  `customer_area_code` char(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `customer_area_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `customer_area_status` enum('Active','Inactive') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`customer_area_id`),
+  UNIQUE KEY `customer_area_code` (`customer_area_code`)
+) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table pdpctv.groupinfo
 CREATE TABLE IF NOT EXISTS `groupinfo` (
   `group_id` int NOT NULL AUTO_INCREMENT,
   `createdBy` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -116,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `groupinfo` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.incomeexpence
+-- Dumping structure for table pdpctv.incomeexpence
 CREATE TABLE IF NOT EXISTS `incomeexpence` (
   `id` int NOT NULL AUTO_INCREMENT,
   `type` varchar(10) NOT NULL,
@@ -132,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `incomeexpence` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.in_ex
+-- Dumping structure for table pdpctv.in_ex
 CREATE TABLE IF NOT EXISTS `in_ex` (
   `id` int NOT NULL AUTO_INCREMENT,
   `type` varchar(10) NOT NULL,
@@ -149,11 +163,11 @@ CREATE TABLE IF NOT EXISTS `in_ex` (
   KEY `fk_in_ex_subcategory` (`subcategory_id`),
   CONSTRAINT `fk_in_ex_category` FOREIGN KEY (`category_id`) REFERENCES `in_ex_category` (`category_id`),
   CONSTRAINT `fk_in_ex_subcategory` FOREIGN KEY (`subcategory_id`) REFERENCES `in_ex_subcategory` (`subcategory_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4503 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4701 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.in_ex_category
+-- Dumping structure for table pdpctv.in_ex_category
 CREATE TABLE IF NOT EXISTS `in_ex_category` (
   `category_id` int NOT NULL AUTO_INCREMENT,
   `createdBy` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -165,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `in_ex_category` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.in_ex_subcategory
+-- Dumping structure for table pdpctv.in_ex_subcategory
 CREATE TABLE IF NOT EXISTS `in_ex_subcategory` (
   `subcategory_id` int NOT NULL AUTO_INCREMENT,
   `category_id` int NOT NULL,
@@ -179,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `in_ex_subcategory` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.loc_bills
+-- Dumping structure for table pdpctv.loc_bills
 CREATE TABLE IF NOT EXISTS `loc_bills` (
   `loc_bills_id` int NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -188,16 +202,16 @@ CREATE TABLE IF NOT EXISTS `loc_bills` (
   `channel_uid` varchar(5) NOT NULL,
   `paid_amount` int NOT NULL,
   `discount` int NOT NULL,
-  `remark` varchar(25) DEFAULT '',
+  `remark` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT '',
   `status` tinyint(1) NOT NULL,
   `updated_at` datetime NOT NULL,
   `updated_user_id` int NOT NULL,
   PRIMARY KEY (`loc_bills_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.loc_channels
+-- Dumping structure for table pdpctv.loc_channels
 CREATE TABLE IF NOT EXISTS `loc_channels` (
   `loc_channel_id` int NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -218,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `loc_channels` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.loc_gen_bills
+-- Dumping structure for table pdpctv.loc_gen_bills
 CREATE TABLE IF NOT EXISTS `loc_gen_bills` (
   `loc_gen_bill_id` int NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -232,11 +246,11 @@ CREATE TABLE IF NOT EXISTS `loc_gen_bills` (
   `updated_at` datetime NOT NULL,
   `updated_user_id` int NOT NULL,
   PRIMARY KEY (`loc_gen_bill_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.loc_gen_bills_log
+-- Dumping structure for table pdpctv.loc_gen_bills_log
 CREATE TABLE IF NOT EXISTS `loc_gen_bills_log` (
   `loc_gen_bill_log_id` int NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -247,11 +261,11 @@ CREATE TABLE IF NOT EXISTS `loc_gen_bills_log` (
   `updated_at` datetime NOT NULL,
   `updated_user_id` int NOT NULL,
   PRIMARY KEY (`loc_gen_bill_log_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.loc_prop_login
+-- Dumping structure for table pdpctv.loc_prop_login
 CREATE TABLE IF NOT EXISTS `loc_prop_login` (
   `loc_prop_login_id` int NOT NULL AUTO_INCREMENT,
   `created_at` datetime NOT NULL,
@@ -260,11 +274,11 @@ CREATE TABLE IF NOT EXISTS `loc_prop_login` (
   `token` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`loc_prop_login_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.pay_mode
+-- Dumping structure for table pdpctv.pay_mode
 CREATE TABLE IF NOT EXISTS `pay_mode` (
   `pay_mode_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL DEFAULT '0',
@@ -274,7 +288,7 @@ CREATE TABLE IF NOT EXISTS `pay_mode` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.pos_bill
+-- Dumping structure for table pdpctv.pos_bill
 CREATE TABLE IF NOT EXISTS `pos_bill` (
   `pos_bill_id` int NOT NULL AUTO_INCREMENT,
   `entry_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -288,11 +302,11 @@ CREATE TABLE IF NOT EXISTS `pos_bill` (
   `pay_mode` tinyint NOT NULL DEFAULT '0',
   `status` tinyint NOT NULL,
   PRIMARY KEY (`pos_bill_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=225 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=307 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.pos_bill_items
+-- Dumping structure for table pdpctv.pos_bill_items
 CREATE TABLE IF NOT EXISTS `pos_bill_items` (
   `pos_bill_items_id` int NOT NULL AUTO_INCREMENT,
   `entry_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -304,11 +318,11 @@ CREATE TABLE IF NOT EXISTS `pos_bill_items` (
   `qty` int NOT NULL DEFAULT '0',
   `token` varchar(50) NOT NULL DEFAULT '0',
   PRIMARY KEY (`pos_bill_items_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=249 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=332 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.pos_product
+-- Dumping structure for table pdpctv.pos_product
 CREATE TABLE IF NOT EXISTS `pos_product` (
   `pos_product_id` int NOT NULL AUTO_INCREMENT,
   `entry_timestamp` datetime DEFAULT NULL,
@@ -322,7 +336,7 @@ CREATE TABLE IF NOT EXISTS `pos_product` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.settings
+-- Dumping structure for table pdpctv.settings
 CREATE TABLE IF NOT EXISTS `settings` (
   `id` int NOT NULL AUTO_INCREMENT,
   `appName` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -340,7 +354,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.user
+-- Dumping structure for table pdpctv.user
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -354,7 +368,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table pdpctv_v9.user_activity
+-- Dumping structure for table pdpctv.user_activity
 CREATE TABLE IF NOT EXISTS `user_activity` (
   `id` int NOT NULL AUTO_INCREMENT,
   `userId` int NOT NULL,
@@ -364,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `user_activity` (
   `role` varchar(10) NOT NULL,
   `action` varchar(90) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=55041 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=63932 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 

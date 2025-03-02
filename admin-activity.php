@@ -30,7 +30,7 @@ $result = mysqli_query($con, $query);
     <div class="container">
         <h3>Last 50 Activity</h3>
         <div class="table-responsive">
-        <table class="table table-hover" border="5">
+        <table class="table table-hover" border="5" style="white-space: nowrap;">
             <thead>
                 <tr>
                     <th>S.No.</th>
