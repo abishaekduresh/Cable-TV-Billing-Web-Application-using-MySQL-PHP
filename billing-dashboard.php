@@ -470,7 +470,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
     <!--<hr class="mt-0 mb-4">-->
 
-    <div class="container custom-container">
+    <div class="container-fluid">
         <div class="row" style="width: 100%;">
             <div class="col-md-12">
                 <div class="card mt-4">

@@ -43,11 +43,11 @@
     <div class="col">
       <a href="income-expenses.php"><button type="button" class="btn btn-primary"><b>Add Income/Expense</b></button></a>
     </div>
-    <div class="col">
+    <!--div class="col">
       <a href="bill-filter-by-user.php"><button type="button" class="btn btn-success"><b>Your Bill</b></button></a>
-    </div>
+    </div-->
     <div class="col">
-      <a href="bill-filter-by-all.php"><button type="button" class="btn btn-success"><b>Indiv Bill Report</b></button></a>
+      <a href="bill-filter-by-all.php"><button type="button" class="btn btn-success"><b>Indiv Bill Collection Report</b></button></a>
     </div>
     <div class="col">
       <a href="rptgroupbill.php"><button type="button" class="btn btn-success"><b>Group Bill Report</b></button></a>

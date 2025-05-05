@@ -91,10 +91,12 @@ if ($result->num_rows > 0) {
              <a class="dropdown-item" href="rptgroupbill.php">Group Bill</a>
              <!--<a class="dropdown-item" href="#">Billing Dashboard</a> -->
              <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="rptadvindivbill.php">Advance Indiv Bill</a>
+            <div class="dropdown-divider"></div>
              <a class="dropdown-item" href="bill-filter-by-user.php">Bill by You</a>
              <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="rptposinvoice.php">POS Report</a>
-                <div class="dropdown-divider"></div>
+            <!--div class="dropdown-divider"></div-->
              <!--a class="dropdown-item" href="user-today-collection.php" target="blank">Today Collection</a-->
             </div>
         </li>

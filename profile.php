@@ -40,6 +40,15 @@ if ($result) {
     echo "Error: " . mysqli_error($con);
 }
 
+
+$stmt = $con->prepare("SELECT google_totp_auth_secret FROM user WHERE username = ?");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+$google_totp_auth_secret = $row['google_totp_auth_secret'] ?? null;
+
 // Close the database connection
 mysqli_close($con);
 ?>
@@ -109,13 +118,13 @@ mysqli_close($con);
                             <a class="nav-link active" id="home-tab" data-bs-toggle="pill" href="#home" role="tab" aria-controls="home" aria-selected="true">Info</a>
                         </li>
                         <!--<li class="nav-item" role="presentation">-->
-                        <!--    <a class="nav-link" id="profile-tab" data-bs-toggle="pill" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>-->
-                        <!--</li>-->
-                        <!--<li class="nav-item" role="presentation">-->
                         <!--    <a class="nav-link" id="messages-tab" data-bs-toggle="pill" href="#messages" role="tab" aria-controls="messages" aria-selected="false">Messages</a>-->
                         <!--</li>-->
+                        <li class="nav-item" role="totp">
+                           <a class="nav-link" id="totp-tab" data-bs-toggle="pill" href="#totp" role="tab" aria-controls="totp" aria-selected="false">Google TOTP</a>
+                        </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="settings-tab" data-bs-toggle="pill" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Forgot Password</a>
+                            <a class="nav-link" id="forgotPassword-tab" data-bs-toggle="pill" href="#forgotPassword" role="tab" aria-controls="forgotPassword" aria-selected="false">Forgot Password</a>
                         </li>
                     </ul>
                     <div class="tab-content">
@@ -158,9 +167,7 @@ mysqli_close($con);
                         <!--<div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">-->
                         <!--    Messages-->
                         <!--</div>-->
-                        <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-                            
-                            
+                        <div class="tab-pane fade" id="forgotPassword" role="tabpanel" aria-labelledby="forgotPassword-tab">                    
                             <div class="container mt-5">
                               <div class="row justify-content-center">
                                 <div class="col-md-6">
@@ -188,8 +195,69 @@ mysqli_close($con);
                                 </div>
                               </div>
                             </div>
-          
-          
+                        </div>
+                        <div class="tab-pane fade" id="totp" role="tabpanel" aria-labelledby="totp-tab"> 
+                            <!-- <h2>Scan the QR Code</h2>
+                            <img id="qrCodeImage" src="" alt="Google Authenticator QR Code" />
+                            <p><strong>Secret:</strong> <span id="secret"></span></p>
+
+                            <script>
+                                // Fetch JSON response from the PHP script
+                                fetch('components/init_google_totp_auth.php')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        // Display the QR code image
+                                        document.getElementById('qrCodeImage').src = data.image;
+
+                                        // Display the secret
+                                        document.getElementById('secret').textContent = data.secret;
+                                    })
+                                    .catch(error => console.error('Error fetching data:', error));
+                            </script> -->
+                            <div class="container mt-5">
+                                <h2>Scan the QR Code</h2>
+
+                                <div class="row">
+                                    <!-- Column 1: QR Code Image -->
+                                    <div class="col-md-6 text-center">
+                                        <img id="qrCodeImage" src="" alt="Google Authenticator QR Code" class="img-fluid" />
+                                        <p><strong>Secret:</strong> <span id="secret"></span></p>
+
+                                        <!-- TOTP Status Section -->
+                                        <div class="text-center mb-2">                                            
+                                            <?php
+
+                                                if (!empty($google_totp_auth_secret)) {
+                                                    echo '<div class="d-flex align-items-center gap-2"><h4 class="mb-0">TOTP Status:</h4><h1 class="text-success fs-2 mb-0">Verified</h1></div>';
+                                                } else {
+                                                    echo '<div class="d-flex align-items-center gap-2"><h4 class="mb-0">TOTP Status:</h4><h1 class="text-danger fs-2 mb-0">Not Verified</h1></div>';
+                                                }
+                                            ?>
+                                        </div>
+                                    </div>
+
+                                    <!-- Column 2: PIN Verification -->
+                                    <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
+
+                                        <img id="googleAuthLogo" 
+                                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Google_Authenticator_%28April_2023%29.svg/800px-Google_Authenticator_%28April_2023%29.svg.png" 
+                                            alt="Google Authenticator Logo" style="width: 150px; height: 150px;" />
+                                        <p>Use Google Authenticator App</p>
+
+                                        <!-- Verify OTP Form -->
+                                        <div class="text-center">
+                                            <h3>Verify OTP</h3>
+                                            <form id="verifyForm">
+                                                <div class="mb-3 input-group">
+                                                    <input type="text" id="pinInput" class="form-control" placeholder="Enter OTP" aria-label="OTP Input" pattern="^\d{1,6}$" maxlength="6" required>
+                                                    <button type="submit" class="btn btn-primary">Verify</button>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -216,6 +284,74 @@ mysqli_close($con);
 
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- jQuery and Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
+<script>
+    var google_totp_secret = null;
+    // Fetch JSON response from the PHP script
+    fetch('components/init_google_totp_auth.php')
+        .then(response => response.json())
+        .then(data => {
+            // Display the QR code image
+            $('#qrCodeImage').attr('src', data.image);
+
+            // Display the secret
+            google_totp_secret = data.secret;
+            $('#secret').text(data.secret);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+
+    // Handle form submission
+    $('#verifyForm').on('submit', function(event) {
+        event.preventDefault();
+        const pin = $('#pinInput').val();
+
+        // Send the PIN to verify_google_totp.php
+        $.ajax({
+            url: 'components/verify_google_totp.php',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ pin: pin, google_totp_secret: google_totp_secret }),
+            success: function(data) {
+                if (data.status) {
+                    // Show success message
+                    $('#pinInput').val('');  // Clear the PIN input field
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'PIN Verified',
+                        text: data.message  // Display the success message from the server
+                    }).then(() => {
+                        // Set timeout of 1 second before reloading the page
+                        setTimeout(function() {
+                            window.location.reload();  // Reload the page after 1 second
+                        }, 1000);  // 1000 milliseconds = 1 second
+                    });
+                } else {
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid PIN',
+                        text: data.message
+                    });
+                }
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                Swal.fire("Error", "Something went wrong while verifying the PIN.", "error");
+            // error: function(error) {
+            //     console.error('Error verifying PIN:', error);
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Error',
+            //         text: 'Something went wrong while verifying the PIN.'
+            //     });
+            }
+        });
+    });
+</script>
 
 <script>
     

@@ -37,7 +37,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
 
 <!---------    last 5 bill print   --------------->
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
         <?php include('message.php'); ?>
 
@@ -86,16 +86,16 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                         {
                                             ?>
                                             <tr>
-                                                <td style="width: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
-                                                <td style="width: 40px; font-weight: bold;"><?= $bill['billNo']; ?></td>
-                                                <td style="width: 130px; font-weight: bold;"><?= formatDate($bill['date']); ?></td>
-                                                <td style="width: 70px; font-weight: bold;"><?= $bill['mso']; ?></td>
-                                                <td style="width: 160px; font-weight: bold;"><?= $bill['stbno']; ?></td>
-                                                <td style="width: 350px; font-weight: bold;"><?= $bill['name']; ?></td>
-                                                <td style="width: 110px; font-weight: bold;"><?= $bill['phone']; ?></td>
-                                                <td style="width: 180px; font-weight: bold;"><?= $bill['description']; ?></td>
-                                                <td style="width: 40px; font-weight: bold;"><?= $bill['pMode']; ?></td>
-                                                <td style="width: 50px; font-weight: bold; color: #0012C3;">
+                                                <td style="font-weight: bold;"><?= $serial_number++; ?></td>
+                                                <td style="font-weight: bold;"><?= $bill['billNo']; ?></td>
+                                                <td style="font-weight: bold;"><?= formatDate($bill['date']); ?></td>
+                                                <td style="font-weight: bold;"><?= $bill['mso']; ?></td>
+                                                <td style="font-weight: bold;"><?= $bill['stbno']; ?></td>
+                                                <td style="font-weight: bold;"><?= $bill['name']; ?></td>
+                                                <td style="font-weight: bold;"><?= $bill['phone']; ?></td>
+                                                <td style="font-weight: bold;"><?= $bill['description']; ?></td>
+                                                <td style="font-weight: bold;"><?= $bill['pMode']; ?></td>
+                                                <td style="font-weight: bold; color: #0012C3;">
                                                     <?= $bill['oldMonthBal']; ?>
                                                 </td>
                                                 <td style="width: 50px; font-weight: bold; color: #05A210;">
@@ -132,7 +132,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
 
 <br/>
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
         <?php include('message.php'); ?>
 

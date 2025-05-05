@@ -14,6 +14,7 @@ class ComposerStaticInitb89036fc22c8f186b0ed2b06c9a4cab8
         'S' => 
         array (
             'Svg\\' => 4,
+            'Sonata\\GoogleAuthenticator\\' => 27,
             'Sabberworm\\CSS\\' => 15,
         ),
         'P' => 
@@ -29,17 +30,30 @@ class ComposerStaticInitb89036fc22c8f186b0ed2b06c9a4cab8
             'Matrix\\' => 7,
             'Masterminds\\' => 12,
         ),
+        'G' => 
+        array (
+            'Google\\Authenticator\\' => 21,
+        ),
         'F' => 
         array (
             'FontLib\\' => 8,
         ),
+        'E' => 
+        array (
+            'Endroid\\QrCode\\' => 15,
+        ),
         'D' => 
         array (
             'Dompdf\\' => 7,
+            'DASPRiD\\Enum\\' => 13,
         ),
         'C' => 
         array (
             'Complex\\' => 8,
+        ),
+        'B' => 
+        array (
+            'BaconQrCode\\' => 12,
         ),
     );
 
@@ -51,6 +65,10 @@ class ComposerStaticInitb89036fc22c8f186b0ed2b06c9a4cab8
         'Svg\\' => 
         array (
             0 => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg',
+        ),
+        'Sonata\\GoogleAuthenticator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sonata-project/google-authenticator/src',
         ),
         'Sabberworm\\CSS\\' => 
         array (
@@ -85,17 +103,33 @@ class ComposerStaticInitb89036fc22c8f186b0ed2b06c9a4cab8
         array (
             0 => __DIR__ . '/..' . '/masterminds/html5/src',
         ),
+        'Google\\Authenticator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sonata-project/google-authenticator/src',
+        ),
         'FontLib\\' => 
         array (
             0 => __DIR__ . '/..' . '/dompdf/php-font-lib/src/FontLib',
+        ),
+        'Endroid\\QrCode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/endroid/qr-code/src',
         ),
         'Dompdf\\' => 
         array (
             0 => __DIR__ . '/..' . '/dompdf/dompdf/src',
         ),
+        'DASPRiD\\Enum\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dasprid/enum/src',
+        ),
         'Complex\\' => 
         array (
             0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
+        ),
+        'BaconQrCode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
         ),
     );
 

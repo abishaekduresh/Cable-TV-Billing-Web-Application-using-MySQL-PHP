@@ -109,16 +109,26 @@ try {
     $userSumExpense = $userIncomeExpenseData['sumExpense'] ?? 0;
                     
     $totalAmt = $indivTotalAmt + $groupTotalAmt + $posTotalAmt + $userSumIncome ?? 0;
-    $totalDis = $indivTotalDis + $groupTotalDis + $posTotalDis + $userSumExpense ?? 0;
+    // $totalDis = $indivTotalDis + $groupTotalDis + $posTotalDis + $userSumExpense ?? 0;
+    $totalDis = $indivTotalDis + $groupTotalDis + $posTotalDis ?? 0;
     $totalCount = $indivTotalCount + $groupTotalCount + $posTotalCount ?? 0;
     $balance = ($totalAmt - $totalDis) ?? 0;
+    // $amountInHand = (
+    //     ($userIndivCashPayModeData['amt'] - $userIndivCashPayModeData['discount']) 
+    //     - ($userIndivCreditPayModeData['amt'] - $userIndivCreditPayModeData['discount'])
+    //     + ($userGroupCashPayModeData['amt'] - $userGroupCashPayModeData['discount'])
+    //     - ($userGroupCreditPayModeData['amt'] - $userGroupCreditPayModeData['discount'])
+    //     + ($userPOSCashData['amt'] - $userPOSCashData['discount'])
+    //     - ($userPOSCreditData['amt'] - $userPOSCreditData['discount'])
+    //     + $userSumIncome - $userSumExpense
+    // );  
     $amountInHand = (
         ($userIndivCashPayModeData['amt'] - $userIndivCashPayModeData['discount']) 
-        - ($userIndivCreditPayModeData['amt'] - $userIndivCreditPayModeData['discount'])
+        // - ($userIndivCreditPayModeData['amt'] - $userIndivCreditPayModeData['discount'])
         + ($userGroupCashPayModeData['amt'] - $userGroupCashPayModeData['discount'])
-        - ($userGroupCreditPayModeData['amt'] - $userGroupCreditPayModeData['discount'])
+        // - ($userGroupCreditPayModeData['amt'] - $userGroupCreditPayModeData['discount'])
         + ($userPOSCashData['amt'] - $userPOSCashData['discount'])
-        - ($userPOSCreditData['amt'] - $userPOSCreditData['discount'])
+        // - ($userPOSCreditData['amt'] - $userPOSCreditData['discount'])
         + $userSumIncome - $userSumExpense
     );    
 

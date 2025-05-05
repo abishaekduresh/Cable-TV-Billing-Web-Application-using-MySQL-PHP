@@ -1,6 +1,5 @@
 <?php
-$con = mysqli_connect("localhost", "root", "", "pdpctv");
-// $con = mysqli_connect("localhost", "uxxhv0w9uvg6t", "&3~^h61]b6o1", "dbnqnobrek5ptr");
+$con = mysqli_connect("localhost", "uxxhv0w9uvg6t", "&3~^h61]b6o1", "dbnqnobrek5ptr");
 
 // Check if connection is null
 if (!$con) {
@@ -34,19 +33,19 @@ $currentYear = $datetime->format('Y');
 // $session_username = $_SESSION['username'];
 
 $SMS_GATEWAY_URL = "https://sms.textspeed.in/vb/apikey.php";
-$SMS_API_KEY = urlencode('GDRZOxAw4lDzCRoI');
-$SMS_INDIV_BILLING_SENDER_ID = urlencode('DURTEH');
-$SMS_INDIV_BILLING_TEMP_ID = urlencode('1707171775221460663');
+$SMS_API_KEY = urlencode('GDRZOxw');
+$SMS_INDIV_BILLING_SENDER_ID = urlencode('DURT');
+$SMS_INDIV_BILLING_TEMP_ID = urlencode('17071717');
 // Use only 2 variables
 $SMS_INDIV_BILLING_TEMP = 'Dear Customer, Your Cable TV bill for STB No: {#var1#}, has been {#var2#}. Software by, DURESH TECH.';
 // ------------------------------------------------------------
-$SMS_LOGIN_SENDER_ID = urlencode('DURTEK');
-$SMS_LOGIN_TEMP_ID = urlencode('1707172657090440304');
+$SMS_LOGIN_SENDER_ID = urlencode('DUR');
+$SMS_LOGIN_TEMP_ID = urlencode('1707172657');
 // Use only 1 Variable
-$SMS_LOGIN_TEMP = 'Your OTP is {#var1#} to securely access your account. Software by DURESH TECH.';
+$SMS_LOGIN_TEMP = 'Your OTP is {#var#} to securely access your account. Software by DURESH TECH.';
 
-$SMS_LOC_SENDER_ID = urlencode('DURTEH');
-$SMS_LOC_TEMP_ID = urlencode('1707173173985140997');
+$SMS_LOC_SENDER_ID = urlencode('DUEH');
+$SMS_LOC_TEMP_ID = urlencode('1707173');
 // Use only 1 Variable
 $SMS_LOC_TEMP = 'Dear Customer, Your Cable TV LOC bill for {#var#}. For more details, please contact us. Software by DURESH TECH.';
 

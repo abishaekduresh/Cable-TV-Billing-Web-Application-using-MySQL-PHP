@@ -88,7 +88,7 @@
       <a href="admin-bill-filter-by-all.php"><button type="button" class="btn btn-success"><b>Bill Report</b></button></a>
     </div>
     <div class="col">
-      <a href="todaycollection.php"><button type="button" class="btn btn-success"><b>Today Bill Collection</b></button></a>
+      <a href="todaycollection.php"><button type="button" class="btn btn-success"><b>Indiv Bill Collection Report</b></button></a>
     </div>
     <div class="col">
       <a href="admin-bill-cancel.php"><button type="button" class="btn btn-danger"><b>Cancel Bill</b></button></a>

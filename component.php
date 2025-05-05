@@ -927,8 +927,10 @@ function patch_loc_gen_bills_due_status($loc_gen_bill_id, $channel_uid, $active_
 }
 
 function generateOTP($length = 4) {
-    // Generate a random 5-digit number
-    $otp = random_int(1000, 9999); 
+    $otp = '';
+    for ($i = 0; $i < $length; $i++) {
+        $otp .= random_int(0, 9);
+    }
     return $otp;
 }
 
@@ -967,32 +969,45 @@ function loc_sms_api($phone, $due_month_year, $status, $token = null) {
 
 }
 
-function send_Login_SMS_OTP($phone, $otp){
-
+function send_Login_SMS_OTP($phone, $otp) {
     global $SMS_GATEWAY_URL, $SMS_API_KEY, $SMS_LOGIN_SENDER_ID, $SMS_LOGIN_TEMP_ID, $SMS_LOGIN_TEMP;
 
-    // $otp = $_SESSION['temp_login_otp'] = generateOTP();
-    $message = rawurlencode(str_replace(
-        ["{#var1#}"],
-        [$otp],
-        $SMS_LOGIN_TEMP
-    ));
+    // Check required values
+    if (empty($SMS_GATEWAY_URL) || empty($SMS_API_KEY) || empty($SMS_LOGIN_SENDER_ID) || empty($SMS_LOGIN_TEMP_ID) || empty($SMS_LOGIN_TEMP)) {
+        return json_encode(['success' => false, 'message' => 'SMS configuration is incomplete.']);
+    }
 
-    $data = 'apikey=' . $SMS_API_KEY . '&senderid=' . $SMS_LOGIN_SENDER_ID . '&templateid=' . $SMS_LOGIN_TEMP_ID . '&number=' . $phone . '&message=' . $message;
-    
+    // Format the message
+    $message = rawurlencode(str_replace("{#var#}", $otp, $SMS_LOGIN_TEMP));
+
+    $data = 'apikey=' . $SMS_API_KEY . 
+            '&senderid=' . $SMS_LOGIN_SENDER_ID . 
+            '&templateid=' . $SMS_LOGIN_TEMP_ID . 
+            '&number=' . $phone . 
+            '&message=' . $message;
+
     // Final URL with query parameters
     $finalUrl = $SMS_GATEWAY_URL . '?' . $data;
-    
+
     // Triggering the API using cURL
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $finalUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Optional: prevent hanging
     $response = curl_exec($ch);
-    curl_close($ch);
-    
-    return $response;
 
+    if (curl_errno($ch)) {
+        $error = curl_error($ch);
+        curl_close($ch);
+        return json_encode(['success' => false, 'message' => 'cURL error: ' . $error]);
+    }
+
+    curl_close($ch);
+    return $response;
 }
+
 function send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $bill_status) {
     
     global $con;

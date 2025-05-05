@@ -78,56 +78,74 @@ body {
 <!-- This snippet uses Font Awesome 5 Free as a dependency. You can download it at fontawesome.io! -->
 
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-        <div class="card border-0 shadow rounded-3 my-5">
-          <div class="card-body p-4 p-sm-5">
-          <h4 class="text-center">CABLE TV Billing Software</h4><br/>
-			<form action="verify-otp.php" method="post" >
-      	      <?php if (isset($_GET['error'])) { ?>
-      	      <div class="alert alert-danger" role="alert">
-				  <?=$_GET['error']?>
-			  </div>
-			  <?php } ?>
-              <div class="form-floating mb-3">
-			  <input type="text" class="form-control" name="username" id="username">
-                <label for="username">User ID</label>
-              </div>
-              <div class="form-floating mb-3">
-			  <input type="password" name="password" class="form-control" id="password">
-                <label for="password">Password</label>
-              </div>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+      <div class="card border-0 shadow rounded-3 my-5">
+        <div class="card-body p-4 p-sm-5">
+          <h4 class="text-center">CABLE TV Billing Software</h4><br />
+          
+          <form action="verify-otp.php" method="post">
+            <?php if (isset($_GET['error'])) { ?>
+            <div class="alert alert-danger" role="alert">
+              <?= $_GET['error'] ?>
+            </div>
+            <?php } ?>
 
-              <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" value="1" id="sendOTP" name="sendOTP" >
-                <label class="form-check-label" for="sendOTP">
-                  Click Send OTP
-                </label>
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" name="username" id="username" required>
+              <label for="username">User ID</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="password" name="password" class="form-control" id="password" required>
+              <label for="password">Password</label>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">OTP Option</label>
+              <div class="d-flex justify-content-start">
+                <div class="form-check me-4">
+                  <input class="form-check-input" type="radio" name="otpOption" id="googleTOTP" value="googleTOTP" checked>
+                  <label class="form-check-label" for="googleTOTP">
+                    Google TOTP
+                  </label>
+                </div>
+
+                <div class="form-check me-4">
+                  <input class="form-check-input" type="radio" name="otpOption" id="smsOTP" value="smsOTP">
+                  <label class="form-check-label" for="smsOTP">
+                    SMS OTP
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="otpOption" id="noOTP" value="noOTP">
+                  <label class="form-check-label" for="noOTP">
+                    No OTP
+                  </label>
+                </div>
               </div>
-              <div class="d-grid">
-                <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">
-					Sign in
-				</button>
-              </div>
-              <!-- <hr class="my-4">
-              <div class="d-grid mb-2">
-                <button class="btn btn-google btn-login text-uppercase fw-bold" type="submit">
-                  <i class="fab fa-google me-2"></i> Sign in with Google
-                </button>
-              </div>
-              <div class="d-grid">
-                <button class="btn btn-facebook btn-login text-uppercase fw-bold" type="submit">
-                  <i class="fab fa-facebook-f me-2"></i> Sign in with Facebook
-                </button> -->
-              </div>
-		          <center><h6>Powered by <a href="https://www.dureshtech.com/" target="_blank" style="text-decoration: none;">Duresh Tech</a></h6></center>
-    <p align="center">~th-Commit</p>
-            </form>
-          </div>
+            </div>
+
+            <div class="d-grid">
+              <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">
+                Sign in
+              </button>
+            </div>
+
+          </form>
+
+          <center>
+            <h6>Powered by <a href="https://www.dureshtech.com/" target="_blank" style="text-decoration: none;">Duresh Tech</a></h6>
+          </center>
+          <p align="center">~th-Commit</p>
+
         </div>
       </div>
     </div>
   </div>
+</div>
+
 </body>
 </html>

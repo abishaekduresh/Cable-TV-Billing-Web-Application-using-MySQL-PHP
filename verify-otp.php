@@ -16,7 +16,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 
     $username = test_input($_POST['username']);
     $password = test_input($_POST['password']);
-    $sendOTP = isset($_POST['sendOTP']) ? (int)test_input($_POST['sendOTP']) : 0;
+    $otpOption = isset($_POST['otpOption']) ? test_input($_POST['otpOption']) : null;
 
     if (empty($username)) {
         header("Location: logout.php?error=User Name is Required");
@@ -39,9 +39,9 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                             window.location = 'logout.php?error=Please update your phone number';
                         </script>";
                 } else {
-                    if(isset($sendOTP) && $sendOTP == 1){
+                    if(isset($otpOption) && $otpOption == 'smsOTP'){
                         // Generate OTP and send it via SMS
-                        $temp_login_otp = $_SESSION['temp_login_otp'] = generateOTP();
+                        $temp_login_otp = $_SESSION['temp_login_otp'] = generateOTP(6);
                         $res = send_Login_SMS_OTP($row['phone'], $temp_login_otp);
                         $res_json = json_decode($res);
                     
@@ -50,8 +50,20 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                                     window.location = 'logout.php?error=OTP -> " . urlencode($res_json->description) . "';
                                 </script>";
                         }
+                    }elseif(isset($otpOption) && $otpOption == 'googleTOTP'){
+                        // Generate OTP and send it via SMS
+                        // $temp_login_otp = $_SESSION['temp_login_otp'] = generateOTP();
+                        // $res = send_Login_SMS_OTP($row['phone'], $temp_login_otp);
+                        // $res_json = json_decode($res);
+
+                        // if ($res_json->status == "false") {
+                        //     echo "<script>
+                        //             window.location = 'logout.php?error=OTP -> " . urlencode($res_json->description) . "';
+                        //         </script>";
+                        // }
                     }else{
-                        $_SESSION['temp_login_otp'] = "5252";
+                        // No OTP Option
+                        $_SESSION['temp_login_otp'] = "773577";
                     }
                 }
 
@@ -127,16 +139,19 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 <div class="container height-100 d-flex justify-content-center align-items-center">
     <div class="position-relative">
         <div class="card p-2 text-center">
-            <h6>Please enter the one-time password <br> to verify your account</h6>
+            <h6>Please enter the <u><?=$otpOption?></u> <br> to verify your account</h6>
             <div> <span>A code has been sent to your phone</span></div>
             <form action="check-login.php" method="POST" autocomplete="off">
                 <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
-                    <input class="m-2 text-center form-control rounded" type="text" name="first" maxlength="1" required />
-                    <input class="m-2 text-center form-control rounded" type="text" name="second" maxlength="1" required />
-                    <input class="m-2 text-center form-control rounded" type="text" name="third" maxlength="1" required />
-                    <input class="m-2 text-center form-control rounded" type="text" name="fourth" maxlength="1" required />
+                    <input class="m-2 text-center form-control rounded" type="password" name="first" maxlength="1" required />
+                    <input class="m-2 text-center form-control rounded" type="password" name="second" maxlength="1" required />
+                    <input class="m-2 text-center form-control rounded" type="password" name="third" maxlength="1" required />
+                    <input class="m-2 text-center form-control rounded" type="password" name="fourth" maxlength="1" required />
+                    <input class="m-2 text-center form-control rounded" type="password" name="fifth" maxlength="1" required />
+                    <input class="m-2 text-center form-control rounded" type="password" name="sixth" maxlength="1" required />
                     <input type="hidden" value="<?=$_POST['username']?>" name="username"/>
                     <input type="hidden" value="<?=md5($_POST['password'])?>" name="password"/>
+                    <input type="hidden" value="<?=$otpOption?>" name="otpOption"/>
                 </div>
                 <div class="mt-4"> 
                     <button type="submit" class="btn btn-danger px-4 validate">Validate</button> 
@@ -154,7 +169,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 document.addEventListener("DOMContentLoaded", function() {
 
     function OTPInput() {
-        const inputs = document.querySelectorAll('#otp > input[type="text"]');
+        const inputs = document.querySelectorAll('#otp > input[type="password"]');
 
         for (let i = 0; i < inputs.length; i++) {
             inputs[i].addEventListener('input', function(event) {
