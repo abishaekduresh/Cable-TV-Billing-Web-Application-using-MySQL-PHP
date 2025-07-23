@@ -41,6 +41,9 @@
 				<a class="nav-link" href="#group-bill" data-bs-toggle="tab"><b>&nbsp;&nbsp;Group Bill&nbsp;&nbsp;</b></a>
             </li>
             <li class="nav-item">
+				<a class="nav-link" href="#filterMobileNo" data-bs-toggle="tab"><b>&nbsp;&nbsp;Filter Mobile No&nbsp;&nbsp;</b></a>
+            </li>
+            <li class="nav-item">
 				<a class="nav-link" href="new/pages/ec/compare.php" target="_blank"><b>&nbsp;&nbsp;Compare STB No&nbsp;&nbsp;</b></a>
             </li>
         </ul>
@@ -210,6 +213,29 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="tab-pane fade" id="filterMobileNo">
+                <div class="container mt-5">
+                    <h2 class="mb-4">Filter Numeric Mobile Numbers (Line-separated)</h2>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                        <label for="textarea1" class="form-label">Textarea 1 (Must keep these) Current Month</label>
+                        <textarea id="textarea1" class="form-control" rows="10"></textarea>
+                        <div class="mt-2">
+                            <strong>Filtered Count (Textarea 1):</strong> <span id="count1">0</span>
+                        </div>
+                        </div>
+                        <div class="col-md-6">
+                        <label for="textarea2" class="form-label">Textarea 2 (Filter from this) Previous Month</label>
+                        <textarea id="textarea2" class="form-control" rows="10"></textarea>
+                        <div class="mt-2">
+                            <strong>Filtered Count (Textarea 2):</strong> <span id="count2">0</span>
+                        </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="filterNumbers()">Filter</button>
+                </div>
+            </div>
         </div>
     </div>
 	
@@ -219,6 +245,39 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<script>
+  function filterNumbers() {
+    const ta1 = document.getElementById("textarea1").value;
+    const ta2 = document.getElementById("textarea2").value;
+
+    // Function to validate if the value is a valid 10-digit number
+    const isValidMobile = val => /^\d{10}$/.test(val);
+
+    // Parse numbers from both text areas and clean them
+    const list1 = ta1.split('\n').map(v => v.trim()).filter(v => v && isValidMobile(v));
+    const list2 = ta2.split('\n').map(v => v.trim()).filter(v => v && isValidMobile(v));
+
+    const resultSet = new Set();
+    const result = [];
+
+    // Remove numbers in Textarea 2 that are present in Textarea 1
+    list2.forEach(num => {
+      if (!list1.includes(num) && !resultSet.has(num)) {
+        result.push(num);
+        resultSet.add(num);
+      }
+    });
+
+    // Update Textarea 2 with the filtered values
+    document.getElementById("textarea2").value = result.join('\n');
+    document.getElementById("count2").innerText = result.length;
+
+    // Update Textarea 1 with filtered values (remove duplicates)
+    const uniqueList1 = [...new Set(list1)];
+    document.getElementById("textarea1").value = uniqueList1.join('\n');
+    document.getElementById("count1").innerText = uniqueList1.length;
+  }
+</script>
     <script>		
 			
             const indivTextAreaDiv = document.getElementById('indivTextAreaDiv');

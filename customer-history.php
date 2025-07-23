@@ -104,7 +104,7 @@ $filtervalues ='';
                                             foreach($query_run as $bill)
                                             {
                                                 ?>
-                                                <tr style="background-color: <?= $bill['adv_status'] == 1 ? '#dfb9fa' : '' ?>"><form action="" method="POST">
+                                                <tr style="background-color: <?= ($bill['adv_status'] === 1) ? '#dfb9fa' : (($bill['pMode'] === 'credit') ? 'yellow' : '') ?>;"><form action="" method="POST">
                                                     <td style="font-weight: bold;"><?= $bill['billNo']; ?></td>
                                                     <td style="font-weight: bold; color: #007DC3;"><?= formatDate($bill['date']); ?></td>
                                                     <td style="font-weight: bold; color: #007DC3;">

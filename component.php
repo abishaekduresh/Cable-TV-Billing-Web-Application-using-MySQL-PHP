@@ -1008,7 +1008,8 @@ function send_Login_SMS_OTP($phone, $otp) {
     return $response;
 }
 
-function send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $bill_status) {
+// Working
+function send_INDIV_BILL_SMS_old($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $bill_status) {
     
     global $con;
     global $SMS_GATEWAY_URL, $SMS_API_KEY, $SMS_INDIV_BILLING_SENDER_ID, $SMS_INDIV_BILLING_TEMP_ID, $SMS_INDIV_BILLING_TEMP;
@@ -1056,6 +1057,75 @@ function send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbn
     // return $message;
     // echo "<script>console.log('$response');</script>";
 
+}
+
+// Whatsapp
+function send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $bill_status) {
+    global $con;
+    global $SMS_GATEWAY_URL, $SMS_API_KEY, $SMS_INDIV_BILLING_SENDER_ID, $SMS_INDIV_BILLING_TEMP_ID, $SMS_INDIV_BILLING_TEMP;
+
+    $dateTime = new DateTime($due_month_timestamp);
+    $formattedDate = $dateTime->format("M-Y");
+
+    // Determine payment mode description
+    if ($bill_status == 'approve') {
+        if (in_array($pMode, ['cash', 'gpay', 'Paytm'])) {
+            $pMode1 = 'Paid';
+        } elseif ($pMode == 'credit') {
+            $pMode1 = 'Unpaid - Credit Bill';
+        } else {
+            $pMode1 = '-';
+        }
+    } elseif ($bill_status == 'cancel') {
+        $pMode1 = 'Cancelled';
+    } else {
+        $pMode1 = '-';
+    }
+
+    // Prepare variables
+    $variables = [$formattedDate, $stbno, $pMode1];
+    // $variables = ['May-2025', '0008317000ABCD', 'Paid'];
+
+    // Build query parameters
+    $params = http_build_query([
+        'auth-key' => '86272189a2b36c5764f27424f3fa895bdbc4b89f1061b6511b',
+        'app-key' => 'c12e8886-3189-4841-be14-b400a24a22cd',
+        'destination_number' => $phone,
+        'template_id' => '30770671275865801',
+        'device_id' => '67a9a33c10cc0c6722fd4ac6',
+        'variables' => $variables
+    ]);
+
+    $finalUrl = "https://web.wabridge.com/api/createmessage?" . $params;
+
+    // Trigger API using GET request
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $finalUrl,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPGET => true
+    ]);
+
+    $response = curl_exec($ch);
+    $curl_error = curl_error($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    // Debug log (optional)
+    if ($curl_error) {
+        error_log("cURL Error: $curl_error");
+        return json_encode([
+            'status' => false,
+            'message' => 'Curl failed',
+            'error' => $curl_error
+        ]);
+    }
+
+    return json_encode([
+        'status' => true,
+        'http_code' => $http_code,
+        'response' => json_decode($response, true)
+    ]);
 }
 
 

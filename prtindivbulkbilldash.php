@@ -138,7 +138,7 @@ $hidePromotion = ($footer1 == NULL);
 
 <?php
     
-    $query = mysqli_query($con, "SELECT * FROM bill WHERE status = 'approve' AND printStatus = 0");
+    $query = mysqli_query($con, "SELECT * FROM bill WHERE bill_by = '".mysqli_real_escape_string($con, $session_username)."' AND status = 'approve' AND printStatus = 0");
     
 if (mysqli_num_rows($query) > 0) {
     
@@ -244,7 +244,7 @@ if (mysqli_num_rows($query) > 0) {
             </tr>
 
             <tr <?php if (!$hideStatusRow) echo 'style="display: none;"'; ?>>
-                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><b>Paid</b></td>
+                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><b>Paid</b> (<?= ucfirst(strtolower(trim($pMode))) ?>)</td>
             </tr>
 
             <tr <?php if ($hidePromotion) echo 'style="display: none;"'; ?>>

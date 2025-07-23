@@ -120,7 +120,7 @@ if (mysqli_num_rows($query) > 0) {
         <table border="1">
             <tr>
                 <th width="4" height="4"><?=$sno++?></th>
-                <td style="font-size: 12px;"><?= formatDate($date);?>&nbsp;/&nbsp;BillNo :<?= $billNo; ?><br/><?= $billTo;?><br/><?= $phone?><br>Bill Amount: <?= $Rs?></td>
+                <td style="font-size: 12px;"><?= formatDate($date);?>&nbsp;/&nbsp;BillNo :<?= $billNo; ?><br/><?= $stbNo ?><br/><?= $billTo;?><br/><?= $phone?><br>Bill Amount: <?= $Rs?></td>
                 <td width="20" height="10"></td>
             </tr>
         </table>

@@ -225,7 +225,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                         $userId = $_SESSION['id'];
                         $username = $_SESSION['username'];
                         $role = $_SESSION['role'];
-                        $action = "Indiv Bill SMS Status: $sms_res_array_status | $phone - $stbno - $sms_res_array_status";
+                        $action = "Indiv Bill Whatsapp notify Status: $sms_res_array_status | $phone - $stbno - $sms_res_array_status";
                     
                         // Call the function to insert user activity log
                         logUserActivity($userId, $username, $role, $action);
@@ -467,7 +467,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 </head>
 <body>
     
-
     <!--<hr class="mt-0 mb-4">-->
 
     <div class="container-fluid">

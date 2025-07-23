@@ -159,11 +159,14 @@ $hidePromotion = ($footer1 == NULL);
         <table>
         <tr>
             <td>
-                <center>
-                    <p style="font-family:Arial; font-size:17px"><b><?= $appName ?></b>
-                        <br><?= $addr1 ?>, <?= $addr2 ?>
-                        <br>Phone : +91 <?= $phone ?></p>
-                </center>
+                <div style="text-align:center; padding:0; margin:0;">
+                    <img src="./assets/thermal-65-25-logo-black-and-white-outline-576px-203dpi.bmp" width="100" height="100" style="display:block; margin:0 auto; padding:0;" />
+                    <p style="font-family:Arial; font-size:17px; margin:0;">
+                        <b><?= $appName ?></b><br>
+                        <?= $addr1 ?>, <?= $addr2 ?><br>
+                        Phone : +91 <?= $phone ?>
+                    </p>
+                </div>
             </td>
         </tr>
         </table>
@@ -229,7 +232,7 @@ $hidePromotion = ($footer1 == NULL);
             </tr>
 
             <tr <?php if (!$hideStatusRow) echo 'style="display: none;"'; ?>>
-                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><b>Paid</b></td>
+                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><b>Paid</b> (<?= ucfirst(strtolower(trim($pMode))) ?>)</td>
             </tr>
 
             <tr <?php if ($hidePromotion) echo 'style="display: none;"'; ?>>

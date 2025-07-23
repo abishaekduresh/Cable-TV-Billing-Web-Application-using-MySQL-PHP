@@ -103,6 +103,7 @@
                                     <th>MSO</th>
                                     <th>STB No</th>
                                     <th>Name</th>
+                                    <th>His</th>
                                     <th>Phone</th>
                                     <th>Remarks</th>
                                     <th>oldBal</th>
@@ -185,6 +186,11 @@ $oldMonthBal_sum = '';
                                                     <td style="font-weight: bold;"><?= $row['mso']; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['stbno']; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['name']; ?></td>
+                                                    <td> 
+                                                        <a href="customer-history.php?search=<?= $row['stbno']; ?>" target="_blank">
+                                                            <img src="assets/arrow-up-right-from-square-solid.svg" width="20px" height="20px">
+                                                        </a>
+                                                    </td>
                                                     <td style="font-weight: bold;"><?= $row['phone']; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['description']; ?></td>
                                                     <td style="font-weight: bold; color: #0012C3;">
