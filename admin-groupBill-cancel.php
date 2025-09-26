@@ -36,7 +36,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 
 ?>
 
-        <div class="container">
+        <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-md-12">
                     <div class="card mt-5">
@@ -85,7 +85,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                             <div class="table-responsive">
 
 
-                                <div class="container">
+                                <div class="container-fluid">
 <br>
 
                                 <table class="table table-hover" border="5" style="white-space: nowrap;">
@@ -172,7 +172,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                         <?php
                                                 }
                                             } else {
-                                                echo "No Record Found";
+                                                echo "<tr><td colspan='12' style='text-align:center; font-weight:bold;'>No Record Found</td></tr>";
                                             }
                                         }
                                         ?>

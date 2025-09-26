@@ -215,23 +215,30 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                         $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount, status) VALUES ('Income', '$currentDate', '$currentTime','Auto', '12', '35','', $sumPaidAmount,'1')";
                         $con->query($sqlInsert);
                     }
-                    
+
                     $bill_status = "approve";
-                    $sms_res = send_INDIV_BILL_SMS($name, $phone, $billNo, $currentDateTime, $stbno, $pMode, $bill_status);
+                    // Send SMS
+                    $sms_res = send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $selectedValue);
                     $sms_res_array = json_decode($sms_res, true);
-					$sms_res_array_status = $sms_res_array['status'];
-                    if (isset($_SESSION['id']) && $sms_res == true) {
+
+                    // Make sure JSON decoding succeeded
+                    $sms_res_array_status = $sms_res_array['status'] ?? null;
+                    $sms_res_array_message = $sms_res_array['message'] ?? 'SMS sent success';
+
+                    if (isset($_SESSION['id']) && $sms_res) {
                         // Get the user information before destroying the session
                         $userId = $_SESSION['id'];
                         $username = $_SESSION['username'];
                         $role = $_SESSION['role'];
-                        $action = "Indiv Bill Whatsapp notify Status: $sms_res_array_status | $phone - $stbno - $sms_res_array_status";
-                    
+
+                        // Use parentheses to fix ternary precedence
+                        $action = "Indiv Bill SMS notify Status: " . 
+                                ($sms_res_array_status ? 'SMS: sent success' : $sms_res_array_message) . 
+                                "|" . $phone . "-" . $stbno . "-" . $sms_res_array_status;
+
                         // Call the function to insert user activity log
                         logUserActivity($userId, $username, $role, $action);
                     }
-                    
-                    // echo "<script>console.log('$response');</script>";
 
                     continue;
 

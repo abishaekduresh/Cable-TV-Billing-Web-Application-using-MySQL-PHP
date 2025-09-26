@@ -18,7 +18,7 @@
 <body>
 
 <center>
-    <div class="container">
+    <div class="container-fluid">
   <div class="row">
     <div class="col">
       <a href="billing-dashboard.php"><button type="button" class="btn btn-primary"><b>New Indiv Bill</b></button></a>

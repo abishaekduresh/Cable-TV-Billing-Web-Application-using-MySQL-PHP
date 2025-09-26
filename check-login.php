@@ -20,7 +20,7 @@ if (isset($_POST['first'], $_POST['second'], $_POST['third'], $_POST['fourth'], 
     $password = $_POST['password'];
     $username = $_POST['username'];
 
-    if ($otpOption == 'smsOTP' || $otpOption == 'noOTP') {
+    if ($otpOption == 'smsOTP' || $otpOption == 'noOTP' || $otpOption == 'passcode') {
         if ($verify_otp == $sessionOTP) {
 
             // Use prepared statement to prevent SQL injection

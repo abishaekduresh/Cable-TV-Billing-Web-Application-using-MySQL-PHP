@@ -29,7 +29,7 @@
     include 'admin-menu-btn.php';
 
 ?>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card mt-5">
@@ -59,10 +59,13 @@
                                         <button type="submit" class="btn btn-primary">Search</button>
                                         <?php if (isset($_GET['from_date']) && isset($_GET['to_date'])) { ?>
                                         <a href="rpt-in-ex-pdf-download.php?from_date=<?= isset($_GET['from_date']) ? $_GET['from_date'] : '' ?>&to_date=<?= isset($_GET['to_date']) ? $_GET['to_date'] : '' ?>&category_id=<?= isset($_GET['category_id']) ? $_GET['category_id'] : '' ?>&subcategory_id=<?= isset($_GET['subcategory_id']) ? $_GET['subcategory_id'] : '' ?>" target="_blank" class="float-right">
-                                            <button type="button" class="btn btn-info">
-                                                <img src="assets/file-pdf-solid.svg" width="20" height="20" alt="PDF" class="mr-2">
-                                                Download
-                                                <img src="assets/download-solid.svg" width="20" height="20" alt="Download" class="mr-2">
+                                            <button type="button" class="btn btn-danger">
+                                                <i class="bi bi-filetype-pdf"></i>
+                                            </button>
+                                        </a>
+                                        <a href="prt-in-ex-3inch.php?from_date=<?= isset($_GET['from_date']) ? $_GET['from_date'] : '' ?>&to_date=<?= isset($_GET['to_date']) ? $_GET['to_date'] : '' ?>&category_id=<?= isset($_GET['category_id']) ? $_GET['category_id'] : '' ?>&subcategory_id=<?= isset($_GET['subcategory_id']) ? $_GET['subcategory_id'] : '' ?>" target="_blank" class="float-right">
+                                            <button type="button" class="btn btn-success mr-2">
+                                                <i class="bi bi-printer"></i> 3 Inch
                                             </button>
                                         </a>
                                         <?php } ?>
@@ -327,5 +330,5 @@
 
 
 <?php }else{
-	header("Location: index.php");
+	header("Location: logout.php");
 } ?>

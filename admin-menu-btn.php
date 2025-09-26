@@ -19,7 +19,7 @@
 
 
 <center><h6>
-    <div class="container">
+    <div class="container-fluid">
         <!--<img src="https://research.mgu.ac.in/wp-content/uploads/2021/07/new-icon-gif-9.gif" width="150" height="100">-->
   <div class="row">
     <div class="col">
@@ -73,7 +73,7 @@
 <br>
 
 <center>
-    <div class="container">
+    <div class="container-fluid">
   <div class="row">
     <div class="col">
       <a href="billing-dashboard.php"><button type="button" class="btn btn-primary"><b>New Bill</b></button></a>

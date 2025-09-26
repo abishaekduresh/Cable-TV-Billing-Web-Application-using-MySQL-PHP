@@ -31,7 +31,7 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col">
-                <div class="card mt-5">
+                <div class="card mt-2">
                     <div class="card-header">
                         <h4>Credit Bill Dashboard
                             <a href="prtindivcreditbillbulk.php" target="blank"><button type="button" class="btn btn-primary float-end" >
@@ -45,38 +45,68 @@
                     <div class="card-body">
                         <form action="" method="GET">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>From Bill Date</label>
-                                        <input type="date" name="from_date" value="<?php if(isset($_GET['from_date'])){ echo $_GET['from_date']; } else { echo '2023-06-01'; } ?>" class="form-control">
+                                        <input type="date" name="from_date" 
+                                            value="<?php echo isset($_GET['from_date']) ? $_GET['from_date'] : '2023-06-01'; ?>" 
+                                            class="form-control">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>To Bill Date</label>
-                                        <input type="date" name="to_date" value="<?php if(isset($_GET['to_date'])){ echo $_GET['to_date']; } else { echo $currentDate; } ?>" class="form-control" required>
+                                        <input type="date" name="to_date" 
+                                            value="<?php echo isset($_GET['to_date']) ? $_GET['to_date'] : $currentDate; ?>" 
+                                            class="form-control" required>
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Phone</label>
-                                        <input type="number" name="phone" class="form-control" autocomplete=off>
+                                        <input type="number" name="phone" class="form-control" autocomplete="off">
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <!--<label>Click to Filter</label>--> <br>
-                                      <button type="submit" class="btn btn-primary">Search</button>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <div class="form-group w-100">
+                                        <button type="submit" class="btn btn-primary w-100">Search</button>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label style="font-weight: bold;"><u>Bill By :</u></label>
                                     <br>
-                                    <label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="23A002"> Duresh</label>
-                                    <label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="23A001"> Baskar Raj</label>
-                                    <label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="23E005"> Divya</label>
+                                        <?php
+                                        $sql = "SELECT * FROM user WHERE status = 1";
+                                        $result = $con->query($sql);
+
+                                        // Step 3: Check if any data was fetched and loop through the results
+                                        if ($result->num_rows > 0) {
+                                            // Start the container for the checkbox layout
+                                            echo '<div class="checkbox-container">';
+                                            
+                                            // Step 4: Loop through each record and generate HTML with checkboxes
+                                            $counter = 0; // Counter to track columns
+                                            while ($row = $result->fetch_assoc()) {
+                                                // Assuming 'username' is the value and 'name' is the label text
+                                                echo '<label style="font-weight: bold;"><input type="checkbox" name="filter[]" value="' . htmlspecialchars($row['username']) . '">';
+                                                echo htmlspecialchars($row['name']) . '</label>&nbsp;&nbsp;&nbsp;';
+
+                                                // After every third checkbox, insert a line break (to create three columns per row)
+                                                $counter++;
+                                                if ($counter % 3 == 0) {
+                                                    echo '<br>';
+                                                }
+                                            }
+                                            
+                                            // End the container for the checkbox layout
+                                            echo '</div>';
+                                        } else {
+                                            echo "No records found.";
+                                        }
+                                        ?>
                                     <br>
                                     <label style="font-weight: bold;"><u>Bill Status :</u></label>
                                     <br>
@@ -106,6 +136,7 @@
                                     <th>His</th>
                                     <th>Phone</th>
                                     <th>Remarks</th>
+                                    <th>P.Mode</th>
                                     <th>oldBal</th>
                                     <th>BillAmt</th>
                                     <th>Dist</th>
@@ -116,8 +147,7 @@
                             <tbody>
                             
                             <?php 
-                                // $con = mysqli_connect("localhost","root","","phptutorials");
-                                require 'dbconfig.php';
+                                require_once 'dbconfig.php';
 $discount_sum = '';
 $paid_amount_sum = '';
 $Rs_sum = '';
@@ -193,13 +223,14 @@ $oldMonthBal_sum = '';
                                                     </td>
                                                     <td style="font-weight: bold;"><?= $row['phone']; ?></td>
                                                     <td style="font-weight: bold;"><?= $row['description']; ?></td>
+                                                    <td style="font-weight: bold;"><?= ucfirst($row['pMode']); ?></td>
                                                     <td style="font-weight: bold; color: #0012C3;">
                                                         <?= $row['oldMonthBal']; ?>
                                                     </td>
                                                     <td style="font-weight: bold; color: #05A210;"><?= $row['paid_amount']; ?></td>
                                                     <td style="font-weight: bold; color: #DD0581;"><?= $row['discount']; ?></td>
                                                     <td style="font-weight: bold; font-weight: bold; color: #F20000;"><?= $row['Rs']; ?></td>
-                                                <form action="admin-code-bill-credit.php" method="POST">
+                                                <form id="update-pmode-form" class="update-pmode-form" method="POST">
                                                     <td>                                                        
                                                         <div style="width:80px" class="input-group">
                                                             <select class="form-select p-1 mb-0 bg-warning text-dark" name="selectedValue">
@@ -236,7 +267,7 @@ $oldMonthBal_sum = '';
                                     }
                                     else
                                     {
-                                        echo "No Record Found";
+                                        echo "<tr><td colspan='15' style='text-align:center; font-weight:bold;'>No Record Found</td></tr>";
                                     }
                                 
                                     // Close the database connection
@@ -245,7 +276,7 @@ $oldMonthBal_sum = '';
                                 }
                                     ?>
                                             <tr>
-                                                <td colspan="9"></td>
+                                                <td colspan="10"></td>
                                                 <td style="font-weight: bold; font-weight: bold;"> <b>Total :</td>
                                                 <td style="font-weight: bold; color: #0012C3;"> <b><?= $oldMonthBal_sum ?></b></td>
                                                 <td style="font-weight: bold; color: #05A210;"> <b><?= $paid_amount_sum ?></td>
@@ -266,6 +297,77 @@ $oldMonthBal_sum = '';
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).on("submit", ".update-pmode-form", function(e) {
+    e.preventDefault();
+
+    let form = $(this);
+    let formData = form.serialize();
+
+    Swal.fire({
+        title: "Enter Remark",
+        text: "Please provide a note / reference for updating this payment mode.",
+        input: "text",
+        inputPlaceholder: "Type your remark here...",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Submit",
+        cancelButtonText: "Cancel",
+        preConfirm: (inputValue) => {
+            if (!inputValue || inputValue.trim().length < 4) {
+                Swal.showValidationMessage("Remark is required and must be at least 4 characters!");
+            }
+            return inputValue.trim();
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            formData += "&remark2=" + encodeURIComponent(result.value);
+            console.log("Sending formData:", formData);
+
+            $.ajax({
+                url: "admin-code-bill-credit.php",
+                type: "POST",
+                data: formData,
+                dataType: "json",
+                success: function(response) {
+                    console.log("Server response:", response);
+                    if (response.status === "success") {
+                        Swal.fire({
+                            icon: "success",
+                            title: response.data.stbNo + " | Bill No. " + response.data.bill_no,
+                            text: response.message,
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            timer: 1500
+                        });
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Failed!",
+                            text: response.message
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                    console.error("Response Text:", xhr.responseText);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Server Error",
+                        text: "Something went wrong!"
+                    });
+                }
+            });
+        }
+    });
+});
+</script>
+    
 </body>
 </html>
 
@@ -274,5 +376,5 @@ $oldMonthBal_sum = '';
 
 
 <?php }else{
-	header("Location: index.php");
+	header("Location: logout.php");
 } ?>

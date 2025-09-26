@@ -2,8 +2,7 @@
    session_start();
    require_once "dbconfig.php";
    require_once 'preloader.php';
-//   include 'component.php';
-//   include 'component2.php';
+  require_once 'component.php';
       
     if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         $session_username = $_SESSION['username']; 
@@ -208,58 +207,10 @@ h1
     <div class="row">
         <!-- Left Column -->
         <div class="col-lg-6">
-            <div  id="dashboard-data" style="display: none;">
-                <!--Today-->
-                <h4 style="text-align: center;">Today Bill</h4>
+            <div  id="dashboard-data">
+                <!-- <h4 style="text-align: center;">Credit Due Bill Amt</h4> -->
                 <div class="row">
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/bill.png" alt="Billing" class="dt-img-fluid" style="width: 60px; border: 0px;" />
-                                <h3>Collection</h3>
-                            </div>
-                            <div class="team-back">
-                                <div style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 20px;">
-                                    ₹ <span id="todayColAmt">
-                                    </span>
-                                </div>
-                                <p>Indiv &nbsp;&nbsp;: ₹ <span id="indivTodayColAmt"></span></p>
-                                <p>Group : ₹ <span id="groupTodayColAmt"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/discount.png" alt="Discount" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Discount</h3>
-                            </div>
-                            <div class="team-back">
-                                <div style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 20px;">
-                                    ₹ <span id="todayDisAmt">
-                                    </span>
-                                </div>
-                                <p>Indiv &nbsp;&nbsp;: ₹ <span id="indivTodayDisAmt"></span></p>
-                                <p>Group : ₹ <span id="groupTodayDisAmt"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/profits.png" alt="Profits" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Profit</h3>
-                            </div>
-                            <div class="team-back" style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 60px;">
-                                ₹ <span id="todayProfAmt">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <h4 style="text-align: center;">Credit Due Bill Amt</h4>
-                <div class="row">
-                    <div class="col-lg-4">
+                    <!-- <div class="col-lg-4">
                         <div class="our-team-main">
                             <div class="team-front">
                                 <img src="icons/credit.png" alt="Credit" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
@@ -288,21 +239,21 @@ h1
                                 <p>Count &nbsp;&nbsp;: <span id="groupCreditBillCount"></span></p>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-lg-4">
                         <div class="our-team-main">
                             <div class="team-front">
                                 <img src="icons/smartphone.png" alt="SMS" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>SMS Credits</h3>
+                                <h3>SMS Bal</h3>
                             </div>
                             <div class="team-back" style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 40px;">
-                                <span id="avlSmsCredit">
+                                    ₹<span id="avblSMSbalanceAmt">
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <h4 style="text-align: center;"> Current Month </h4>
+                <!-- <h4 style="text-align: center;"> Current Month </h4>
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="our-team-main">
@@ -340,16 +291,16 @@ h1
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>  <!--  dashboard-data div  -->
 
-            <div class="row justify-content-center mt-5">
-                <div class="col-md-6">
-                    <button type="button" id="passcode_btn" class="btn btn-primary" onclick="checkPasscode()">
-                      Enter Passcode
+            <!-- <div class="row justify-content-center mt-5">
+                <div class="col-md-6 d-flex justify-content-center">
+                    <button type="button" id="reload_btn" class="btn btn-primary">
+                      <i class="bi bi-arrow-clockwise"></i>
                     </button>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <!-- Right Column (empty) -->
@@ -583,118 +534,55 @@ async function printUsersBillingData() {
     });
 }
 
-function checkPasscode() {
-    var passcode = prompt("Please enter the passcode:");
-    
-    // Replace with your actual passcode validation logic
-    if (passcode === "sarojaammal") {
-        // Show the item
-        document.getElementById("dashboard-data").style.display = "block";
-        document.getElementById("passcode_btn").style.display = "none";
-        
-    } else {
-        // Hide the item
-        document.getElementById("dashboard-data").style.display = "none";
-        alert("Incorrect passcode. Please try again.");
-    }
+function formatMoney(amount) {
+    // Convert amount to number and round to two decimal places
+    amount = parseFloat(amount).toFixed(2);
+
+    // Separate the whole number part from the decimal part
+    let parts = amount.toString().split('.');
+    let wholeNumber = parts[0];
+    let decimalPart = parts.length > 1 ? '.' + parts[1] : '';
+
+    // Add commas for thousands separator
+    wholeNumber = wholeNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    // Combine whole number part with decimal part
+    return wholeNumber + decimalPart;
 }
 
+$(document).ready(function() {
+    // Function to load data
+    function loadData() {
+        // Call PHP function and encode its return value into valid JS
+        var result = <?php echo json_encode(getAvblSMSbalanceAmt()); ?>;
 
-$(document).ready(function(){
-    
-    function formatMoney(amount) {
-        // Convert amount to number and round to two decimal places
-        amount = parseFloat(amount).toFixed(2);
-    
-        // Separate the whole number part from the decimal part
-        let parts = amount.toString().split('.');
-        let wholeNumber = parts[0];
-        let decimalPart = parts.length > 1 ? '.' + parts[1] : '';
-    
-        // Add commas for thousands separator
-        wholeNumber = wholeNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    
-        // Combine whole number part with decimal part
-        return wholeNumber + decimalPart;
-    }
-    
-    var inputData = {
-        date: $("#date").val().trim()
-    };
-
-    $.ajax({
-        type: "POST",
-        url: "api/v1/admin/dashboard.php",
-        data: JSON.stringify(inputData),
-        contentType: "application/json",
-        success: function(response) {
-            if (response.status === "success") {
-                if (!response.data.indivTodayBillArray.length > 0) {
-                    console.warn('indivTodayArray is empty.');
-                }
-                
-                if (!response.data.groupTodayBillArray.length > 0) {
-                    console.warn('groupTodayArray is empty.');
-                }
-                
-                if (response.data.avlSmsCredit == 0) {
-                    console.warn('avlSmsCredit is zero.');
-                }
-
-                if (response.data && !isNaN(response.data.avlSmsCredit)) {
-                    if (response.data.avlSmsCredit < 1000) {
-                        alert('Warning: SMS Credit is low (' + response.data.avlSmsCredit + ' available). Please refill soon.');
-                    }
-                } else {
-                    console.error("Invalid SMS Credit value:", response.data.avlSmsCredit);
-                }
-                
-                var indivTodayBillData = response.data.indivTodayBillArray[0];
-                var groupTodayBillData = response.data.groupTodayBillArray[0];
-                var indivCreditBillData = response.data.indivCreditBillArray[0];
-                var groupCreditBillData = response.data.groupCreditBillArray[0];
-                var incomeExpenseArrayData = response.data.incomeExpenseArray[0];
-                
-                var todayTotColAmt = Number(indivTodayBillData.indivTodayBillColAmt) + Number(groupTodayBillData.groupTodayBillColAmt);
-                var todayTotDisAmt = Number(indivTodayBillData.indivTodayBillDisAmt) + Number(groupTodayBillData.groupTodayBillDisAmt);
-                var incomeExpenseProfit = Number(incomeExpenseArrayData.totIncomeAmt) - Number(incomeExpenseArrayData.totExpenseAmt);
-                
-                var todayTotProfAmt = todayTotColAmt - todayTotDisAmt;
-                
-                $("#todayColAmt").html(formatMoney(todayTotColAmt));
-                $("#todayDisAmt").html(formatMoney(todayTotDisAmt));
-                $("#todayProfAmt").html(formatMoney(todayTotProfAmt));
-                $("#indivTodayColAmt").html(formatMoney(indivTodayBillData.indivTodayBillColAmt));
-                $("#groupTodayColAmt").html(formatMoney(groupTodayBillData.groupTodayBillColAmt));
-                $("#indivTodayDisAmt").html(formatMoney(indivTodayBillData.indivTodayBillDisAmt));
-                $("#groupTodayDisAmt").html(formatMoney(groupTodayBillData.groupTodayBillDisAmt));
-                
-                $("#indivTotCreditAmt").html(formatMoney(indivCreditBillData.indivCreditBillAmt));
-                $("#indivCreditBillCount").html(indivCreditBillData.indivCreditBillCount);
-                
-                $("#groupTotCreditAmt").html(formatMoney(groupCreditBillData.groupCreditBillAmt));
-                $("#groupCreditBillCount").html(groupCreditBillData.groupCreditBillCount);
-                
-                $("#totIncomeAmt").html(formatMoney(incomeExpenseArrayData.totIncomeAmt));
-                $("#totExpenseAmt").html(formatMoney(incomeExpenseArrayData.totExpenseAmt));
-                $("#incomeExpenseProfit").html(formatMoney(incomeExpenseProfit));
-                
-                $("#avlSmsCredit").html(response.data.avlSmsCredit);
-                
-            } else {
-                console.warn('Response status is not success:', response.message);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', status, error);
-            alert('An error occurred: ' + error);
-            $("#response").html(status);
-            openModal();
+        if (result && result.status) {   // you set status = "true" in PHP
+            $("#avblSMSbalanceAmt").html(formatMoney(result.data[0].BalanceAmount));
+        } else {
+            $("#avblSMSbalanceAmt").html("0");
         }
-    });
+    }
 
-    
+    // Load initially
+    loadData();
+
+    // Reload on button click with SweetAlert2 toast
+    // $("#reload_btn").on("click", function() {
+    //     loadData();
+
+    //     // SweetAlert2 toast notification
+    //     Swal.fire({
+    //         toast: true,
+    //         position: 'top-end',
+    //         icon: 'success',
+    //         title: 'Reloaded Successfully',
+    //         showConfirmButton: false,
+    //         timer: 2000,
+    //         timerProgressBar: false
+    //     });
+    // });
 });
+
 
 </script>
 
@@ -711,5 +599,5 @@ $(document).ready(function(){
 
 
 <?php }else{
-	header("Location: index.php");
+	header("Location: logout.php");
 } ?>

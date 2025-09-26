@@ -44,23 +44,22 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
                         $temp_login_otp = $_SESSION['temp_login_otp'] = generateOTP(6);
                         $res = send_Login_SMS_OTP($row['phone'], $temp_login_otp);
                         $res_json = json_decode($res);
-                    
-                        if ($res_json->status == "false") {
+                        // Check for errors in sending SMS
+                        if (isset($res_json->code) && $res_json->code != 200) {
                             echo "<script>
-                                    window.location = 'logout.php?error=OTP -> " . urlencode($res_json->description) . "';
+                                    window.location = 'logout.php?error=OTP -> " . urlencode($res_json->message) . "';
                                 </script>";
                         }
                     }elseif(isset($otpOption) && $otpOption == 'googleTOTP'){
-                        // Generate OTP and send it via SMS
-                        // $temp_login_otp = $_SESSION['temp_login_otp'] = generateOTP();
-                        // $res = send_Login_SMS_OTP($row['phone'], $temp_login_otp);
-                        // $res_json = json_decode($res);
-
-                        // if ($res_json->status == "false") {
-                        //     echo "<script>
-                        //             window.location = 'logout.php?error=OTP -> " . urlencode($res_json->description) . "';
-                        //         </script>";
-                        // }
+                        // 
+                    }elseif(isset($otpOption) && $otpOption == 'passcode'){
+                        if(empty($row['passcode']) || strlen($row['passcode']) != 6){
+                            echo "<script>
+                                    window.location = 'logout.php?error=Incorrect or incomplete Passcode. Please contact admin.';
+                                </script>";
+                        }else{
+                            $_SESSION['temp_login_otp'] = $row['passcode'] ?? null;
+                        }
                     }else{
                         // No OTP Option
                         $_SESSION['temp_login_otp'] = "773577";

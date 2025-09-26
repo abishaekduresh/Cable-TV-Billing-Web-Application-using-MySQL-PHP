@@ -27,6 +27,20 @@ $result = mysqli_query($con, $query);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
+<?php
+
+    if (isset($_SESSION['username']) && $_SESSION['role'] === 'admin') {
+        // include 'admin-menu-bar.php';
+        include 'admin-menu-btn.php';
+        $session_username = $_SESSION['username'];
+    } else{
+        include 'menu-bar.php';
+        ?><br><?php
+        include 'sub-menu-btn.php';
+        $session_username = $_SESSION['username'];
+    }
+
+?>
     <div class="container">
         <h3>Last 50 Activity</h3>
         <div class="table-responsive">

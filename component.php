@@ -118,32 +118,20 @@ function getSubCategoryName($con, $subcategoryId) {
     }
 }
 
-function printClose(){
-    
+function printClose() {
     include 'dbconfig.php';
 
-            echo "<script type='text/javascript'>
-                window.onload = function() {
-                    //setTimeout(function() {
-                        window.print(); // Open print dialog after 1 second
-                    //}, 1000); // 1000 milliseconds = 1 second
-                };
-            </script>";
+    echo "<script type='text/javascript'>
+        window.onload = function() {
+            window.print(); // Open print dialog
+            setTimeout(function(){
+                window.close(); // Close tab after 2 seconds
+            }, 2000);
+        };
+    </script>";
 
-            // Tab Close function
-            function closeTab() {
-                echo "<script>
-                setTimeout(function(){
-                    window.close();
-                }, 2000);
-                </script>";
-            }
-    
     // Close the database connection
     $con->close();
-        
-    // Usage example
-    closeTab();
 }
 
 function splitDateAndTime($timestamp) {
@@ -970,97 +958,142 @@ function loc_sms_api($phone, $due_month_year, $status, $token = null) {
 }
 
 function send_Login_SMS_OTP($phone, $otp) {
-    global $SMS_GATEWAY_URL, $SMS_API_KEY, $SMS_LOGIN_SENDER_ID, $SMS_LOGIN_TEMP_ID, $SMS_LOGIN_TEMP;
+    global $SMS_GATEWAY_URL, $SMS_API_ID, $SMS_API_KEY, $SMS_LOGIN_SENDER_ID, $SMS_LOGIN_TEMP_ID, $SMS_LOGIN_TEMP, $isSentSMS;
 
+    if(!$isSentSMS) {
+        return json_encode(['status' => true, 'message' => 'SMS sending is disabled.']);
+        exit;
+    }
     // Check required values
-    if (empty($SMS_GATEWAY_URL) || empty($SMS_API_KEY) || empty($SMS_LOGIN_SENDER_ID) || empty($SMS_LOGIN_TEMP_ID) || empty($SMS_LOGIN_TEMP)) {
-        return json_encode(['success' => false, 'message' => 'SMS configuration is incomplete.']);
+    if (empty($SMS_GATEWAY_URL) || empty($SMS_API_ID) || empty($SMS_API_KEY) || empty($SMS_LOGIN_SENDER_ID) || empty($SMS_LOGIN_TEMP_ID) || empty($SMS_LOGIN_TEMP)) {
+        return json_encode(['status' => false, 'message' => 'SMS configuration is incomplete.']);
     }
 
-    // Format the message
-    $message = rawurlencode(str_replace("{#var#}", $otp, $SMS_LOGIN_TEMP));
+    // Format the message (replace placeholder)
+    $message = str_replace("{#var1#}", $otp, $SMS_LOGIN_TEMP);
 
-    $data = 'apikey=' . $SMS_API_KEY . 
-            '&senderid=' . $SMS_LOGIN_SENDER_ID . 
-            '&templateid=' . $SMS_LOGIN_TEMP_ID . 
-            '&number=' . $phone . 
-            '&message=' . $message;
+    // Prepare POST data
+    $postData = [
+        'api_id'       => $SMS_API_ID,
+        'api_password' => $SMS_API_KEY,
+        'sms_type'     => 'Transactional',
+        'sms_encoding' => 'text',
+        'sender'       => $SMS_LOGIN_SENDER_ID,
+        'number'       => $phone,
+        'message'      => $message,
+        'template_id'  => $SMS_LOGIN_TEMP_ID
+    ];
 
-    // Final URL with query parameters
-    $finalUrl = $SMS_GATEWAY_URL . '?' . $data;
+    // API URL
+    $finalUrl = $SMS_GATEWAY_URL . '/send_sms';
 
     // Triggering the API using cURL
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $finalUrl);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData)); // send as form-urlencoded
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-    // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Optional: prevent hanging
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 15); // Set timeout to 15 seconds
     $response = curl_exec($ch);
 
     if (curl_errno($ch)) {
         $error = curl_error($ch);
         curl_close($ch);
-        return json_encode(['success' => false, 'message' => 'cURL error: ' . $error]);
+        return json_encode(['status' => false, 'message' => 'cURL error: ' . $error]);
     }
 
     curl_close($ch);
-    return $response;
+
+    // Wrap response with extra info
+    return json_encode($response);
 }
 
 // Working
-function send_INDIV_BILL_SMS_old($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $bill_status) {
+function send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $bill_status) {
     
     global $con;
-    global $SMS_GATEWAY_URL, $SMS_API_KEY, $SMS_INDIV_BILLING_SENDER_ID, $SMS_INDIV_BILLING_TEMP_ID, $SMS_INDIV_BILLING_TEMP;
+    global $SMS_GATEWAY_URL, $SMS_API_ID, $SMS_API_KEY, $SMS_INDIV_BILLING_SENDER_ID, $SMS_INDIV_BILLING_TEMP_ID, $SMS_INDIV_BILLING_TEMP, $isSentSMS;
+
+    if(!$isSentSMS) {
+        return json_encode(['status' => false, 'message' => 'SMS sending is disabled.']);
+        exit;
+    }
 
     $dateTime = new DateTime($due_month_timestamp);
     $formattedDate = $dateTime->format("M-Y");
 
     if ($bill_status == 'approve') {
         if ($pMode == 'cash' || $pMode == 'gpay' || $pMode == 'Paytm' ) {
-            $pMode1 = 'PAID';
+            $pMode1 = 'paid';
         } elseif ($pMode == 'credit') {
-            $pMode1 = 'UNPAID - Credit Bill';
+            $pMode1 = 'unpaid - Credit Bill';
         } else {
             $pMode1 = '-';
         }
     } elseif ($bill_status == 'cancel') {
-        $pMode1 = 'Cancelled';
+        $pMode1 = 'cancelled';
     } else {
         $pMode1 = '-';
     }
 
-    // Define the dynamic message
-    $due_msg = ", due in ".$formattedDate.", has been ".$pMode1;
-
     // Replace placeholders with actual values
-    $message = rawurlencode(str_replace(
-        ["{#var1#}", "{#var2#}"], // Placeholders to be replaced
-        [$stbno, $due_msg],           // Values to replace with
+    $message = str_replace(
+        ["{#var1#}", "{#var2#}", "{#var3#}"], // Placeholders to be replaced
+        [$stbno, $formattedDate, $pMode1],           // Values to replace with
         $SMS_INDIV_BILLING_TEMP
-    ));
+    );
 
-    $data = 'apikey=' . $SMS_API_KEY . '&senderid=' . $SMS_INDIV_BILLING_SENDER_ID . '&templateid=' . $SMS_INDIV_BILLING_TEMP_ID . '&number=' . $phone . '&message=' . $message;
-    
-    // Final URL with query parameters
-    $finalUrl = $SMS_GATEWAY_URL . '?' . $data;
-    
+    // Prepare POST data
+    $postData = [
+        'api_id'       => $SMS_API_ID,
+        'api_password' => $SMS_API_KEY,
+        'sms_type'     => 'Transactional',
+        'sms_encoding' => 'text',
+        'sender'       => $SMS_INDIV_BILLING_SENDER_ID,
+        'number'       => $phone,
+        'message'      => $message,
+        'template_id'  => $SMS_INDIV_BILLING_TEMP_ID
+    ];
+
+    // API URL
+    $finalUrl = $SMS_GATEWAY_URL . '/send_sms';
+
     // Triggering the API using cURL
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $finalUrl);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData)); // send as form-urlencoded
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Set timeout to 10 seconds
     $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if (curl_errno($ch)) {
+        $error = curl_error($ch);
+        curl_close($ch);
+        return json_encode([
+            'status' => false,
+            'message' => 'Curl failed' . $error,
+            'error' => $curl_error
+        ]);
+    }
     curl_close($ch);
-    
-    return $response;
-    // return $message;
-    // echo "<script>console.log('$response');</script>";
+    // Wrap response with extra info
+    return json_encode([
+        'status' => $http_code != 200 ? false : true,
+        'http_code' => $http_code != 200 ? $http_code : 200,
+        'message' => $message,
+        'response' => json_decode($response, true)
+    ]);
 
 }
 
 // Whatsapp
-function send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $bill_status) {
+function send_INDIV_BILL_SMS_Whatsapp($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $bill_status) {
     global $con;
     global $SMS_GATEWAY_URL, $SMS_API_KEY, $SMS_INDIV_BILLING_SENDER_ID, $SMS_INDIV_BILLING_TEMP_ID, $SMS_INDIV_BILLING_TEMP;
 
@@ -1113,7 +1146,6 @@ function send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbn
 
     // Debug log (optional)
     if ($curl_error) {
-        error_log("cURL Error: $curl_error");
         return json_encode([
             'status' => false,
             'message' => 'Curl failed',
@@ -1437,7 +1469,111 @@ function getUserPOSBillPayModeData($currentDate, $username, $pMode) {
     }
 }
 
+function getAvblSMSbalanceAmt() {
+    global $SMS_GATEWAY_URL, $SMS_API_ID, $SMS_API_KEY;
 
+    $params = http_build_query([
+        'api_id' => $SMS_API_ID,
+        'api_password' => $SMS_API_KEY
+    ]);
+
+    // Build URL (no spaces!)
+    $url = $SMS_GATEWAY_URL . '/check_balance' . '?' . $params;
+
+    // Initialize cURL
+    $ch = curl_init();
+
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,  // return response instead of output
+        CURLOPT_SSL_VERIFYPEER => false, // skip SSL verification (optional)
+        CURLOPT_TIMEOUT => 10,           // timeout in seconds
+        CURLOPT_CUSTOMREQUEST => "GET"   // force GET method
+    ]);
+
+    // Execute request
+    $response = curl_exec($ch);
+
+    // Check for cURL errors
+    if (curl_errno($ch)) {
+        $error_msg = curl_error($ch);
+        curl_close($ch);
+        return [
+            "status" => "false",
+            "message" => "cURL Error: " . $error_msg,
+            "data" => []
+        ];
+    }
+
+    curl_close($ch);
+
+    // Decode JSON
+    $data_array = json_decode($response, true);
+
+    if ($data_array !== null) {
+        $data_array['status'] = "true";
+        return $data_array;
+    } else {
+        return [
+            "status" => "false",
+            "message" => "Error decoding JSON response",
+            "data" => [],
+        ];
+    }
+}
+
+/**
+ * Fetch attendance data from API for a given employee number
+ *
+ * @param string|int $eno Employee number
+ * @return array Decoded JSON response from API or error
+ */
+
+function fetchBiometricAttendance($eno = null) {
+    global $BIOMETRIC_API_URL, $BIOMETRIC_API_TOKEN;
+
+    if (empty($eno)) {
+        return ['status' => false, 'message' => 'Employee number missing'];
+    }
+
+    $apiUrl = $BIOMETRIC_API_URL . "?eno=" . urlencode($eno);
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+    // Add token header if required
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bearer $BIOMETRIC_API_TOKEN",
+        "Accept: application/json"
+    ]);
+
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        $error = curl_error($ch);
+        curl_close($ch);
+        return ['status' => false, 'message' => 'API request failed', 'error' => $error];
+    }
+
+    curl_close($ch);
+
+    // DEBUG: Show raw response
+    if (empty($response)) {
+        return ['status' => false, 'message' => 'Empty response from API'];
+    }
+
+    // echo "<pre>RAW RESPONSE:\n$response\n</pre>";
+
+    $decoded = json_decode($response, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        return ['status' => false, 'message' => 'Invalid JSON response', 'error' => json_last_error_msg()];
+    }
+
+    return $decoded;
+}
 
 ?>
 

@@ -67,6 +67,21 @@ mysqli_close($con);
   
 </head>
 <body>
+<?php
+
+    if (isset($_SESSION['username']) && $_SESSION['role'] === 'admin') {
+        // include 'admin-menu-bar.php';
+        echo '<br>';
+        include 'admin-menu-btn.php';
+        $session_username = $_SESSION['username'];
+    } else{
+        include 'menu-bar.php';
+        ?><br><?php
+        include 'sub-menu-btn.php';
+        $session_username = $_SESSION['username'];
+    }
+
+?>
 <br>
 <!------------------------------------------------------------------------->
 <div class="container">
@@ -117,11 +132,11 @@ mysqli_close($con);
                         <li class="nav-item" role="presentation">
                             <a class="nav-link active" id="home-tab" data-bs-toggle="pill" href="#home" role="tab" aria-controls="home" aria-selected="true">Info</a>
                         </li>
-                        <!--<li class="nav-item" role="presentation">-->
-                        <!--    <a class="nav-link" id="messages-tab" data-bs-toggle="pill" href="#messages" role="tab" aria-controls="messages" aria-selected="false">Messages</a>-->
-                        <!--</li>-->
                         <li class="nav-item" role="totp">
                            <a class="nav-link" id="totp-tab" data-bs-toggle="pill" href="#totp" role="tab" aria-controls="totp" aria-selected="false">Google TOTP</a>
+                        </li>
+                        <li class="nav-item" role="passcode">
+                           <a class="nav-link" id="passcode-tab" data-bs-toggle="pill" href="#passcode" role="tab" aria-controls="passcode" aria-selected="false">Passcode</a>
                         </li>
                         <li class="nav-item" role="presentation">
                             <a class="nav-link" id="forgotPassword-tab" data-bs-toggle="pill" href="#forgotPassword" role="tab" aria-controls="forgotPassword" aria-selected="false">Forgot Password</a>
@@ -164,11 +179,35 @@ mysqli_close($con);
                         <!--<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">-->
                         <!--    Profile-->
                         <!--</div>-->
-                        <!--<div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">-->
-                        <!--    Messages-->
-                        <!--</div>-->
+                        <div class="tab-pane fade" id="passcode" role="tabpanel" aria-labelledby="passcode-tab">                    
+                            <div class="container mt-2">
+                              <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <div class="card-body">
+                                      <form id="update_passcode" autocomplete="off">
+                                        <div class="mb-3">
+                                          <label for="update-passcode" class="form-label">Update Passcode</label>
+                                          <input type="text" 
+                                            class="form-control" 
+                                            id="update-passcode" 
+                                            name="update-passcode" 
+                                            pattern="^\d{6}$" 
+                                            title="Passcode must be exactly 6 digits" 
+                                            maxlength="6" 
+                                            required>
+                                        </div>
+                                          <input type="hidden" class="form-control" id="passcode_username" value="<?= $_SESSION['username'] ?>">
+                                        <div class="text-center">
+                                          <button type="submit" class="btn btn-primary">Update Passcode</button>
+                                        </div>
+                                      </form>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
                         <div class="tab-pane fade" id="forgotPassword" role="tabpanel" aria-labelledby="forgotPassword-tab">                    
-                            <div class="container mt-5">
+                            <div class="container mt-2">
                               <div class="row justify-content-center">
                                 <div class="col-md-6">
                                     <div class="card-body">
@@ -196,25 +235,8 @@ mysqli_close($con);
                               </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="totp" role="tabpanel" aria-labelledby="totp-tab"> 
-                            <!-- <h2>Scan the QR Code</h2>
-                            <img id="qrCodeImage" src="" alt="Google Authenticator QR Code" />
-                            <p><strong>Secret:</strong> <span id="secret"></span></p>
-
-                            <script>
-                                // Fetch JSON response from the PHP script
-                                fetch('components/init_google_totp_auth.php')
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        // Display the QR code image
-                                        document.getElementById('qrCodeImage').src = data.image;
-
-                                        // Display the secret
-                                        document.getElementById('secret').textContent = data.secret;
-                                    })
-                                    .catch(error => console.error('Error fetching data:', error));
-                            </script> -->
-                            <div class="container mt-5">
+                        <div class="tab-pane fade" id="totp" role="tabpanel" aria-labelledby="totp-tab">
+                            <div class="container mt-2">
                                 <h2>Scan the QR Code</h2>
 
                                 <div class="row">
@@ -360,13 +382,75 @@ $(document).ready(function(){
         event.preventDefault();
         forgot_password();
     });
+    $("#update_passcode").submit(function(event){
+        event.preventDefault();
+        update_passcode();
+    });
 });
 
 function openModal() {
         var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
         myModal.show();
 }
- 
+
+function update_passcode() {
+    var passcode = $("#update-passcode").val().trim();
+
+    // Validate passcode: must be exactly 6 digits
+    var passcodeRegex = /^[0-9]{6}$/;
+    if (!passcodeRegex.test(passcode)) {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Passcode must be exactly 6 digits',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+        });
+        return; // stop execution if invalid
+    }
+
+    var formData = {
+        username: "<?php echo $_SESSION['username']; ?>",
+        update_passcode: passcode
+    };
+
+    $.ajax({
+        type: "POST",
+        url: "api/v1/update-passcode.php",
+        data: JSON.stringify(formData),
+        contentType: "application/json",
+        success: function(response) {
+            // SweetAlert2 popup for success
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: response.message || 'Passcode updated successfully',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+
+            // Clear only the input field
+            $("#update-passcode").val("");
+        },
+        error: function(xhr, status, error) {
+            // SweetAlert2 popup for error
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'Error: ' + status,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+        }
+    });
+}
+
 function forgot_password() {
     var formData = {
         username: $("#f_username").val().trim(),
@@ -397,18 +481,18 @@ function forgot_password() {
 }
 
 function checkPasswordMatch() {
-        var new_password = document.getElementById("new_password").value;
-        var confirm_password = document.getElementById("confirm_password").value;
+    var new_password = document.getElementById("new_password").value;
+    var confirm_password = document.getElementById("confirm_password").value;
 
-        // Check if passwords match
-        if (new_password !== confirm_password) {
-            // Display error message
-            document.getElementById("error_message").textContent = "Passwords do not match";
-        } else {
-            // Clear error message if passwords match
-            document.getElementById("error_message").textContent = "";
-        }
+    // Check if passwords match
+    if (new_password !== confirm_password) {
+        // Display error message
+        document.getElementById("error_message").textContent = "Passwords do not match";
+    } else {
+        // Clear error message if passwords match
+        document.getElementById("error_message").textContent = "";
     }
+}
 
     // Add event listeners to password and confirm password fields
     document.getElementById("new_password").addEventListener("input", checkPasswordMatch);

@@ -132,6 +132,7 @@ $hidePromotion = ($footer1 == NULL);
             $billNo = $row["billNo"];
             // $due_month_timestamp = $row["due_month_timestamp"];
             // $time = $row["time"];
+            $status = $row["status"];
             $billTo = $row["name"];
             $cusphone = $row["phone"];
             $billAmount= $row["paid_amount"];
@@ -227,17 +228,23 @@ $hidePromotion = ($footer1 == NULL);
                 <td align="right" style="padding-right:20px;  border:1px; border-left-style:solid;border-right-style:solid; border-top-style:solid;"><b>₹ &nbsp;<?= $Rs ?></b></td>
             </tr>
             
-            <tr <?php if ($hideStatusRow) echo 'style="display: none;"'; ?>>
-                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><b> Credit Bill </b></td>
-            </tr>
+            <?php if($status == 'approve') { ?>
+                <tr <?php if ($hideStatusRow) echo 'style="display: none;"'; ?>>
+                    <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><b> Credit Bill </b></td>
+                </tr>
 
-            <tr <?php if (!$hideStatusRow) echo 'style="display: none;"'; ?>>
-                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><b>Paid</b> (<?= ucfirst(strtolower(trim($pMode))) ?>)</td>
-            </tr>
+                <tr <?php if (!$hideStatusRow) echo 'style="display: none;"'; ?>>
+                    <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><b>Paid</b> (<?= ucfirst(strtolower(trim($pMode))) ?>)</td>
+                </tr>
 
-            <tr <?php if ($hidePromotion) echo 'style="display: none;"'; ?>>
-                <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><?= $footer1 ?><br/><b><?= $footer2 ?></b></td>
-            </tr>
+                <tr <?php if ($hidePromotion) echo 'style="display: none;"'; ?>>
+                    <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><?= $footer1 ?><br/><b><?= $footer2 ?></b></td>
+                </tr>
+            <?php } else { ?>
+                <tr>
+                    <td colspan="3" align="center" style="border:1.5px; border-top-style:solid;"><b> Cancelled Bill </b></td>
+                </tr>
+            <?php } ?>
 
             <tr>
                 <td colspan="3" align="center" style="border:1px; border-top-style:solid; font-size: 14px;">Bill Printed on&nbsp;
@@ -273,5 +280,5 @@ $hidePromotion = ($footer1 == NULL);
 
 
 <?php }}else{
-	header("Location: index.php");
+	header("Location: logout.php");
 } ?>

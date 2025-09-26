@@ -56,7 +56,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-md-12">
-                    <div class="card mt-5">
+                    <div class="card mt-2">
                         <div class="card-header">
                             <h4>Indiv Bill Collection Report</h4>
                         </div>
@@ -313,15 +313,15 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                         <tr style="background-color: <?= $row['adv_status'] == 1 ? '#dfb9fa' : '' ?>">
                                             <td style="font-weight: bold;"><?= $serial_number++; ?></td>
                                             <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
-                                            <td style="width: 220px; font-weight: bold; color: #007DC3;"><?= formatDate($row['date']); ?></td>
+                                            <td style="width: 220px; font-weight: bold; color: #007DC3;"><?= formatDate($row['date']);  ?> <?= $row['time'] ?></td>
                                             <td style="width: 220px; font-weight: bold; color: #007DC3;">
-                                                        <?PHP 
+                                                        <?php 
                                                             $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 
                                                             formatDate($current_result['date']);
                                                             // echo '&nbsp';
                                                             // $t=convertTo12HourFormat($current_result['time']);
                                                             // echo $t;
-                                                        ?>
+                                                        ?> <?= $row['time'] ?>
                                             </td>
                                             <td style="font-weight: bold;"><?= $row['billNo']; ?></td>
                                             <td style="font-weight: bold;"><?= $row['mso']; ?></td>

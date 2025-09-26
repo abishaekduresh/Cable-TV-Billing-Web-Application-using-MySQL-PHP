@@ -85,7 +85,7 @@ body {
         <div class="card-body p-4 p-sm-5">
           <h4 class="text-center">CABLE TV Billing Software</h4><br />
           
-          <form action="verify-otp.php" method="post">
+          <form id="loginForm" action="verify-otp.php" method="post">
             <?php if (isset($_GET['error'])) { ?>
             <div class="alert alert-danger" role="alert">
               <?= $_GET['error'] ?>
@@ -112,10 +112,17 @@ body {
                   </label>
                 </div>
 
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="otpOption" id="passcode" value="passcode">
+                  <label class="form-check-label" for="Passcode">
+                    Passcode
+                  </label>
+                </div>
+
                 <div class="form-check me-4">
                   <input class="form-check-input" type="radio" name="otpOption" id="smsOTP" value="smsOTP">
                   <label class="form-check-label" for="smsOTP">
-                    SMS OTP
+                    SMS
                   </label>
                 </div>
 
@@ -129,7 +136,7 @@ body {
             </div>
 
             <div class="d-grid">
-              <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">
+              <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit" id="submitBtn">
                 Sign in
               </button>
             </div>
@@ -139,13 +146,20 @@ body {
           <center>
             <h6>Powered by <a href="https://www.dureshtech.com/" target="_blank" style="text-decoration: none;">Duresh Tech</a></h6>
           </center>
-          <p align="center">~th-Commit</p>
+          <p align="center">28th-Commit</p>
 
         </div>
       </div>
     </div>
   </div>
 </div>
-
+<script>		
+        const submitBtn = document.getElementById('submitBtn');
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            submitBtn.textContent = 'Processing...';
+            submitBtn.disabled = true;
+        });
+        
+</script>
 </body>
 </html>

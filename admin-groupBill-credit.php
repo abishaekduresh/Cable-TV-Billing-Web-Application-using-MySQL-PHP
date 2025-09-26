@@ -36,7 +36,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 
 ?>
 
-        <div class="container">
+        <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-md-12">
                     <div class="card mt-5">
@@ -85,7 +85,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                             <div class="table-responsive">
 
 
-                                <div class="container">
+                                <div class="container-fluid">
 
                                 <table class="table table-hover" border="5" style="white-space: nowrap;">
                                     <thead>
@@ -146,6 +146,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 <select style="font-weight: bold;" name="selectedValue" class="form-select bg-warning text-dark">
   <option style="font-weight: bold;" value="cash" <?php if ($row1['pMode'] === 'cash') { echo 'selected'; } ?>>Cash</option>
   <option style="font-weight: bold;" value="gpay" <?php if ($row1['pMode'] === 'gpay') { echo 'selected'; } ?>>G pay</option>
+  <option style="font-weight: bold;" value="paytm" <?php if ($row1['pMode'] === 'paytm') { echo 'selected'; } ?>>Paytm</option>
   <option style="font-weight: bold;" value="Credit" <?php if ($row1['pMode'] === 'credit') { echo 'selected'; } ?>>Credit</option>
 </select>
 
@@ -169,7 +170,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                         <?php
                                                 }
                                             } else {
-                                                echo "No Record Found";
+                                                echo "<tr><td colspan='12' style='text-align:center; font-weight:bold;'>No Record Found</td></tr>";
                                             }
                                         }
                                         ?>

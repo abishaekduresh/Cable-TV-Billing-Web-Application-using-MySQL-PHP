@@ -90,21 +90,19 @@ if ($result->num_rows > 0) {
                         Report
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="admin-bill-filter-by-all.php">Indiv Bill by All</a>
+                        <a class="dropdown-item" href="admin-bill-filter-by-all.php"><i class="bi bi-person-fill"></i> Indiv Bill by All</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="rptadvindivbill.php">Advance Indiv Bill</a>
+                        <a class="dropdown-item" href="rptadvindivbill.php"><i class="bi bi-cash-coin"></i> Advance Indiv Bill</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="admin-in-ex-report.php">Income Expense</a>
+                        <a class="dropdown-item" href="admin-in-ex-report.php"><i class="bi bi-graph-up"></i> Income Expense</a>
                         <div class="dropdown-divider"></div>
-                        <!--a class="dropdown-item" href="user-today-collection.php" target="blank">Today Collection</a>
-                        <div class="dropdown-divider"></div-->
                          <a class="dropdown-item" href="bill-filter-by-user.php">Bill by You</a>
                          <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="rptindivcancelledbill.php" target="blank">Cancelled Indiv Bill</a>
+                        <a class="dropdown-item" href="rptindivcancelledbill.php" target="blank"><i class="bi bi-person-x"></i> Cancelled Indiv Bill</a>
                          <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="rptposinvoice.php">POS Report</a>
                          <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="rpt-indiv-unpaid-list.php" target="blank">Indiv Unpaid List</a>
+                        <a class="dropdown-item" href="rpt-indiv-unpaid-list.php" target="blank"><i class="bi bi-person-fill"></i> Indiv Unpaid List</a>
                     </div>
                 </li>
 
@@ -112,19 +110,18 @@ if ($result->num_rows > 0) {
                 <!--    <li class="nav-item"><a class="nav-link" href="admin-bill-cancel.php">Cancel Bill</a>-->
                 <!--</li>-->
 
-                <!--li class="nav-item dropdown">
+                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Download
+                        Biometric
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="bill-export.php">Download Bill Report</a>
-                        <a class="dropdown-item" onclick="openBill_Export()">Download Indiv Bill</a>
+                        <a class="dropdown-item" href="rpt-biometric-tabular.php"><i class="bi bi-fingerprint"></i> Tabular</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="bill-group-export.php">Download Group Bill</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="export-stbno.php">Copy Bill STB No.</a>
+                        <a class="dropdown-item" href="rpt-biometric-calendar.php"><i class="bi bi-calendar-date-fill"></i> Calander</a>
+                        <!-- <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="rpt-biometric-attendance.php"><i class="bi bi-calendar-date-fill"></i> Attendance</a> -->
                     </div>
-                </li-->
+                </li>
                 <li class="nav-item">
                     <li class="nav-item"><a class="nav-link" href="export-stbno.php"><b>EC</b></a>
                 </li>
