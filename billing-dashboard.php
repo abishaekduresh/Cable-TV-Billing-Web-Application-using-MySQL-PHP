@@ -42,6 +42,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 $paid_amount = $_POST["paid_amount"][$customerId];
                 $discount = $_POST["discount"][$customerId];
                 $bill_status = 'approve';
+                $remark2 = $_POST["remark2"][$customerId];
                 
 
                 if ($discount > 0) {
@@ -177,8 +178,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 
                     
                 // Prepare the SQL statement
-            $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, pMode, oldMonthBal, paid_amount, discount, Rs, adv_status, due_month_timestamp, status, printStatus) 
-                VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', 0, '$currentDateTime', '$bill_status', '$printStatus')";
+            $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, remark2, pMode, oldMonthBal, paid_amount, discount, Rs, adv_status, due_month_timestamp, status, printStatus) 
+                VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$remark2', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', 0, '$currentDateTime', '$bill_status', '$printStatus')";
 
                     if (isset($_SESSION['id'])) {
                         // Get the user information before destroying the session
@@ -658,13 +659,13 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                     </tbody>
                                 </table>
                                 <div class="text-center">
-                                    <button type="button" class="btn btn-primary" id="confirmButton" data-toggle="modal" data-target="#exampleModal">
+                                    <button type="button" class="btn btn-primary" id="confirmButton" data-toggle="modal" >
                                         Confirm
                                     </button>
                                 </div>
     
                                 <!-- Modal -->
-                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -674,7 +675,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <!--<p>Customer Name: <?php echo $customer['name']; ?></p>-->
+                                                <p>Customer Name: <?php echo $customer['name']; ?>data-target="#exampleModal"</p>
                                                 <p>Are you sure to make Bill ?</p>
                                             </div>
                                             <div class="modal-footer">
@@ -683,7 +684,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </form>
                         </div>
                     </div>
@@ -696,6 +697,83 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 <br/>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    $('#confirmButton').on('click', function (e) {
+        e.preventDefault();
+
+        // Step 1: Ask for confirmation
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to make Bill?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Continue',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Step 2: Check for credit payment modes
+                let creditRows = [];
+                $("select[name^='pMode']").each(function () {
+                    if ($(this).val() === 'credit') {
+                        let customerId = $(this).attr('name').match(/\d+/)[0];
+                        creditRows.push(customerId);
+                    }
+                });
+
+                // Recursive function to collect credit reasons
+                let index = 0;
+                function askReason() {
+                    if (index >= creditRows.length) {
+                        // Done collecting → submit form
+                        $('form').submit();
+                        return;
+                    }
+
+                    let cid = creditRows[index];
+                    Swal.fire({
+                        title: 'Reason for Credit (' + cid + ')',
+                        input: 'text',
+                        inputPlaceholder: 'Enter reason',
+                        showCancelButton: true,
+                        confirmButtonText: 'Save',
+                        preConfirm: (reason) => {
+                            if (!reason) {
+                                Swal.showValidationMessage('Reason is required!');
+                            }
+                            return reason;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // add hidden input remark2[cid]
+                            $('<input>').attr({
+                                type: 'hidden',
+                                name: 'remark2[' + cid + ']',
+                                value: result.value
+                            }).appendTo('form');
+
+                            index++;
+                            askReason(); // Next credit row
+                        }
+                    });
+                }
+
+                if (creditRows.length > 0) {
+                    askReason();
+                } else {
+                    // No credit rows → submit immediately
+                    $('form').submit();
+                }
+            }
+        });
+    });
+});
+</script>
+
+
 <!-- Autosearch List -->
 <script>  
 
@@ -820,6 +898,6 @@ $(document).on('click', '.editStudentBtn', function () {
 
 
 <?php } else{
-	header("Location: index.php");
+	header("Location: logout.php");
 } ?>
 

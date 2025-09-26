@@ -73,12 +73,12 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                 <th>STB No</th>
                                 <th>Name</th>
                                 <th>Phone</th>
+                                <th>Status</th>
                                 <th>Remark</th>
                                 <th>pMode</th>
                                 <th>BillAmt</th>
                                 <th>Disct</th>
                                 <th>Rs</th>
-                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
