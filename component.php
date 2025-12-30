@@ -1217,27 +1217,33 @@ function getUserIncomeExpenseSum($currentDate, $username) {
     // Initialize variables with default values
     $sumIncome = 0;
     $sumExpense = 0;
+    $countIncome = 0; // Initialize count variables
+    $countExpense = 0;
     
-    // Prepare SQL query to get sum of income and expense
+    // Prepare SQL query to get sum and count of income and expense
     $sql = "SELECT
                 (SELECT SUM(amount) FROM in_ex WHERE date = ? AND type = 'Income' AND username = ?) AS sumIncome,
-                (SELECT SUM(amount) FROM in_ex WHERE date = ? AND type = 'Expense' AND username = ?) AS sumExpense";
+                (SELECT COUNT(amount) FROM in_ex WHERE date = ? AND type = 'Income' AND username = ?) AS countIncome,
+                (SELECT SUM(amount) FROM in_ex WHERE date = ? AND type = 'Expense' AND username = ?) AS sumExpense,
+                (SELECT COUNT(amount) FROM in_ex WHERE date = ? AND type = 'Expense' AND username = ?) AS countExpense";
     
     // Prepare the statement
     if ($stmt = mysqli_prepare($con, $sql)) {
         // Bind parameters to the SQL query
-        mysqli_stmt_bind_param($stmt, "ssss", $currentDate, $username, $currentDate, $username);
+        mysqli_stmt_bind_param($stmt, "ssssssss", $currentDate, $username, $currentDate, $username, $currentDate, $username, $currentDate, $username);
         
         // Execute the query
         if (mysqli_stmt_execute($stmt)) {
             // Bind the result to variables
-            mysqli_stmt_bind_result($stmt, $sumIncome, $sumExpense);
+            mysqli_stmt_bind_result($stmt, $sumIncome, $countIncome, $sumExpense, $countExpense);
             
             // Fetch the result
             if (mysqli_stmt_fetch($stmt)) {
                 // If sumIncome or sumExpense is null, set them to 0
                 $sumIncome = !empty($sumIncome) ? $sumIncome : 0;
                 $sumExpense = !empty($sumExpense) ? $sumExpense : 0;
+                $countIncome = !empty($countIncome) ? $countIncome : 0;
+                $countExpense = !empty($countExpense) ? $countExpense : 0;
             }
         } else {
             // Query execution failed, return an error
@@ -1261,7 +1267,9 @@ function getUserIncomeExpenseSum($currentDate, $username) {
     return [
         "status" => true,        
         "sumIncome" => $sumIncome,
-        "sumExpense" => $sumExpense
+        "countIncome" => $countIncome,
+        "sumExpense" => $sumExpense,
+        "countExpense" => $countExpense
     ];
 }
 

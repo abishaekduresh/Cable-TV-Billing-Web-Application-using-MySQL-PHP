@@ -72,6 +72,12 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
             ///////        Insert Data into billGroupDetails    ////////////
 
+            // Generating Unique Transaction ID
+            // Format: TXN_YYYYMMDD_RandomHex
+            $txnDateStr = date('Ymd');
+            $uniqueHex = strtoupper(bin2hex(random_bytes(3))); // 6 Chars
+            $transaction_id = "TXN_" . $txnDateStr . "_" . $uniqueHex;
+
             $Rs =0;
                         
             $pMode = mysqli_real_escape_string($con, $_POST["pMode"]);
@@ -95,8 +101,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             $advance_bill = isset($_POST['advance_bill']) ? 1 : 0;
             
             // Prepare the INSERT query
-            $sql = "INSERT INTO `billgroupdetails` (`billNo`, `date`, `time`, `billBy`, `group_id`, `groupName`, `phone`, `pMode`, `oldMonthBal`, `billAmount`, `discount`, `Rs`, `status`, `created_at`, `ad`) 
-            VALUES ('$billNo', '$billDateInput', '$currentTime', '$session_username', '$groupID', '$groupName', '$phone', '$pMode', '$oldMonthBal', '$billAmount', '$discount', '$Rs', '$status', '$currentDateTime', '$advance_bill')";
+            $sql = "INSERT INTO `billgroupdetails` (`billNo`, `transaction_id`, `date`, `time`, `billBy`, `group_id`, `groupName`, `phone`, `pMode`, `oldMonthBal`, `billAmount`, `discount`, `Rs`, `status`, `created_at`, `ad`) 
+            VALUES ('$billNo', '$transaction_id', '$billDateInput', '$currentTime', '$session_username', '$groupID', '$groupName', '$phone', '$pMode', '$oldMonthBal', '$billAmount', '$discount', '$Rs', '$status', '$currentDateTime', '$advance_bill')";
 
             if ($con->query($sql) === true) {
                 // Success
@@ -116,8 +122,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 $remark = mysqli_real_escape_string($con, $_POST["description"][$customerId]);
                 $status = 'approve';
                 
-                $sql = "INSERT INTO billgroup (billNo, date, time, group_id, mso, stbNo, name, remark, status, created_at)
-                    VALUES ('$billNo', '$billDateInput', '$currentTime', '$groupID1', '$mso', '$stbNo', '$cusName', '$remark','$status', '$currentDateTime')";
+                $sql = "INSERT INTO billgroup (billNo, transaction_id, date, time, group_id, mso, stbNo, name, remark, status, created_at)
+                    VALUES ('$billNo', '$transaction_id', '$billDateInput', '$currentTime', '$groupID1', '$mso', '$stbNo', '$cusName', '$remark','$status', '$currentDateTime')";
 
                 if ($con->query($sql) === TRUE) {
                     // Logic for sum calculation
@@ -465,7 +471,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                             <option value="cash" selected>Cash</option>
                                             <option value="paytm">Paytm</option>
                                             <option value="gpay">G Pay</option>
-                                            <option value="credit">Credit</option>
+                                            <!-- <option value="credit">Credit</option> -->
                                         </select>
                                     </div>
                                 </div>

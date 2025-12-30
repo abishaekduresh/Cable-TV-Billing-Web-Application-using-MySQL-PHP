@@ -195,11 +195,11 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
         <div class="col-lg-8">
             <div class="custom-card mb-0">
                 <div class="card-body p-4">
-                    <form action="" method="GET">
+                    <form autocomplete="off" action="" method="GET">
                         <label class="form-label fw-bold text-muted text-uppercase small mb-2">Search Customer</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                            <input type="text" name="search" pattern="[A-Za-z0-9\s]{3,}" required 
+                            <input type="text" name="search" pattern="[A-Za-z0-9\s]{3,}" autofocus required 
                                 value="<?= htmlspecialchars($filtervalues) ?>" 
                                 class="form-control form-control-custom border-start-0 ps-0" 
                                 placeholder="Enter STB No, Phone (Min 3 chars)...">

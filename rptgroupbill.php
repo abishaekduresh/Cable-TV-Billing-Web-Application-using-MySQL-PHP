@@ -8,6 +8,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
     // Menu includes moved to body
     $session_username = $_SESSION['username']; // Ensure variable is set if needed globally, though it was set in if blocks.
+    $sumOldBal = $sumAmt = $sumDisc = $sumNet = $sumPaid = $sumDue = $sumTotal = 0;
     ?>
 
     <!DOCTYPE html>
@@ -18,7 +19,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dynamic Group & Advanced Bill Report</title>
+        <title>Group Bill Report</title>
         
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -244,7 +245,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                             <span class="input-group-text bg-light border-end-0"><i class="bi bi-calendar"></i></span>
                                             <input type="date" name="from_date" 
                                                 value="<?php echo isset($_GET['from_date']) ? $_GET['from_date'] : $currentDate; ?>" 
-                                                class="form-control border-start-0 ps-0">
+                                                class="form-control border-start-0 ps-0" required>
                                         </div>
                                     </div>
                                     
@@ -261,8 +262,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                     <div class="col-md-3">
                                         <label class="form-label">Filter Criteria</label>
                                         <select name="date_type" class="form-select">
-                                            <option value="billing_date" <?php echo (isset($_GET['date_type']) && $_GET['date_type'] == 'billing_date') ? 'selected' : ''; ?>>Billing Date</option>
                                             <option value="created_date" <?php echo (isset($_GET['date_type']) && $_GET['date_type'] == 'created_date') ? 'selected' : ''; ?>>Created Date (Entry Date)</option>
+                                            <option value="billing_date" <?php echo (isset($_GET['date_type']) && $_GET['date_type'] == 'billing_date') ? 'selected' : ''; ?>>Billing Date</option>
                                         </select>
                                     </div>
                                     
@@ -284,7 +285,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Date</th>
+                                            <th>Billing Date</th>
+                                            <th>Entry Date</th>
                                             <th>Type</th>
                                             <!-- <th>ID</th> -->
                                             <th>Bill No</th>
@@ -300,10 +302,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                     </thead>
                                     <tbody>
                                         <?php
-                                        if (isset($_GET['from_date']) && isset($_GET['to_date'])) {
+                                        if (isset($_GET['from_date']) && isset($_GET['to_date']) && !empty($_GET['from_date']) && !empty($_GET['to_date'])) {
                                             $from_date = $_GET['from_date'];
                                             $to_date = $_GET['to_date'];
-                                            $date_type = isset($_GET['date_type']) ? $_GET['date_type'] : 'billing_date';
+                                            $date_type = isset($_GET['date_type']) ? $_GET['date_type'] : 'created_date';
 
                                             $filterColumn = "date"; // Default to billing date
                                             if ($date_type == 'created_date') {
@@ -335,13 +337,16 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                     $badgeText = $isAdvanced ? 'ADVANCE' : 'REGULAR';
                                                     
                                                     // Formatting
-                                                    $displayDate = ($date_type == 'created_date' && isset($row['created_at'])) ? 
-                                                                   date('d-M-Y', strtotime($row['created_at'])) : 
-                                                                   date('d-M-Y', strtotime($row['date']));
+                                                    $sumOldBal += $row['oldMonthBal'];
+                                                    $sumAmt += $row['mainAmount'];
+                                                    $sumDisc += $row['discount'];
+                                                    $sumTotal += $row['Rs'];
+
                                                     ?>
                                                     <tr>
                                                         <td><?= $serial_number++; ?></td>
-                                                        <td class="fw-bold text-primary"><?= $displayDate; ?></td>
+                                                        <td class="fw-bold text-primary"><?= date('d-M-Y', strtotime($row['date'])); ?></td>
+                                                        <td class="fw-bold text-secondary"><?= isset($row['created_at']) ? date('d-M-Y h:i A', strtotime($row['created_at'])) : '-'; ?></td>
                                                         <td><span class="status-badge <?= $badgeClass; ?>"><?= $badgeText; ?></span></td>
                                                         <!-- <td class="fw-bold"><?= $row['idVal']; ?></td> -->
                                                         <td><?= $row['billNo']; ?></td>
@@ -363,7 +368,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                                         title="View Item List"
                                                                         data-billno="<?= $row['billNo']; ?>" 
                                                                         data-groupid="<?= $row['idVal']; ?>"
-                                                                        data-date="<?= $row['date']; ?>">
+                                                                        data-date="<?= $row['date']; ?>"
+                                                                        data-transid="<?= $row['transaction_id']; ?>">
                                                                     <i class="bi bi-list-ul"></i>
                                                                 </button>
                                                             </div>
@@ -377,11 +383,11 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                     </tbody>
                                     <tfoot>
                                         <tr class="bg-light">
-                                            <th colspan="7" class="text-end fw-bold text-dark">Grand Total:</th>
-                                            <th class="text-end fw-bold text-secondary" id="sumOldBal"></th>
-                                            <th class="text-end fw-bold text-success" id="sumAmt"></th>
-                                            <th class="text-end fw-bold text-warning" id="sumDisc"></th>
-                                            <th class="text-end fw-bold text-danger fs-6" id="sumTotal"></th>
+                                            <th colspan="8" class="text-end fw-bold text-dark">Grand Total:</th>
+                                            <th class="text-end fw-bold text-secondary" id="sumOldBal"><?php echo $sumOldBal; ?></th>
+                                            <th class="text-end fw-bold text-success" id="sumAmt"><?php echo $sumAmt; ?></th>
+                                            <th class="text-end fw-bold text-warning" id="sumDisc"><?php echo $sumDisc; ?></th>
+                                            <th class="text-end fw-bold text-danger fs-6" id="sumTotal"><?php echo $sumTotal; ?></th>
                                             <th></th>
                                         </tr>
                                     </tfoot>
@@ -439,32 +445,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                         search: "_INPUT_",
                         searchPlaceholder: "Search records..."
                     },
-                    footerCallback: function ( row, data, start, end, display ) {
-                        var api = this.api();
-             
-                        // Helper to remove formatting (comma) for integer calculation
-                        var intVal = function ( i ) {
-                            return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
-                        };
-             
-                        // Columns to calculate: 7(OldBal), 8(Amt), 9(Disc), 10(Total)
-                        var columns = [
-                            { index: 7, id: '#sumOldBal' },
-                            { index: 8, id: '#sumAmt' },
-                            { index: 9, id: '#sumDisc' },
-                            { index: 10, id: '#sumTotal' }
-                        ];
 
-                        columns.forEach(function(col) {
-                            // Grand Total over all pages
-                            var total = api.column(col.index).data().reduce( function (a, b) {
-                                return intVal(a) + intVal(b);
-                            }, 0 );
-                            
-                            // Update Footer Cell by ID
-                            $(col.id).html(total.toLocaleString('en-IN'));
-                        });
-                    }
                 });
 
                 // Handle View List Click
@@ -485,7 +466,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                         data: {
                             billNo: billNo,
                             group_id: groupId,
-                            date: date
+                            date: date,
+                            transaction_id: $(this).data('transid')
                         },
                         success: function(response) {
                             $('#groupListModalBody').html(response);
@@ -501,5 +483,5 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     </html>
 
 <?php } else {
-    header("Location: index.php");
+    header("Location: logout.php");
 } ?>

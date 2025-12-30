@@ -330,6 +330,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                 value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" 
                                 class="form-control border-start-0 ps-0 form-control-lg fs-6" 
                                 placeholder="Start typing Name, STB No, or Phone..." 
+                                autofocus
                                 required>
                             <button type="submit" class="btn btn-primary-custom px-4 fw-bold">Search</button>
                         </div>
@@ -547,7 +548,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     // Search Autocomplete

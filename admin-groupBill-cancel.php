@@ -139,7 +139,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                     <form action="" method="GET">
                         <div class="row g-3 align-items-end">
                             <div class="col-md-5">
-                                <label class="form-label fw-bold small text-muted text-uppercase">From Date</label>
+                                <label class="form-label fw-bold small text-muted text-uppercase">From Billing Date</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-calendar3"></i></span>
                                     <input type="date" name="from_date" class="form-control border-start-0 ps-0"
@@ -147,7 +147,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                 </div>
                             </div>
                             <div class="col-md-5">
-                                <label class="form-label fw-bold small text-muted text-uppercase">To Date</label>
+                                <label class="form-label fw-bold small text-muted text-uppercase">To Billing Date</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-calendar3"></i></span>
                                     <input type="date" name="to_date" class="form-control border-start-0 ps-0" required

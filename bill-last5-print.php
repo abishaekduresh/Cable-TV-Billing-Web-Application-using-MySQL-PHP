@@ -253,7 +253,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                             <tbody>
                                 <?php 
                                     // $query = "SELECT * FROM pos_bill WHERE username = '$session_username' AND DATE(entry_timestamp) = '$currentDate' AND status = '1' ORDER BY pos_bill_id DESC LIMIT 10";
-                                    $query = "SELECT * FROM pos_bill WHERE username = '$session_username' AND DATE(entry_timestamp) = '$currentDate' AND status = '1'";
+                                    $query = "SELECT * FROM pos_bill WHERE username = '$session_username' AND DATE(entry_timestamp) = '$currentDate' AND status = '1' ORDER BY pos_bill_id DESC LIMIT 10";
                                     $query_run = mysqli_query($con, $query);
 
                                     if(mysqli_num_rows($query_run) > 0)
@@ -271,7 +271,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                                 <td><?= $bill['cus_phone']; ?></td>
                                                 <td><span class="badge bg-light text-dark border"><?= $bill['pay_mode']; ?></span></td>
                                                 <td class="text-center">
-                                                    <a href="prtindivbillrpt.php?billid=<?= $bill['bill_id']; ?>" target="blank" class="btn-action btn-print" title="Print Bill">
+                                                    <a href="prtposinvoice.php?id=<?= $bill['pos_bill_id']; ?>" target="blank" class="btn-action btn-print" title="Print Bill">
                                                         <i class="bi bi-printer-fill"></i>
                                                     </a>
                                                 </td>

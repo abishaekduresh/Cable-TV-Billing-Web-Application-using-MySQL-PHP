@@ -15,7 +15,10 @@ A comprehensive web-based billing and management solution for Cable TV operators
 
 ### Latest Changes
 ### Latest Changes
-- **UI Redesign**: Modernized `admin-bill-cancel.php`, `export-stbno.php`, and `profile.php` with Premium Theme (Bootstrap 5, Custom Cards).
+- **UI Consistency**: Unified Admin and Employee dashboards with Premium Gradient Blue theme (Bootstrap 5). Updated `menu-bar.php`, `sub-menu-btn.php`, and `employee-dashboard.php`.
+- **Group Billing**: Implemented `transaction_id` for robust data linking. Fixed `rptgroupbill.php` grand total calculations and added "Billing Date" vs "Entry Date" columns.
+- **Bug Fixes**: Fixed `bill-last5-print.php` undefined array key error and corrected POS print button linking.
+- **UI Redesign**: Modernized `admin-bill-cancel.php`, `export-stbno.php`, and `profile.php`.
 - **POS Reports**: Enhanced `rptposinvoice.php` with dynamic "Billed By" user filtering.
 - **Biometric**: Added Tabular and Calendar reports for biometric attendance.
 - **Security**: Added passcode in profile for hassle-free login without OTP.

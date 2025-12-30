@@ -1,5 +1,6 @@
 <?php
 $con = mysqli_connect("localhost", "root", "", "pdpctv_dt_com");
+// $con = mysqli_connect("localhost", "uhakbispzoysy", "cb*3j51Kq214", "db0zoe0ve7qq97");
 
 // Check if connection is null
 if (!$con) {

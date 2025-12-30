@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS `bill` (
 CREATE TABLE IF NOT EXISTS `billgroup` (
   `id` int NOT NULL AUTO_INCREMENT,
   `billNo` int NOT NULL,
+  `transaction_id` varchar(100) DEFAULT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
   `group_id` int NOT NULL,
@@ -67,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `billgroup` (
 CREATE TABLE IF NOT EXISTS `billgroupdetails` (
   `id` int NOT NULL AUTO_INCREMENT,
   `billNo` int NOT NULL,
+  `transaction_id` varchar(100) DEFAULT NULL,
   `ad` tinyint NOT NULL DEFAULT (0) COMMENT 'Is advanced bill',
   `date` date NOT NULL,
   `time` time NOT NULL,

@@ -10,8 +10,9 @@ This project is a comprehensive **Cable TV Billing & Management System** built w
 - **Customer Management**: Add, view, edit, and search customers (`customer-details.php`, `search-customer.php`, `customer-history.php`).
 - **Billing System**:
     - **Individual Billing**: `billing-dashboard.php`, `adv-indiv-billing-dashboard.php`
-    - **Group Billing**: `billing-group-dashboard.php`
+    - **Group Billing**: `billing-group-dashboard.php` (Uses `transaction_id` for linking bill groups)
     - **POS Billing**: Point of Sale interface (`pos-billing.php`, `pos-product.php`)
+- **Employee Dashboard**: Standardized premium UI for employees (`employee-dashboard.php`) with collection summaries.
 - **Admin Dashboard**: Central hub for administrative actions (`admin-dashboard.php`).
 - **Payment & Cancellation**: Cancel bills (`admin-bill-cancel.php`), credit bills (`admin-bill-credit.php`).
 

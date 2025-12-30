@@ -357,6 +357,19 @@ async function fetchUsersBillingData() {
                                         </td>
                                         <td>${formatVal(resData.posData.credit)}</td>
                                     </tr>
+
+                                    <tr>
+                                        <td class="fw-bold text-success">Income</td>
+                                        <td>${formatVal({amt: resData.incomeExpense.sumIncome, count: resData.incomeExpense.countIncome})}</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-danger">Expense</td>
+                                        <td>${formatVal({amt: resData.incomeExpense.sumExpense, count: resData.incomeExpense.countExpense})}</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

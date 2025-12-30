@@ -169,12 +169,12 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                 <form action="" method="GET">
                     <div class="row align-items-end g-3">
                         <div class="col-md-4">
-                            <label class="form-label">From Date</label>
+                            <label class="form-label">From Billing Date</label>
                             <input type="date" name="from_date" class="form-control"
                                 value="<?php echo isset($_GET['from_date']) ? $_GET['from_date'] : '2023-06-01'; ?>">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">To Date</label>
+                            <label class="form-label">To Billing Date</label>
                             <input type="date" name="to_date" class="form-control" required
                                 value="<?php echo isset($_GET['to_date']) ? $_GET['to_date'] : date('Y-m-d'); ?>">
                         </div>

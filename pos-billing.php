@@ -239,7 +239,7 @@ $result = $con->query($query);
                                     <option value="1">Cash</option>
                                     <option value="2">Gpay</option>
                                     <option value="3">Paytm</option>
-                                    <option value="4">Credit</option>
+                                    <!-- <option value="4">Credit</option> -->
                                 </select>
                             </div>
                         </div>

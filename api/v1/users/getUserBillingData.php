@@ -106,7 +106,9 @@ try {
                     $userPOSCreditData['count'] ?? 0;
 
     $userSumIncome = $userIncomeExpenseData['sumIncome'] ?? 0;
+    $userCountIncome = $userIncomeExpenseData['countIncome'] ?? 0;
     $userSumExpense = $userIncomeExpenseData['sumExpense'] ?? 0;
+    $userCountExpense = $userIncomeExpenseData['countExpense'] ?? 0;
                     
     $totalAmt = $indivTotalAmt + $groupTotalAmt + $posTotalAmt + $userSumIncome ?? 0;
     // $totalDis = $indivTotalDis + $groupTotalDis + $posTotalDis + $userSumExpense ?? 0;
@@ -166,7 +168,12 @@ try {
                 "totDis" => $posTotalDis,
                 "totCount" => $posTotalCount,
             ],
-            "incomeExpense" => $userIncomeExpenseData,
+            "incomeExpense" => [
+                "sumIncome" => $userSumIncome,
+                "countIncome" => $userCountIncome,
+                "sumExpense" => $userSumExpense,
+                "countExpense" => $userCountExpense
+            ],
             "totAmt" => $totalAmt,
             "totDis" => $totalDis,
             "totCount" => $totalCount,
