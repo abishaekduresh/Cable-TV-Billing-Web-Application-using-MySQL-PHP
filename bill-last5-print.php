@@ -24,52 +24,143 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <?php include 'favicon.php'; ?>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Latest 10 Bill</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="styles.css">
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --success-color: #06d6a0;
+            --danger-color: #ef476f;
+            --warning-color: #ffd166;
+            --text-dark: #2b2d42;
+            --bg-light: #f8f9fa;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: var(--text-dark);
+        }
+
+        .custom-card {
+            background: white;
+            border-radius: 16px;
+            border: none;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .card-header-gradient {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1rem 1.5rem;
+            color: white;
+        }
+        
+        .card-header-gradient.pos {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+        }
+
+        .card-title { margin: 0; font-weight: 700; font-size: 1.1rem; }
+
+        /* Table Styling */
+        .table thead th {
+            background-color: #f9fafb;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .table-hover tbody tr:hover { background-color: #f8faff; }
+
+        /* Badges & Buttons */
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-print { background-color: #fff3cd; color: #856404; }
+        .btn-print:hover { background-color: #ffeeba; transform: scale(1.05); }
+
+        .header-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 0.4rem 0.8rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .header-btn:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+    </style>
 </head>
 <body >
-
-    <br>
-
-<!---------    last 5 bill print   --------------->
 
 <div class="container-fluid mt-4">
 
         <?php include('message.php'); ?>
 
+        <!-- Last 10 Indiv Bills -->
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Latest 10 Bill by <b><?php echo $session_username?></b>
-                            <a href="billing-dashboard.php"><button class="btn btn-primary float-end" accesskey="n">Billing Dashboard</button></a>
-                            <br/>
-                            <a href="prtindivbulkbilldash.php"><button class="btn btn-primary float-end" accesskey="n">Bulk Print</button></a>
+                <div class="custom-card">
+                    <div class="card-header-gradient d-flex justify-content-between align-items-center">
+                        <h4 class="card-title">
+                            <i class="bi bi-receipt me-2"></i>Latest 10 Bill by <b><?php echo $session_username?></b>
                         </h4>
+                        <div>
+                            <a href="billing-dashboard.php" class="header-btn me-2" accesskey="n"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
+                            <a href="prtindivbulkbilldash.php" class="header-btn" accesskey="n"><i class="bi bi-printer me-1"></i> Bulk Print</a>
+                        </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-0">
                         <div class="table-responsive">
-                        <table class="table table-hover" border="5">
+                        <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>BillNo</th>
+                                    <th class="ps-4">#</th>
+                                    <th>Bill No</th>
                                     <th>Date</th>
                                     <th>MSO</th>
                                     <th>STB No</th>
                                     <th>Name</th>
                                     <th>Phone</th>
-                                    <th>Discription</th>
-                                    <th>P.Mode</th>
-                                    <th>OldBal</th>
-                                    <th>BillAmt</th>
-                                    <th>Disct</th>
-                                    <th>Rs.</th>
-                                    <th>Print</th>
+                                    <th>Description</th>
+                                    <th>Mode</th>
+                                    <th class="text-end">Old Bal</th>
+                                    <th class="text-end">Amount</th>
+                                    <th class="text-end">Disc</th>
+                                    <th class="text-end">Total</th>
+                                    <th class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,30 +177,31 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                         {
                                             ?>
                                             <tr>
-                                                <td style="font-weight: bold;"><?= $serial_number++; ?></td>
-                                                <td style="font-weight: bold;"><?= $bill['billNo']; ?></td>
-                                                <td style="font-weight: bold;"><?= formatDate($bill['date']); ?></td>
-                                                <td style="font-weight: bold;"><?= $bill['mso']; ?></td>
-                                                <td style="font-weight: bold;"><?= $bill['stbno']; ?></td>
-                                                <td style="font-weight: bold;"><?= $bill['name']; ?></td>
-                                                <td style="font-weight: bold;"><?= $bill['phone']; ?></td>
-                                                <td style="font-weight: bold;"><?= $bill['description']; ?></td>
-                                                <td style="font-weight: bold;"><?= $bill['pMode']; ?></td>
-                                                <td style="font-weight: bold; color: #0012C3;">
+                                                <td class="ps-4 fw-bold text-secondary"><?= $serial_number++; ?></td>
+                                                <td class="fw-bold"><?= $bill['billNo']; ?></td>
+                                                <td class="text-muted"><?= formatDate($bill['date']); ?></td>
+                                                <td><?= $bill['mso']; ?></td>
+                                                <td class="small text-muted"><?= $bill['stbno']; ?></td>
+                                                <td class="fw-bold text-dark"><?= $bill['name']; ?></td>
+                                                <td><?= $bill['phone']; ?></td>
+                                                <td class="small text-muted"><?= $bill['description']; ?></td>
+                                                <td><span class="badge bg-light text-dark border"><?= $bill['pMode']; ?></span></td>
+                                                <td class="text-end fw-bold text-primary">
                                                     <?= $bill['oldMonthBal']; ?>
                                                 </td>
-                                                <td style="width: 50px; font-weight: bold; color: #05A210;">
+                                                <td class="text-end fw-bold text-success">
                                                     <?= $bill['paid_amount']; ?>
                                                 </td>
-                                                <td style="width: 50px; font-weight: bold; color: #DD0581;">
+                                                <td class="text-end fw-bold text-danger">
                                                     <?= $bill['discount']; ?>
                                                 </td>
-                                                <td style="width: 70px; font-weight: bold; font-size: 18px; color: #F20000;">
+                                                <td class="text-end fw-bolder text-danger fs-6">
                                                     <?= $bill['Rs']; ?>
                                                 </td>
-                                                <td>
-                                                    <a href="prtindivbillrpt.php?billid=<?= $bill['bill_id']; ?>" target="blank">
-                                                    <button type="button" class="btn btn-warning btn-lg"><i class="bi bi-printer-fill"></i></button></a>
+                                                <td class="text-center">
+                                                    <a href="prtindivbillrpt.php?billid=<?= $bill['bill_id']; ?>" target="blank" class="btn-action btn-print" title="Print Bill">
+                                                        <i class="bi bi-printer-fill"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                             <?php
@@ -117,7 +209,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                     }
                                     else
                                     {
-                                        echo "<h5> No Record Found </h5>";
+                                        echo "<tr><td colspan='14' class='text-center py-4 text-muted'>No bills found for today.</td></tr>";
                                     }
                                 ?>
                                 
@@ -130,31 +222,32 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
         </div>
     </div>
 
-<br/>
 
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-2">
 
         <?php include('message.php'); ?>
 
+        <!-- POS Table -->
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>POS Latest 10 Bill by <b><?php echo $session_username?></b>
+                <div class="custom-card">
+                     <div class="card-header-gradient pos d-flex justify-content-between align-items-center">
+                        <h4 class="card-title">
+                             <i class="bi bi-cart-check me-2"></i>POS Latest 10 Bill by <b><?php echo $session_username?></b>
                         </h4>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-0">
                         <div class="table-responsive">
-                        <table class="table table-hover" border="5">
+                        <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>BillNo</th>
+                                    <th class="ps-4">#</th>
+                                    <th>Bill No</th>
                                     <th>Date</th>
                                     <th>Name</th>
                                     <th>Phone</th>
-                                    <th>P.Mode</th>
-                                    <th>Print</th>
+                                    <th>Mode</th>
+                                    <th class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -171,15 +264,16 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                         {
                                             ?>
                                             <tr>
-                                                <td style="width: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
-                                                <td style="width: 40px; font-weight: bold;"><?= $bill['bill_no']; ?></td>
-                                                <td style="width: 130px; font-weight: bold;"><?= formatDate($bill['entry_timestamp']); ?></td>
-                                                <td style="width: 350px; font-weight: bold;"><?= $bill['cus_name']; ?></td>
-                                                <td style="width: 110px; font-weight: bold;"><?= $bill['cus_phone']; ?></td>
-                                                <td style="width: 40px; font-weight: bold;"><?= $bill['pay_mode']; ?></td>
-                                                <td>
-                                                    <a href="prtindivbillrpt.php?billid=<?= $bill['bill_id']; ?>" target="blank">
-                                                    <button type="button" class="btn btn-warning btn-lg"><i class="bi bi-printer-fill"></i></button></a>
+                                                <td class="ps-4 fw-bold text-secondary"><?= $serial_number++; ?></td>
+                                                <td class="fw-bold"><?= $bill['bill_no']; ?></td>
+                                                <td class="text-muted"><?= formatDate($bill['entry_timestamp']); ?></td>
+                                                <td class="fw-bold text-dark"><?= $bill['cus_name']; ?></td>
+                                                <td><?= $bill['cus_phone']; ?></td>
+                                                <td><span class="badge bg-light text-dark border"><?= $bill['pay_mode']; ?></span></td>
+                                                <td class="text-center">
+                                                    <a href="prtindivbillrpt.php?billid=<?= $bill['bill_id']; ?>" target="blank" class="btn-action btn-print" title="Print Bill">
+                                                        <i class="bi bi-printer-fill"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                             <?php
@@ -187,7 +281,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
                                     }
                                     else
                                     {
-                                        echo "<h5> No Record Found </h5>";
+                                        echo "<tr><td colspan='7' class='text-center py-4 text-muted'>No POS bills found for today.</td></tr>";
                                     }
                                 ?>
                                 
@@ -200,10 +294,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
         </div>
     </div>
 
-
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 
@@ -211,5 +302,5 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
 
 
 <?php }else{
-	header("Location: index.php");
+	header("Location: logout.php");
 } ?>

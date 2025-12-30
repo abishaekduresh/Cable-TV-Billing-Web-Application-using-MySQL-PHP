@@ -26,6 +26,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <?php include 'favicon.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage POS Product</title>
@@ -33,7 +34,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
      <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">-->-->
     
 <style>
-    .dropdown-menu {
+    .custom-dropdown-menu {
     display: none;
     opacity: 0;
     transform: translateY(-10px);
@@ -45,7 +46,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     z-index: 1000; /* Ensures the dropdown is on top of other elements */
 }
 
-.dropdown-menu.show {
+.custom-dropdown-menu.show {
     display: block;
     opacity: 1;
     transform: translateY(0);
@@ -73,7 +74,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                     <!--    <button class="btn btn-primary" type="button" id="sesarch_product_btn">Search</button>-->
                                     <!--</div>-->
                                 </div>
-                                    <!--<ul class="dropdown-menu" id="dropdownMenu">-->
+                                    <!--<ul class="custom-dropdown-menu" id="dropdownMenu">-->
                             </div>
                         </div>
                     </div>

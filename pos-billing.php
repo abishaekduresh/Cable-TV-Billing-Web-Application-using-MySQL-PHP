@@ -29,11 +29,10 @@ $result = $con->query($query);
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <?php include 'favicon.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POS Billing System</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
       <style>
         /* Custom styles for the toggle slider */
         .toggle-slider {
@@ -99,7 +98,7 @@ $result = $con->query($query);
         align-items: center;
         justify-content: center;
     }
-.dropdown-menu {
+.custom-dropdown-menu {
     display: none;
     opacity: 0;
     transform: translateY(-10px);
@@ -111,7 +110,7 @@ $result = $con->query($query);
     z-index: 1000; /* Ensures the dropdown is on top of other elements */
 }
 
-.dropdown-menu.show {
+.custom-dropdown-menu.show {
     display: block;
     opacity: 1;
     transform: translateY(0);
@@ -138,7 +137,7 @@ $result = $con->query($query);
             <div class="col-md-5">
                 <label for="cus_phone" class="form-label">Customer Phone</label>
                 <input type="number" class="form-control cus_phone" id="cus_phone" placeholder="Enter phone number" >
-                <ul class="dropdown-menu" id="dropdownMenu">
+                <ul class="custom-dropdown-menu" id="dropdownMenu">
             </div>
             <div class="col-md-5">
                 <label for="cus_name" class="form-label">Customer Name</label>
@@ -769,7 +768,7 @@ $result = $con->query($query);
                             // Set the iframe src with the token
                             var iframe = document.getElementById("invoiceIframe");
                             if (iframe) {
-                                iframe.src = "prtposinvoice.php?token=" + encodeURIComponent(response.data.token);
+                                iframe.src = "prtposinvoice.php?id=" + encodeURIComponent(response.data.pos_bill_id);
                             } else {
                                 console.error("Iframe with ID 'invoiceIframe' not found.");
                             }

@@ -14,12 +14,13 @@ require_once 'component.php';
 // echo '</pre>';
 
 // send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $bill_status)
-// echo send_INDIV_BILL_SMS(null, '7708443543', null, '2025-05-02', '00008317000ABCD', 'gpay', null);
+// echo send_INDIV_BILL_SMS(null, '7708443543', null, '2025-05-02', '00008317000ABCD', 'gpay', 'approve');
 // echo print_r(getAvblSMSbalanceAmt(), true);
 // Example usage
 // $result = fetchBiometricAttendance('PEM001');
-// echo '<pre>';
-// print_r($result);
-// echo '</pre>';
+$result = getUserGroupBillPayModeData("23A002", "2025-12-29", 'cash');
+echo '<pre>';
+print_r($result);
+echo '</pre>';
 
 ?>

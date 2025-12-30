@@ -38,6 +38,7 @@ $hidePromotion = ($footer1 == NULL);
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <head>
+    <?php include 'favicon.php'; ?>
         <style>
             body {
             font-family: Arial, sans-serif; 

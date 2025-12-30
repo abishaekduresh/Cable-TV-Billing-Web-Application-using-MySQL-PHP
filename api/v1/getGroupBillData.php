@@ -43,7 +43,7 @@ if ($numFromDate['month'] == $currentMonth && $numFromDate['year'] == $currentYe
     // Process only if fromDate, toDate, and flag are valid
     if ($fromDate != null && $toDate != null && $flag == '1') {
         // Prepare query
-        $query = "SELECT billNo,date,group_id,mso,stbNo,name,status FROM billgroup WHERE date BETWEEN ? AND ? AND status = 'approve' $billNoFilterCondition";
+        $query = "SELECT * FROM billgroup WHERE date BETWEEN ? AND ? AND status = 'approve' $billNoFilterCondition";
 
         if ($stmt = $con->prepare($query)) {
             // Bind parameters and execute

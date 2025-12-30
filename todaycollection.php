@@ -12,399 +12,454 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
     <html lang="en">
 
     <head>
+    <?php include 'favicon.php'; ?>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Indiv Bill Collection Report</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- Premium UI Dependencies -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        
         <style>
-            /* CSS to remove underline and change color for <a> tags */
-            a.link {
-                text-decoration: none; /* Remove underline */
-                color: white; /* Change color to red */
+            :root {
+                --primary-color: #4361ee;
+                --secondary-color: #3f37c9;
+                --success-color: #06d6a0;
+                --danger-color: #ef476f;
+                --text-dark: #2b2d42;
+                --text-light: #8d99ae;
+                --bg-light: #f8f9fa;
+                --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             }
 
-/* Add this CSS to your styles.css or inside a <style> block in your HTML */
-.checkbox-container {
-    display: flex;
-    flex-wrap: wrap; /* Allow wrapping of elements */
-}
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #f3f4f6;
+                color: var(--text-dark);
+            }
 
-.checkbox-container label {
-    width: 33.33%; /* Each checkbox will take up 33.33% of the row, resulting in 3 columns */
-    box-sizing: border-box; /* Ensure padding and margins are included in the width */
-    margin-bottom: 10px; /* Space between rows */
-}
+            .main-container {
+                padding: 1rem;
+                max-width: 100%;
+                margin: 0 auto;
+            }
 
-.checkbox-container label:nth-child(3n) {
-    margin-right: 0; /* Remove the margin for every third checkbox (last in each row) */
-}
+            /* Card Styles */
+            .custom-card {
+                background: white;
+                border-radius: 16px;
+                border: none;
+                box-shadow: var(--card-shadow);
+                overflow: hidden;
+                border: 1px solid rgba(0,0,0,0.02);
+                margin-bottom: 1.5rem;
+            }
 
+            .card-header-gradient {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                padding: 1.25rem;
+                border-bottom: 1px solid #dee2e6;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            
+            .card-header-gradient h4 {
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin: 0;
+                color: var(--text-dark);
+            }
+
+            /* Filters */
+            .filter-section {
+                background-color: #f8fafc;
+                border-radius: 12px;
+                padding: 1.5rem;
+                border: 1px solid #e2e8f0;
+            }
+            
+            .filter-label {
+                font-weight: 600;
+                font-size: 0.85rem;
+                color: #475569;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-bottom: 0.75rem;
+                display: block;
+                border-bottom: 1px solid #e2e8f0;
+                padding-bottom: 0.35rem;
+            }
+
+            .form-label {
+                font-weight: 500;
+                font-size: 0.9rem;
+                color: #64748b;
+            }
+
+            .form-control, .form-select {
+                border-radius: 8px;
+                border: 1px solid #d1d5db;
+                padding: 0.6rem 1rem;
+                font-size: 0.95rem;
+            }
+            
+            .form-check-label {
+                font-size: 0.9rem;
+                color: #334155;
+            }
+
+            /* Table Styling */
+            .table-custom {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+            }
+            .table-custom th {
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.75rem;
+                letter-spacing: 0.05em;
+                color: #64748b;
+                padding: 1rem;
+                background: #f8fafc;
+                border-bottom: 1px solid #e2e8f0;
+                white-space: nowrap;
+            }
+            .table-custom td {
+                padding: 0.85rem 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f1f5f9;
+                font-size: 0.85rem;
+                color: #334155;
+            }
+            .table-custom tr:hover {
+                background: #f1f5f9;
+            }
+
+            .badge-soft-primary { background-color: rgba(67, 97, 238, 0.1); color: var(--primary-color); }
+            .badge-soft-success { background-color: rgba(6, 214, 160, 0.1); color: var(--success-color); }
+            .badge-soft-danger { background-color: rgba(239, 71, 111, 0.1); color: var(--danger-color); }
+            .badge-soft-secondary { background-color: rgba(141, 153, 174, 0.1); color: var(--text-light); }
+            
+            .checkbox-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 0.5rem;
+            }
         </style>
     </head>
 
     <body>
 
 <?php
-
     include 'admin-menu-bar.php';
-    ?><br><?php
+    echo '<br>';
     include 'admin-menu-btn.php';
-
 ?>
 
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-md-12">
-                    <div class="card mt-2">
-                        <div class="card-header">
-                            <h4>Indiv Bill Collection Report</h4>
-                        </div>
-                        <div class="card-body">
+        <div class="main-container">
+            <!-- FILTER SECTION -->
+            <div class="custom-card">
+                <div class="card-header-gradient">
+                    <h4><i class="bi bi-funnel-fill me-2"></i>Report Filters</h4>
+                    <button class="btn btn-primary btn-sm rounded-pill px-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterBody" aria-expanded="true">
+                        Toggle Filters
+                    </button>
+                </div>
+                <div class="collapse show" id="filterBody">
+                    <div class="card-body p-4">
+                        <form action="" method="GET">
+                            <!-- Top Row: Dates and Search -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-3">
+                                    <label class="form-label">From Date</label>
+                                    <input type="date" name="from_date" value="<?php echo isset($_GET['from_date']) ? $_GET['from_date'] : $currentDate; ?>" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">To Date</label>
+                                    <input type="date" name="to_date" value="<?php echo isset($_GET['to_date']) ? $_GET['to_date'] : $currentDate; ?>" class="form-control" required>
+                                </div>
+                                <div class="col-md-2">
+                                     <label class="form-label">From Bill No.</label>
+                                    <input type="number" name="from_billno" value="<?php echo isset($_GET['from_billno']) ? $_GET['from_billno'] : ''; ?>" class="form-control" placeholder="Start No." step="1">
+                                </div>
+                                <div class="col-md-2">
+                                     <label class="form-label">To Bill No.</label>
+                                    <input type="number" name="to_billno" value="<?php echo isset($_GET['to_billno']) ? $_GET['to_billno'] : ''; ?>" class="form-control" placeholder="End No." step="1">
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100 fw-bold"><i class="bi bi-search me-2"></i>Search</button>
+                                </div>
+                            </div>
+                            
+                            <hr class="text-muted opacity-25">
 
-                            <form action="" method="GET">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>From Col Date</label>
-                                            <input type="date" name="from_date"
-                                                value="<?php if (isset($_GET['from_date'])) {
-                                                echo $_GET['from_date'];
-                                            } else {
-                                                echo $currentDate;
-                                            } ?>" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>To Col Date</label>
-                                            <input type="date" name="to_date"
-                                                value="<?php if (isset($_GET['to_date'])) {
-                                                echo $_GET['to_date'];
-                                            } else {
-                                                echo $currentDate;
-                                            } ?>" class="form-control" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <!--<label>Click to Filter</label>--> <br>
-                                            <button type="submit" class="btn btn-primary">Search</button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>From Bill No.</label>
-                                            <input type="number" name="from_billno" value="<?php if (isset($_GET['from_billno'])) {
-                                                echo $_GET['from_billno'];
-                                            }?>" class="form-control" step="1">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>To Bill No.</label>
-                                            <input type="number" name="to_billno" value="<?php if (isset($_GET['to_billno'])) {
-                                                echo $_GET['to_billno'];
-                                            }?>" class="form-control" step="1">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-<b>
-    
-                                                <label><u>Bill By :</u></label><br>
-                                            <?php
-                                            // Your database connection code should be here
-                                            // Assuming $con is the established database connection
-
-                                            $sql = "SELECT * FROM user WHERE status = 1"; // Replace 'user' with your actual table name
+                            <!-- Bottom Row: Advanced Filters -->
+                            <div class="row g-4">
+                                <!-- BILL BY -->
+                                <div class="col-md-6">
+                                    <div class="filter-section h-100">
+                                        <span class="filter-label"><i class="bi bi-person-check me-2"></i>Bill To (User)</span>
+                                        <?php
+                                            $sql = "SELECT * FROM user WHERE status = 1";
                                             $result = $con->query($sql);
-
-                                            // Step 3: Check if any data was fetched and loop through the results
                                             if ($result->num_rows > 0) {
-                                                // Start the container for the checkbox layout
-                                                echo '<div class="checkbox-container">';
-                                                
-                                                // Step 4: Loop through each record and generate HTML with checkboxes
-                                                $counter = 0; // Counter to track columns
+                                                echo '<div class="checkbox-grid">';
                                                 while ($row = $result->fetch_assoc()) {
-                                                    // Assuming 'username' is the value and 'name' is the label text
-                                                    echo '<label><input type="checkbox" name="filter[]" value="' . htmlspecialchars($row['username']) . '">';
-                                                    echo htmlspecialchars($row['name']) . '</label>';
-
-                                                    // After every third checkbox, insert a line break (to create three columns per row)
-                                                    $counter++;
-                                                    if ($counter % 3 == 0) {
-                                                        echo '<br>';
-                                                    }
+                                                    $checked = (isset($_GET['filter']) && in_array($row['username'], $_GET['filter'])) ? 'checked' : '';
+                                                    echo '<div class="form-check">';
+                                                    echo '<input class="form-check-input" type="checkbox" name="filter[]" value="' . htmlspecialchars($row['username']) . '" id="user_'.$row['username'].'" '.$checked.'>';
+                                                    echo '<label class="form-check-label" for="user_'.$row['username'].'">' . htmlspecialchars($row['name']) . '</label>';
+                                                    echo '</div>';
                                                 }
-                                                
-                                                // End the container for the checkbox layout
                                                 echo '</div>';
                                             } else {
-                                                echo "No records found.";
+                                                echo '<span class="text-muted small">No active users found.</span>';
                                             }
-                                            ?>
+                                        ?>
+                                    </div>
+                                </div>
 
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <label><u>MSO :</u></label>
-                                                    <br>
-                                                    <div class="col-md">
-                                                        <label>
-                                                            <input type="radio" name="mso_filter" value="ALL" 
-                                                            <?php echo (isset($_GET['mso_filter']) && $_GET['mso_filter'] == 'ALL') ? 'checked' : 'checked'; ?>> 
-                                                            ALL
-                                                        </label>
+                                <!-- OTHER FILTERS -->
+                                <div class="col-md-6">
+                                    <div class="row g-3 h-100">
+                                        <!-- MSO -->
+                                        <div class="col-md-6">
+                                            <div class="filter-section h-100">
+                                                <span class="filter-label"><i class="bi bi-hdd-network me-2"></i>MSO</span>
+                                                <div class="d-flex flex-column gap-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="mso_filter" value="ALL" id="msoAll" <?php echo (!isset($_GET['mso_filter']) || $_GET['mso_filter'] == 'ALL') ? 'checked' : ''; ?>>
+                                                        <label class="form-check-label" for="msoAll">All MSOs</label>
                                                     </div>
-                                                    <div class="col-md">
-                                                        <label>
-                                                            <input type="radio" name="mso_filter" value="VK" 
-                                                            <?php echo (isset($_GET['mso_filter']) && $_GET['mso_filter'] == 'VK') ? 'checked' : ''; ?>> 
-                                                            VK DIGITAL
-                                                        </label>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="mso_filter" value="VK" id="msoVk" <?php echo (isset($_GET['mso_filter']) && $_GET['mso_filter'] == 'VK') ? 'checked' : ''; ?>>
+                                                        <label class="form-check-label" for="msoVk">VK Digital</label>
                                                     </div>
-                                                    <div class="col-md">
-                                                        <label>
-                                                            <input type="radio" name="mso_filter" value="GTPL" 
-                                                            <?php echo (isset($_GET['mso_filter']) && $_GET['mso_filter'] == 'GTPL') ? 'checked' : ''; ?>> 
-                                                            GTPL
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label><u>Bill Status :</u></label>
-                                                    <br>
-                                                    <div class="col-md">
-                                                        <label>
-                                                            <input type="radio" name="status_filter" value="approve" 
-                                                            <?php echo (isset($_GET['status_filter']) && $_GET['status_filter'] == 'approve') ? 'checked' : 'checked'; ?>> 
-                                                            Approve
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-md">
-                                                        <label>
-                                                            <input type="radio" name="status_filter" value="cancel" 
-                                                            <?php echo (isset($_GET['status_filter']) && $_GET['status_filter'] == 'cancel') ? 'checked' : ''; ?>> 
-                                                            Cancel
-                                                        </label>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="mso_filter" value="GTPL" id="msoGtpl" <?php echo (isset($_GET['mso_filter']) && $_GET['mso_filter'] == 'GTPL') ? 'checked' : ''; ?>>
+                                                        <label class="form-check-label" for="msoGtpl">GTPL</label>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <label><u>Bill Payment Mode :</u></label>
-                                            <br>
-                                            <label><input type="checkbox" name="pMode_filter[]" value="cash">
-                                                Cash</label>
-                                            <label><input type="checkbox" name="pMode_filter[]" value="Gpay">
-                                                GPay</label>
-                                            <label><input type="checkbox" name="pMode_filter[]" value="paytm">
-                                                Paytm</label>
-                                            <label><input type="checkbox" name="pMode_filter[]" value="credit">
-                                                Credit</label>
-</b>
-                                            <!-- Add more checkboxes for other filter options -->
+                                        <!-- STATUS & MODE -->
+                                        <div class="col-md-6">
+                                            <div class="filter-section h-100">
+                                                <span class="filter-label"><i class="bi bi-sliders me-2"></i>Status & Mode</span>
+                                                
+                                                <div class="mb-3">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="status_filter" value="approve" id="statApprove" <?php echo (!isset($_GET['status_filter']) || $_GET['status_filter'] == 'approve') ? 'checked' : ''; ?>>
+                                                        <label class="form-check-label text-success fw-bold" for="statApprove">Approved</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="status_filter" value="cancel" id="statCancel" <?php echo (isset($_GET['status_filter']) && $_GET['status_filter'] == 'cancel') ? 'checked' : ''; ?>>
+                                                        <label class="form-check-label text-danger fw-bold" for="statCancel">Cancelled</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex flex-wrap gap-3">
+                                                    <?php 
+                                                        $modes = ['cash'=>'Cash', 'Gpay'=>'GPay', 'paytm'=>'Paytm', 'credit'=>'Credit'];
+                                                        foreach($modes as $val => $label) {
+                                                            $pChecked = (isset($_GET['pMode_filter']) && in_array($val, $_GET['pMode_filter'])) ? 'checked' : '';
+                                                            echo '<div class="form-check">';
+                                                            echo '<input class="form-check-input" type="checkbox" name="pMode_filter[]" value="'.$val.'" id="pm_'.$val.'" '.$pChecked.'>';
+                                                            echo '<label class="form-check-label" for="pm_'.$val.'">'.$label.'</label>';
+                                                            echo '</div>';
+                                                        }
+                                                    ?>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
+                </div>
+            </div>
 
-                    <div class="card mt-4">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover" border="5" style="white-space: nowrap;">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Bill by</th>
-                                            <th>Col Date</th>
-                                            <th>Bill Date</th>
-                                            <th>Bill No</th>
-                                            <th>MSO</th>
-                                            <th>STB No</th>
-                                            <th>Name</th>
-                                            <th>Phone</th>
-                                            <th>Remarks</th>
-                                            <th>P.Mode</th>
-                                            <th>OldBal</th>
-                                            <th>BillAmt</th>
-                                            <th>Disct</th>
-                                            <th>Rs</th>
-                                            <th>Print</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+            <!-- RESULTS TABLE -->
+            <div class="custom-card">
+                 <div class="card-header-gradient">
+                    <h4><i class="bi bi-table me-2"></i>Collection Report</h4>
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                       <?php echo isset($_GET['from_date']) ? date('d M', strtotime($_GET['from_date'])) . ' - ' . date('d M', strtotime($_GET['to_date'])) : 'Today'; ?>
+                    </span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Bill By</th>
+                                    <th>Col Date</th>
+                                    <th>Due Month</th>
+                                    <th>Bill No</th>
+                                    <th>MSO</th>
+                                    <th>STB No</th>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Remarks</th>
+                                    <th>Mode</th>
+                                    <th class="text-end">Old Bal</th>
+                                    <th class="text-end">Paid</th>
+                                    <th class="text-end">Disc</th>
+                                    <th class="text-end">Total</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                        <?php
-                                        require 'dbconfig.php';
-                                        $discount_sum = '';
-                                        $paid_amount_sum = '';
-                                        $Rs_sum = '';
-                                        $oldMonthBal_sum = '';
+                                <?php
+                                $discount_sum = 0;
+                                $paid_amount_sum = 0;
+                                $Rs_sum = 0;
+                                $oldMonthBal_sum = 0;
 
-                                        if (isset($_GET['from_date']) && isset($_GET['to_date'])) {
-                                            $from_date = $_GET['from_date'];
-                                            $to_date = $_GET['to_date'];
-
-
-                                            $from_billno = isset($_GET['from_billno']) ? $_GET['from_billno'] : '';
-                                            $to_billno = isset($_GET['to_billno']) ? $_GET['to_billno'] : '';
-                                            $billnoFilterCondition = '';
-
-                                            if (!empty($from_billno) && !empty($to_billno)) {
-                                                $billnoFilterCondition = "AND billNo BETWEEN '$from_billno' AND '$to_billno'";
-                                            }
-
-
-                                            // Retrieve selected filter options
-                                            $filters = isset($_GET['filter']) ? $_GET['filter'] : array();
-                                            $status_filter = isset($_GET['status_filter']) ? $_GET['status_filter'] : '';
-                                            $mso_filter = isset($_GET['mso_filter']) ? $_GET['mso_filter'] : '';
-                                            $pMode_filter = isset($_GET['pMode_filter']) ? $_GET['pMode_filter'] : array();
+                                if (isset($_GET['from_date']) && isset($_GET['to_date'])) {
+                                    $from_date = $_GET['from_date'];
+                                    $to_date = $_GET['to_date'];
 
 
-                                            // Build the filter condition
-                                            $filterCondition = '';
-                                            $statusFilterCondition = '';
-                                            $pModeFilterCondition = '';
-                                            $msoFilterCondition = '';
+                                    $from_billno = isset($_GET['from_billno']) ? $_GET['from_billno'] : '';
+                                    $to_billno = isset($_GET['to_billno']) ? $_GET['to_billno'] : '';
+                                    $billnoFilterCondition = '';
 
-                                            if (!empty($mso_filter) && $mso_filter != 'ALL') {
-                                                $msoFilterCondition = "AND mso = '$mso_filter'";
-                                            }
-
-                                            if (!empty($filters)) {
-                                                $filterCondition = "AND bill_by IN ('" . implode("','", $filters) . "')";
-                                            }
-
-                                            if (!empty($status_filter)) {
-                                                if (is_array($status_filter)) {
-                                                    $statusFilterCondition = "AND status IN ('" . implode("','", $status_filter) . "')";
-                                                } else {
-                                                    $statusFilterCondition = "AND status = '$status_filter'";
-                                                }
-                                            }
-
-                                            if (!empty($pMode_filter)) {
-                                                if (is_array($pMode_filter)) {
-                                                    $pModeFilterCondition = "AND pMode IN ('" . implode("','", $pMode_filter) . "')";
-                                                } else {
-                                                    $pModeFilterCondition = "AND pMode = '$pMode_filter'";
-                                                }
-                                            }
+                                    if (!empty($from_billno) && !empty($to_billno)) {
+                                        $billnoFilterCondition = "AND billNo BETWEEN '$from_billno' AND '$to_billno'";
+                                    }
 
 
-                                            $query = "SELECT * FROM bill WHERE DATE(date) BETWEEN '$from_date' AND '$to_date' $billnoFilterCondition $filterCondition $statusFilterCondition $pModeFilterCondition $msoFilterCondition";
-                                            // $query .= "ORDER BY bill_id DESC";
+                                    // Retrieve selected filter options
+                                    $filters = isset($_GET['filter']) ? $_GET['filter'] : array();
+                                    $status_filter = isset($_GET['status_filter']) ? $_GET['status_filter'] : 'approve'; // Default to approve if not set (based on UI check) - actually original code default was based on radio check
+                                    // Original logic: if empty, handled later. The radio has 'checked' for approve by default in HTML.
+                                    
+                                    $mso_filter = isset($_GET['mso_filter']) ? $_GET['mso_filter'] : '';
+                                    $pMode_filter = isset($_GET['pMode_filter']) ? $_GET['pMode_filter'] : array();
 
-                                            $query_run = mysqli_query($con, $query);
-                                            $Rs_sum = 0;
-                                            $discount_sum = 0;
-                                            $paid_amount_sum = 0;
-                                            $oldMonthBal_sum = 0;
 
-                                            if (mysqli_num_rows($query_run) > 0) {
-                                                $serial_number = 1; // Initialize the serial number
+                                    // Build the filter condition
+                                    $filterCondition = '';
+                                    $statusFilterCondition = '';
+                                    $pModeFilterCondition = '';
+                                    $msoFilterCondition = '';
 
-                                                foreach ($query_run as $row) {
-                                                    ?>
-                                        <tr style="background-color: <?= $row['adv_status'] == 1 ? '#dfb9fa' : '' ?>">
-                                            <td style="font-weight: bold;"><?= $serial_number++; ?></td>
-                                            <td style="font-weight: bold;"><?= $row['bill_by']; ?></td>
-                                            <td style="width: 220px; font-weight: bold; color: #007DC3;"><?= formatDate($row['date']);  ?> <?= $row['time'] ?></td>
-                                            <td style="width: 220px; font-weight: bold; color: #007DC3;">
-                                                        <?php 
-                                                            $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 
-                                                            formatDate($current_result['date']);
-                                                            // echo '&nbsp';
-                                                            // $t=convertTo12HourFormat($current_result['time']);
-                                                            // echo $t;
-                                                        ?> <?= $row['time'] ?>
-                                            </td>
-                                            <td style="font-weight: bold;"><?= $row['billNo']; ?></td>
-                                            <td style="font-weight: bold;"><?= $row['mso']; ?></td>
-                                            <td style="font-weight: bold;"><?= $row['stbno']; ?></td>
-                                            <td style="font-weight: bold;"><?= $row['name']; ?></td>
-                                            <td style="font-weight: bold;"><?= $row['phone']; ?></td>
-                                            <td style="font-weight: bold;"><?= $row['description']; ?></td>
-                                            <td style="font-weight: bold;"><?= $row['pMode']; ?></td>
-                                            <td style="font-weight: bold; color: #0012C3;">
-                                                <?= $row['oldMonthBal']; ?>
-                                            </td>
-                                            <td style="font-weight: bold; color: #05A210;">
-                                                <?= $row['paid_amount']; ?>
-                                            </td>
-                                            <td style="font-weight: bold; color: #DD0581;">
-                                                <?= $row['discount']; ?>
-                                            </td>
-                                            <td style="font-weight: bold; color: #F20000;">
-                                                <?= $row['Rs']; ?>
-                                            </td>
-                                            <td>
-                                                <!-- <a href="bill-print.php?id=<?= $row['bill_id']; ?>"
-                                                    target="blank"><button type="button"
-                                                        class="btn btn-warning"><i
-                                                            class="bi bi-printer-fill"></i></button></a> -->
-                                                <a href="prtindivbillrpt.php?billid=<?= $row['bill_id']; ?>"
-                                                    target="blank"><button type="button"
-                                                        class="btn btn-warning"><i
-                                                            class="bi bi-printer-fill"></i></button></a>
-                                            </td>
-                                        </tr>
-                                        <?php
+                                    if (!empty($mso_filter) && $mso_filter != 'ALL') {
+                                        $msoFilterCondition = "AND mso = '$mso_filter'";
+                                    }
 
-                                            $Rs_sum += $row['Rs']; // Add the value to the sum variable
+                                    if (!empty($filters)) {
+                                        $filterCondition = "AND bill_by IN ('" . implode("','", $filters) . "')";
+                                    }
+
+                                    if (!empty($status_filter)) {
+                                        if (is_array($status_filter)) {
+                                            $statusFilterCondition = "AND status IN ('" . implode("','", $status_filter) . "')";
+                                        } else {
+                                            $statusFilterCondition = "AND status = '$status_filter'";
+                                        }
+                                    }
+
+                                    if (!empty($pMode_filter)) {
+                                        if (is_array($pMode_filter)) {
+                                            $pModeFilterCondition = "AND pMode IN ('" . implode("','", $pMode_filter) . "')";
+                                        } else {
+                                            $pModeFilterCondition = "AND pMode = '$pMode_filter'";
+                                        }
+                                    }
+
+
+                                    $query = "SELECT * FROM bill WHERE DATE(date) BETWEEN '$from_date' AND '$to_date' $billnoFilterCondition $filterCondition $statusFilterCondition $pModeFilterCondition $msoFilterCondition";
+                                    // $query .= "ORDER BY bill_id DESC";
+
+                                    $query_run = mysqli_query($con, $query);
+
+                                    if (mysqli_num_rows($query_run) > 0) {
+                                        $serial_number = 1;
+
+                                        foreach ($query_run as $row) {
+                                            $Rs_sum += $row['Rs'];
                                             $discount_sum += $row['discount'];
                                             $paid_amount_sum += $row['paid_amount'];
                                             $oldMonthBal_sum += $row['oldMonthBal'];
-
-                                                    // Display the total sum
-                                                    ?>
-
-                                        <?php
-                                                }
-                                            } else {
-                                                echo "No Record Found";
-                                            }
-                                        }
+                                            
+                                            // Advance Status Coloring
+                                            $rowClass = ($row['adv_status'] == 1) ? 'table-warning' : ''; 
+                                            // Note: Original used #dfb9fa (purpleish). table-warning is yellow. 
+                                            // Let's stick to a custom style if we want that exact purple, or use bootstrap class.
+                                            // Original: style="background-color: <?= $row['adv_status'] == 1 ? '#dfb9fa' : '' 
+                                            $rowStyle = ($row['adv_status'] == 1) ? 'background-color: #dfb9fa;' : '';
+                                            ?>
+                                <tr style="<?php echo $rowStyle; ?>">
+                                    <td class="text-muted small"><?= $serial_number++; ?></td>
+                                    <td class="fw-bold"><?= $row['bill_by']; ?></td>
+                                    <td class="small">
+                                        <div class="fw-bold text-primary"><?= formatDate($row['date']); ?></div>
+                                        <div class="text-muted" style="font-size:0.75rem;"><?= $row['time'] ?></div>
+                                    </td>
+                                    <td class="small fw-bold text-info">
+                                        <?php 
+                                            $current_result = splitDateAndTime(strtotime($row['due_month_timestamp'])); 
+                                            echo formatDate($current_result['date']);
                                         ?>
-                                        <tr>
-                                            <td colspan="10"></td>
-                                            <td style="font-weight: bold;">Total:</td>
-                                            <td style="font-weight: bold; color: #0012C3;">
-                                                <b><?= $oldMonthBal_sum ?></b>
-                                            </td>
-                                            <td style="font-weight: bold; color: #05A210;">
-                                                <b><?= $paid_amount_sum ?></b>
-                                            </td>
-                                            <td style="font-weight: bold; color: #DD0581;">
-                                                <b><?= $discount_sum ?></b>
-                                            </td>
-                                            <td style="font-weight: bold; color: #F20000;">
-                                                <b><?= $Rs_sum ?></b>
-                                            </td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                    </td>
+                                    <td class="fw-bold"><?= $row['billNo']; ?></td>
+                                    <td><span class="badge bg-light text-dark border"><?= $row['mso']; ?></span></td>
+                                    <td class="small font-monospace"><?= $row['stbno']; ?></td>
+                                    <td class="fw-bold"><?= $row['name']; ?></td>
+                                    <td><?= $row['phone']; ?></td>
+                                    <td class="small text-muted text-wrap" style="max-width: 150px;"><?= $row['description']; ?></td>
+                                    <td><span class="badge badge-soft-secondary text-dark"><?= $row['pMode']; ?></span></td>
+                                    <td class="text-end text-primary fw-bold"><?= $row['oldMonthBal']; ?></td>
+                                    <td class="text-end text-success fw-bold"><?= $row['paid_amount']; ?></td>
+                                    <td class="text-end text-danger fw-bold"><?= $row['discount']; ?></td>
+                                    <td class="text-end text-danger fw-bold fs-6"><?= $row['Rs']; ?></td>
+                                    <td class="text-center">
+                                        <a href="prtindivbillrpt.php?billid=<?= $row['bill_id']; ?>" target="_blank" class="btn btn-warning btn-sm shadow-sm">
+                                            <i class="bi bi-printer-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php
+                                        }
+                                    } else {
+                                        echo '<tr><td colspan="16" class="text-center py-5 text-muted">No records found for the selected criteria.</td></tr>';
+                                    }
+                                }
+                                ?>
+                            </tbody>
+                            <tfoot class="bg-light">
+                                <tr>
+                                    <td colspan="11" class="text-end fw-bold text-uppercase text-secondary">Totals</td>
+                                    <td class="text-end fw-bold text-primary fs-6"><?= number_format($oldMonthBal_sum, 2) ?></td>
+                                    <td class="text-end fw-bold text-success fs-6"><?= number_format($paid_amount_sum, 2) ?></td>
+                                    <td class="text-end fw-bold text-danger fs-6"><?= number_format($discount_sum, 2) ?></td>
+                                    <td class="text-end fw-bold text-danger fs-5"><?= number_format($Rs_sum, 2) ?></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
-
                 </div>
             </div>
+
         </div>
-    </div>
-<br>
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
-</body>
 
-</html>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
 
-<?php include 'footer.php'?>
+    <?php include 'footer.php'?>
 
 <?php } else {
     header("Location: index.php");

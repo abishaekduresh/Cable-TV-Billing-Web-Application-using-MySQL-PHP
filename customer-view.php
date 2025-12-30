@@ -18,6 +18,7 @@ if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
 <html lang="en">
   <head>
     <!-- Required meta tags -->
+    <?php include 'favicon.php'; ?>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 

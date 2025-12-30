@@ -42,17 +42,26 @@ if (strlen($remark2Input) > 30) {
 // Get session username
 $usernamePrefix = $_SESSION['username'] ?? "Unknown User";
 
-// Fetch old status
-$stmtOld = $con->prepare("SELECT status FROM bill WHERE bill_id = ?");
+// Fetch old status and existing remark2
+$stmtOld = $con->prepare("SELECT status, remark2 FROM bill WHERE bill_id = ?");
 $stmtOld->bind_param("i", $bill_no);
 $stmtOld->execute();
-$stmtOld->bind_result($oldStatus);
+$stmtOld->bind_result($oldStatus, $existingRemark2);
 $stmtOld->fetch();
 $stmtOld->close();
-if (!$oldStatus) $oldStatus = "N/A";
 
-// Build final remark
-$finalRemark = $usernamePrefix . " - Changed bill status from " . $oldStatus . " to " . $selectedValue . " | Note: " . $remark2Input;
+if (!$oldStatus) $oldStatus = "N/A";
+if (!$existingRemark2) $existingRemark2 = "";
+
+// Build final remark (Append to existing)
+$newLog = $usernamePrefix . " - Changed bill status from " . $oldStatus . " to " . $selectedValue . " | CANCEL " . $remark2Input;
+
+// If existing remark is not empty, append with separator
+if (!empty($existingRemark2)) {
+    $finalRemark = $existingRemark2 . " || " . $newLog;
+} else {
+    $finalRemark = $newLog;
+}
 
 // Update bill status and remark2
 $stmt = $con->prepare("UPDATE bill SET status = ?, remark2 = ? WHERE bill_id = ?");

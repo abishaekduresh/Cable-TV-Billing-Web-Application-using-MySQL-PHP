@@ -1,21 +1,21 @@
 <?php 
    session_start();
    include "dbconfig.php";
-   require 'dbconfig.php';
+   // require 'dbconfig.php'; // Redundant
    require "component.php";
-include 'preloader.php';
+   include 'preloader.php';
 
     if (isset($_SESSION['username']) && isset($_SESSION['id'])) {   
         if (isset($_SESSION['username']) && $_SESSION['role'] == 'admin') {
             include 'admin-menu-bar.php';
             $session_username = $_SESSION['username'];
-            ?><br><?php
+            echo '<br>';
             include 'admin-menu-btn.php';
             $session_role = 'admin';
         } elseif (isset($_SESSION['username']) && $_SESSION['role'] == 'employee') {
             include 'menu-bar.php';
             $session_username = $_SESSION['username'];
-            ?><br><?php
+             echo '<br>';
             include 'sub-menu-btn.php';
             $session_role = 'employee';
         }
@@ -24,587 +24,602 @@ include 'preloader.php';
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <?php include 'favicon.php'; ?>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Details/Action</title>
+    <title>Customer Details</title>
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #06d6a0;
+            --danger-color: #ef476f;
+            --text-dark: #2b2d42;
+            --text-light: #8d99ae;
+            --bg-light: #f8f9fa;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: var(--text-dark);
+        }
+
+        .main-container {
+            padding: 1rem;
+            max-width: 100%; /* Full width as requested */
+            margin: 0 auto;
+        }
+
+        /* Card Styles */
+        .custom-card {
+            background: white;
+            border-radius: 16px;
+            border: none;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.02);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header-gradient {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.25rem;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .card-header-gradient h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-dark);
+        }
+
+        /* Table Styling */
+        .table-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .table-custom th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            padding: 1rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        .table-custom td {
+            padding: 0.85rem 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.85rem;
+            color: #334155;
+        }
+        .table-custom tr:hover {
+            background: #f1f5f9;
+        }
+
+        /* Form Styling */
+        .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            padding: 0.6rem 1rem;
+            font-size: 0.95rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+         /* Modal Styles */
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .modal-header {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 16px 16px 0 0;
+        }
+        .modal-body {
+            padding: 1.5rem;
+        }
+        .modal-footer {
+            border-top: 1px solid #e2e8f0;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+             border-radius: 0 0 16px 16px;
+        }
+    </style>
 </head>
-<body >
+<body>
 
-<!----------------------Ajax Add Customer---Popup model------------------------->
+<div class="main-container container-fluid">
+    
+    <!-- SEARCH SECTION -->
+    <div class="custom-card">
+        <div class="card-header-gradient">
+            <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-3">
+                    <i class="bi bi-search text-primary fs-5"></i>
+                </div>
+                <div>
+                     <h4 class="mb-0">Find Customer</h4>
+                    <small class="text-muted">Search by STB No, Name, Phone, or MSO</small>
+                </div>
+            </div>
+             <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#studentAddModal">
+                <i class="bi bi-person-plus-fill me-2"></i>Add Customer
+            </button>
+        </div>
+        <div class="card-body p-4">
+             <form action="" method="GET">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control border-start-0 ps-0" 
+                           pattern="[A-Za-z0-9\s]{3,}" required 
+                           value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" 
+                           placeholder="Enter at least 3 characters...">
+                    <button type="submit" class="btn btn-primary px-4 fw-bold">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<div class="modal fade" id="studentAddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <!-- RESULTS SECTION -->
+    <div class="custom-card">
+         <div class="card-header-gradient">
+             <div class="d-flex align-items-center">
+                <div class="bg-success bg-opacity-10 p-2 rounded-circle me-3">
+                    <i class="bi bi-people-fill text-success fs-5"></i>
+                </div>
+                <h4 class="mb-0">Customer List</h4>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table id="myTable" class="table-custom">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">No</th>
+                            <th>Group</th>
+                            <th>Status</th>
+                            <th>MSO</th>
+                            <th>STB No</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Area</th>
+                            <th>Accessories</th>
+                            <th>Description</th>
+                            <th class="text-end">Amount</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                            if(isset($_GET['search']))
+                            {
+                                $filtervalues = $_GET['search'];
+                                $query = "SELECT * FROM customer WHERE CONCAT(stbno,name,phone,mso) LIKE '%$filtervalues%'";
+                                $query_run = mysqli_query($con, $query);
+
+                                if(mysqli_num_rows($query_run) > 0)
+                                {
+                                    $serial_number = 1;
+                                    foreach($query_run as $customer)
+                                    {
+                                        ?>
+                                        <tr>
+                                            <td class="text-muted small ps-4"><?= $serial_number++; ?></td>
+                                            <td class="fw-bold text-primary"><?= fetchGroupName($customer['cusGroup']); ?></td>
+                                            <td>
+                                                <?php if($customer['rc_dc'] == 1): ?>
+                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success px-2">RC</span>
+                                                <?php else: ?>
+                                                     <span class="badge bg-danger bg-opacity-10 text-danger border border-danger px-2">DC</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><span class="badge bg-light text-dark border"><?= $customer['mso']; ?></span></td>
+                                            <td class="font-monospace small"><?= $customer['stbno']; ?></td>
+                                            <td class="fw-bold"><?= $customer['name']; ?></td>
+                                            <td><?= $customer['phone']; ?></td>
+                                            <td class="small text-muted"><?= $customer['customer_area_code']; ?></td>
+                                            <td class="small"><?= $customer['accessories']; ?></td>
+                                            <td class="small text-muted text-truncate" style="max-width: 150px;"><?= $customer['description']; ?></td>
+                                            <td class="text-end fw-bold">₹<?= $customer['amount']; ?></td>
+                                            <td class="text-center">
+                                                <button type="button" value="<?=$customer['id'];?>" class="editStudentBtn btn btn-outline-primary btn-sm rounded-circle shadow-sm p-2 mx-1" title="Edit">
+                                                    <i class="bi bi-pencil-fill"></i>
+                                                </button>
+                                                
+                                                <?php if ($session_role === 'admin'): ?>
+                                                <button type="button" value="<?=$customer['id'];?>" class="deleteStudentBtn btn btn-outline-danger btn-sm rounded-circle shadow-sm p-2 mx-1" title="Delete">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                                else
+                                {
+                                    echo '<tr><td colspan="12" class="text-center py-5 text-muted">No records found matching your search.</td></tr>';
+                                }
+                            } else {
+                                echo '<tr><td colspan="12" class="text-center py-5 text-muted">Use the search box to find customers.</td></tr>';
+                            }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ADD CUSTOMER MODAL -->
+<div class="modal fade" id="studentAddModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add New Customer</h5>
+                <h5 class="modal-title"><i class="bi bi-person-plus-fill me-2"></i>Add New Customer</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="saveStudent">
                 <div class="modal-body">
-                    <div id="errorMessage" class="alert alert-warning d-none"></div>
+                    <div id="errorMessage" class="d-none alert alert-warning"></div>
                     
-                    <label for="selectBox" class="form-label">Select an Group: *</label>
-                    <select style="font-weight: bold;" name="groupName" class="form-select" required>
-                                                <option value="" selected disabled>Select</option>
-                                                <?php
-                                                
-                                                $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
-                                                $result = mysqli_query($con, $query);
-                                                
-                                                while ($row = mysqli_fetch_assoc($result)) {
-                                                    $optionValueID = $row['group_id'];
-                                                    $optionValue = $row['groupName'];
-                                                    ?>
-                                                    <option value="<?php echo $optionValueID; ?>"><?php echo $optionValue;?></option>
-                                                    <?php
-                                                }
-                                                
-                                                ?>
-                                            </select>
-    
-                    <div class="row mb-3">
+                    <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="phone">Phone *</label>
-                            <input style="font-weight: bold;" type="text" name="phone" class="form-control" pattern="[0-9]{10}" required />                        
-                        </div>
-                        <div class="col-md-6">
-                            <label for="selectBox" class="form-label">Select an MSO: *</label>
-                            <select style="font-weight: bold;" name="mso" class="form-select" required>
-                            <option style="font-weight: bold;" selected disabled>Select ...</option>
-                            <option style="font-weight: bold;" value="VK">VK DIGITAL</option>
-                            <option style="font-weight: bold;" value="GTPL">GTPL</option>
+                            <label class="form-label">Customer Group <span class="text-danger">*</span></label>
+                            <select name="groupName" class="form-select" required>
+                                <option value="" selected disabled>Select Group</option>
+                                <?php
+                                $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
+                                $result = mysqli_query($con, $query);
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="'.$row['group_id'].'">'.$row['groupName'].'</option>';
+                                }
+                                ?>
                             </select>
                         </div>
-                    </div>
+                        <div class="col-md-6">
+                            <label class="form-label">MSO <span class="text-danger">*</span></label>
+                             <select name="mso" class="form-select" required>
+                                <option selected disabled>Select MSO</option>
+                                <option value="VK">VK DIGITAL</option>
+                                <option value="GTPL">GTPL</option>
+                                <option value="C32">C32</option>
+                                <option value="VK-IPTV-C32">VK IPTV - C32</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                             <label class="form-label">Phone <span class="text-danger">*</span></label>
+                             <input type="text" name="phone" class="form-control" pattern="[0-9]{10}" required placeholder="10-digit mobile number"/>
+                        </div>
+                         <div class="col-md-6">
+                            <label class="form-label">Customer Area <span class="text-danger">*</span></label>
+                            <select name="newCustomerAreaCode" id="newCustomerAreaCode" class="form-select" required>
+                                <option value="" selected disabled>Select Area</option>
+                                <?php
+                                $query = "SELECT * FROM customer_area WHERE customer_area_status = 'Active'";
+                                $result = mysqli_query($con, $query);
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                     echo '<option value="'.$row['customer_area_code'].'">'.$row['customer_area_code'] . ' - ' .$row['customer_area_name'].'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
 
-                    <label for="newCustomerAreaCode" class="form-label">Customer Area <span class="text-danger">*</span></label>
-                <select style="font-weight: bold;" name="newCustomerAreaCode" id="newCustomerAreaCode" class="form-select" required>
-                    <option value="" selected disabled>Select</option>
-                    <?php
-                    
-                    $query = "SELECT * FROM customer_area WHERE customer_area_status = 'Active'";
-                    $result = mysqli_query($con, $query);
-                    
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $optionValueID = $row['customer_area_code'];
-                        $optionValue = $row['customer_area_code'] . ' - ' .$row['customer_area_name'];
-                        ?>
-                        <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
-                        <?php
-                    }
-                    
-                    ?>
-                </select>
-    
-                    <div class="mb-3">
-                        <label for="stbno">STB No *</label>
-                        <input style="font-weight: bold;" type="text" name="stbno" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="name">Name *</label>
-                        <input style="font-weight: bold;" type="text" name="name" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="description">Remark</label>
-                        <input style="font-weight: bold;" type="text" name="description" class="form-control" />
-                    </div>
-                    <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="selectAccessories" class="form-label">Select an Accessories: *</label>
-                            <select style="font-weight: bold;" name="add-accessories" id="add-accessories" class="form-select" required>
-                                <option style="font-weight: bold;" selected value="-">-</option>
-                                <option style="font-weight: bold;" value="Node">Node</option>
-                                <option style="font-weight: bold;" value="POC">POC</option>
-                                <option style="font-weight: bold;" value="FTTH">FTTH</option>
-                                <option style="font-weight: bold;" value="RF">RF</option>
-                                <option style="font-weight: bold;" value="Node + POC">Node + POC</option>
+                            <label class="form-label">Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control" required placeholder="Full Name"/>
+                        </div>
+                        <div class="col-md-6">
+                             <label class="form-label">STB No <span class="text-danger">*</span></label>
+                             <input type="text" name="stbno" class="form-control" required placeholder="Set Top Box Number"/>
+                        </div>
+
+                         <div class="col-md-12">
+                            <label class="form-label">Remark</label>
+                             <input type="text" name="description" class="form-control" placeholder="Optional notes" />
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Accessories <span class="text-danger">*</span></label>
+                             <select name="add-accessories" id="add-accessories" class="form-select" required>
+                                <option selected value="-">- None -</option>
+                                <option value="Node">Node</option>
+                                <option value="POC">POC</option>
+                                <option value="FTTH">FTTH</option>
+                                <option value="RF">RF</option>
+                                <option value="Node + POC">Node + POC</option>
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="amount">Amount *</label>
-                            <input style="font-weight: bold;" type="text" name="add-amount" id="add-amount" class="form-control" required />
+                             <label class="form-label">Amount <span class="text-danger">*</span></label>
+                             <input type="number" name="add-amount" id="add-amount" class="form-control" required placeholder="0.00"/>
                         </div>
+
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save Customer</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary fw-bold">Save Customer</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!----------------------Ajax Edit Customer---Popup model------------------------->
-
-<div class="modal fade" id="studentEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<!-- EDIT CUSTOMER MODAL -->
+<div class="modal fade" id="studentEditModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Edit Customer</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="updateStudent">
-            <div class="modal-body">
-
-                <div id="errorMessageUpdate" class="alert alert-warning d-none"></div>
-
-                <input type="hidden" name="student_id" id="student_id" >
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
-                        <select style="font-weight: bold;" name="rc_dc" id="rc_dc" class="form-select" required>
-                        <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
-                        <option style="font-weight: bold;" value="1" selected>RC</option>
-                        <option style="font-weight: bold;" value="0">DC</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="selectBox" class="form-label">Select Group: *</label>
-                        <select style="font-weight: bold;" name="cusGroup" id="cusGroup" class="form-select" required>
-                            <option value="" selected disabled>Select</option>
-                            <?php
-                            
-                            $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
-                            $result = mysqli_query($con, $query);
-                            
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                $optionValueID = $row['group_id'];
-                                $optionValue = $row['groupName'];
-                                ?>
-                                <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Edit Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="updateStudent">
+                <div class="modal-body">
+                    <div id="errorMessageUpdate" class="d-none alert alert-warning"></div>
+                    <input type="hidden" name="student_id" id="student_id" >
+                    
+                     <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">RC/DC Status <span class="text-danger">*</span></label>
+                            <select name="rc_dc" id="rc_dc" class="form-select" required>
+                                <option value="1">RC (Active)</option>
+                                <option value="0">DC (Deactive)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                             <label class="form-label">Customer Group <span class="text-danger">*</span></label>
+                            <select name="cusGroup" id="cusGroup" class="form-select" required>
+                                <option value="" selected disabled>Select Group</option>
                                 <?php
-                            }
-                            
-                            ?>
-                        </select>
-                    </div>
-                </div>
-                <label for="editCustomerAreaCode" class="form-label">Customer Area <span class="text-danger">*</span></label>
-                <select style="font-weight: bold;" name="editCustomerAreaCode" id="editCustomerAreaCode" class="form-select" required>
-                    <option value="" selected disabled>Select</option>
-                    <?php
-                    
-                    $query = "SELECT * FROM customer_area WHERE customer_area_status = 'Active'";
-                    $result = mysqli_query($con, $query);
-                    
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $optionValueID = $row['customer_area_code'];
-                        $optionValue = $row['customer_area_code'] . ' - ' .$row['customer_area_name'];
-                        ?>
-                        <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
-                        <?php
-                    }
-                    
-                    ?>
-                </select>
-
-                <div class="mb-3">
-                        <label for="stbno">STB No *</label>
-                        <input style="font-weight: bold;" type="text" name="stbno" id="stbno" class="form-control" required/>
-                </div>
-                <div class="mb-3">
-                        <label for="name">Name *</label>
-                        <input style="font-weight: bold;" type="text" name="name" id="name" class="form-control" required />
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="phone">Phone *</label>
-                        <input style="font-weight: bold;" type="text" name="phone" id="phone" class="form-control" pattern="[0-9]{10}" required />
-                    </div>
-                    <div class="col-md-6">
-                        <label for="selectBox" class="form-label">Select MSO: *</label>
-                        <select style="font-weight: bold;" name="mso" id="mso" class="form-select" required>
-                        <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
-                        <option style="font-weight: bold;" value="VK" selected>VK DIGITAL</option>
-                        <option style="font-weight: bold;" value="GTPL">GTPL</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="mb-3">
-                        <label for="description">Remark</label>
-                        <input style="font-weight: bold;" type="text" name="description" id="description" class="form-control" />
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="selectAccessories" class="form-label">Select an Accessories: *</label>
-                        <select style="font-weight: bold;" name="accessories" id="accessories" class="form-select" required>
-                            <option style="font-weight: bold;" selected value="-">-</option>
-                            <option style="font-weight: bold;" value="Node">Node</option>
-                            <option style="font-weight: bold;" value="POC">POC</option>
-                            <option style="font-weight: bold;" value="FTTH">FTTH</option>
-                            <option style="font-weight: bold;" value="RF">RF</option>
-                            <option style="font-weight: bold;" value="Node + POC">Node + POC</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="amount">Amount *</label>
-                        <input style="font-weight: bold;" type="text" name="amount" id="amount" class="form-control" required />
-                    </div>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Update Customer</button>
-            </div>
-        </form>
-        </div>
-    </div>
-</div>
-
-<!----------------------Ajax Delete Customer---Popup model------------------------->
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to delete this data?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!------------------------Search Customer Model-------------------------------->
-
-<div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h4>Customer Details/Action
-                            <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#studentAddModal">
-                                Add Customer
-                            </button>
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-7">
-
-                                <form action="" method="GET">
-                                    <div class="input-group mb-3">
-                                    <input type="text" name="search" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Name, Phone, MSO">
-                                    <button type="submit" class="btn btn-primary">Search</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-12">
-                <div class="card mt-4">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                        <table id="myTable" class="table table-hover" border="5" style="white-space: nowrap;">
-                            <thead>
-                                <tr>
-                                    <th>S.No.</th>
-                                    <th>Group</th>
-                                    <th>RC/DC</th>
-                                    <th>MSO</th>
-                                    <th>STB No</th>
-                                    <th>Name</th>
-                                    <th>Phone</th>
-                                    <th>Area</th>
-                                    <th>Accessories</th>
-                                    <th>Description</th>
-                                    <th>Amount</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php 
-                                    //$con = mysqli_connect("localhost","root","","phptutorials");
-
-                                    if(isset($_GET['search']))
-                                    {
-                                        $filtervalues = $_GET['search'];
-                                        $query = "SELECT * FROM customer WHERE CONCAT(stbno,name,phone,mso) LIKE '%$filtervalues%'";
-                                        $query_run = mysqli_query($con, $query);
-
-                                        if(mysqli_num_rows($query_run) > 0)
-                                        {
-                                            $serial_number = 1;
-
-                                            foreach($query_run as $customer)
-                                            {
-                                                
-                                                ?>
-                                                <tr>
-                                                    <td style="width: 18px; font-size: 18px; font-weight: bold;"><?= $serial_number++; ?></td>
-                                                    <td style="font-size: 18px; font-weight: bold;">
-                                                        <?= fetchGroupName($customer['cusGroup']); ?>
-                                                    </td>
-                                                    <td style="font-size: 18px; font-weight: bold;">
-                                                    <?php
-                                                        $rc_dc_status = $customer['rc_dc'];
-                                                        if($rc_dc_status == 1){
-                                                            echo 'RC';
-                                                        }else{
-                                                            echo 'DC';
-                                                        }
-                                                    ?>
-                                                    </td>
-                                                    <td style="font-size: 18px; font-weight: bold;"><?= $customer['mso']; ?></td>
-                                                    <td style="font-size: 18px; font-weight: bold;"><?= $customer['stbno']; ?></td>
-                                                    <td style="font-size: 18px; font-weight: bold;"><?= $customer['name']; ?></td>
-                                                    <td style="font-size: 18px; font-weight: bold;"><?= $customer['phone']; ?></td>
-                                                    <td style="font-size: 18px; font-weight: bold;"><?= $customer['customer_area_code']; ?></td>
-                                                    <td style="font-size: 18px; font-weight: bold;"><?= $customer['accessories']; ?></td>
-                                                    <td style="font-size: 18px; font-weight: bold;"><?= $customer['description']; ?></td>
-                                                    <td style="font-size: 18px; font-weight: bold;"><?= $customer['amount']; ?></td>
-                                                    <td>
-                                                        <button type="button" value="<?=$customer['id'];?>" class="editStudentBtn btn btn-success btn-sm">Edit</button>
-                                                        <form action="code.php" method="POST" class="d-inline">
-                                                            <!--<button type="submit" name="delete_customer" value="<?=$customer['id'];?>" class="deleteStudentBtn btn btn-danger btn-sm" -->
-                                                            <button type="submit" name="delete_customer" value="<?=$customer['id'];?>" class="deleteStudentBtn btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" 
-                                                                <?php if ($session_role !== 'admin') {
-                                                                    echo 'disabled'; 
-                                                                    } elseif ($session_role == 'employee'){
-                                                                        echo 'disabled'; 
-                                                                    }?>
-                                                            >Delete</button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                                <?php
-                                            }
-                                        }
-                                        else
-                                        {
-                                            ?>
-                                                <tr>
-                                                    <td colspan="4">No Record Found</td>
-                                                </tr>
-                                            <?php
-                                        }
-                                    }
+                                $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
+                                $result = mysqli_query($con, $query);
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="'.$row['group_id'].'">'.$row['groupName'].'</option>';
+                                }
                                 ?>
-                            </tbody>
-                        </table>
+                            </select>
                         </div>
-                    </div>
+
+                         <div class="col-md-6">
+                            <label class="form-label">Customer Area <span class="text-danger">*</span></label>
+                            <select name="editCustomerAreaCode" id="editCustomerAreaCode" class="form-select" required>
+                                <option value="" selected disabled>Select Area</option>
+                                <?php
+                                $query = "SELECT * FROM customer_area WHERE customer_area_status = 'Active'";
+                                $result = mysqli_query($con, $query);
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                     echo '<option value="'.$row['customer_area_code'].'">'.$row['customer_area_code'] . ' - ' .$row['customer_area_name'].'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                         <div class="col-md-6">
+                            <label class="form-label">MSO <span class="text-danger">*</span></label>
+                            <select name="mso" id="mso" class="form-select" required>
+                                <option value="VK">VK DIGITAL</option>
+                                <option value="GTPL">GTPL</option>
+                            </select>
+                        </div>
+                        
+                         <div class="col-md-6">
+                            <label class="form-label">Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" id="name" class="form-control" required />
+                        </div>
+                         <div class="col-md-6">
+                             <label class="form-label">STB No <span class="text-danger">*</span></label>
+                             <input type="text" name="stbno" id="stbno" class="form-control" required/>
+                        </div>
+
+                         <div class="col-md-6">
+                             <label class="form-label">Phone <span class="text-danger">*</span></label>
+                            <input type="text" name="phone" id="phone" class="form-control" pattern="[0-9]{10}" required />
+                        </div>
+                         <div class="col-md-6">
+                              <label class="form-label">Amount <span class="text-danger">*</span></label>
+                            <input type="number" name="amount" id="amount" class="form-control" required />
+                        </div>
+
+                         <div class="col-md-6">
+                            <label class="form-label">Accessories <span class="text-danger">*</span></label>
+                            <select name="accessories" id="accessories" class="form-select" required>
+                                <option selected value="-">- None -</option>
+                                <option value="Node">Node</option>
+                                <option value="POC">POC</option>
+                                <option value="FTTH">FTTH</option>
+                                <option value="RF">RF</option>
+                                <option value="Node + POC">Node + POC</option>
+                            </select>
+                        </div>
+                         <div class="col-md-6">
+                             <label class="form-label">Remark</label>
+                            <input type="text" name="description" id="description" class="form-control" />
+                        </div>
+                     </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary fw-bold">Update Customer</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    
 <script>
+    // ADD CUSTOMER
+    $(document).on('submit', '#saveStudent', function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        formData.append("save_student", true);
 
-        $(document).on('submit', '#saveStudent', function (e) {
-            e.preventDefault();
-
-            var formData = new FormData(this);
-            formData.append("save_student", true);
-
-            $.ajax({
-                type: "POST",
-                url: "code.php",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    
-                    var res = jQuery.parseJSON(response);
-                    if(res.status == 422) {
-                        $('#errorMessage').removeClass('d-none');
-                        $('#errorMessage').text(res.message);
-
-                    }else if(res.status == 200){
-
-                        $('#errorMessage').addClass('d-none');
-                        $('#studentAddModal').modal('hide');
-                        $('#saveStudent')[0].reset();
-
-                        alertify.set('notifier','position', 'top-right');
-                        alertify.success(res.message);
-
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
-
-                    }else if(res.status == 500) {
-                        alert(res.message);
-                    }
+        $.ajax({
+            type: "POST",
+            url: "code.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                var res = jQuery.parseJSON(response);
+                if(res.status == 422) {
+                    Swal.fire({ icon: 'warning', title: 'Validation Error', text: res.message });
+                } else if(res.status == 200){
+                    $('#studentAddModal').modal('hide');
+                    $('#saveStudent')[0].reset();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => { location.reload(); });
+                } else if(res.status == 500) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: res.message });
                 }
-            });
-
+            }
         });
+    });
 
-        // $(document).on('click', '.editStudentBtn', function () {
-
-        //     var student_id = $(this).val();
-        //     // alert(student_id);
-            
-        //     $.ajax({
-        //         type: "GET",
-        //         url: "code.php?student_id=" + student_id,
-        //         success: function (response) {
-
-        //             var res = jQuery.parseJSON(response);
-        //             if(res.status == 404) {
-
-        //                 alert(res.message);
-        //             }else if(res.status == 200){
-
-                        // $('#student_id').val(res.data.id);
-                        // $('#stbno').val(res.data.stbno);
-                        // $('#name').val(res.data.name);
-                        // $('#phone').val(res.data.phone);
-                        // $('#description').val(res.data.description);
-                        // $('#amount').val(res.data.amount);
-
-        //                 $('#studentEditModal').modal('show');
-        //             }
-
-        //         }
-        //     });
-
-        // });
+    // FETCH DATA FOR EDIT
+    $(document).on('click', '.editStudentBtn', function () {
+        var student_id = $(this).val();
         
-        $(document).on('click', '.editStudentBtn', function () {
-            var student_id = $(this).val();
-            
-            $.ajax({
-                type: "GET",
-                url: "code.php?student_id=" + student_id,
-                success: function (response) {
-                    var res = jQuery.parseJSON(response);
-                    console.log(res);
-                    if (res.status == 404) {
-                        alert(res.message);
-                    } else if (res.status == 200) {
-                        // Log the value to check
-                        console.log(res.data.amount);
-
-                        // Ensure value is trimmed
-                        var accessories = res.data.accessories.trim();
-                        $('#student_id').val(res.data.id);
-                        $('#cusGroup').val(res.data.cusGroup);
-                        $('#editCustomerAreaCode').val(res.data.customer_area_code);
-                        $('#rc_dc').val(res.data.rc_dc);
-                        $('#mso').val(res.data.mso);
-                        $('#stbno').val(res.data.stbno);
-                        $('#name').val(res.data.name);
-                        $('#phone').val(res.data.phone);
-                        $('#accessories').val(accessories); // Set value for accessories
-                        $('#description').val(res.data.description);
-                        $('#amount').val(res.data.amount);
-
-                        // Show modal after the values are set
-                        $('#studentEditModal').modal('show');
-                    }
+        $.ajax({
+            type: "GET",
+            url: "code.php?student_id=" + student_id,
+            success: function (response) {
+                var res = jQuery.parseJSON(response);
+                if (res.status == 404) {
+                    Swal.fire({ icon: 'error', title: 'Not Found', text: res.message });
+                } else if (res.status == 200) {
+                    var accessories = res.data.accessories.trim();
+                    $('#student_id').val(res.data.id);
+                    $('#cusGroup').val(res.data.cusGroup);
+                    $('#editCustomerAreaCode').val(res.data.customer_area_code);
+                    $('#rc_dc').val(res.data.rc_dc);
+                    $('#mso').val(res.data.mso);
+                    $('#stbno').val(res.data.stbno);
+                    $('#name').val(res.data.name);
+                    $('#phone').val(res.data.phone);
+                    $('#accessories').val(accessories); 
+                    $('#description').val(res.data.description);
+                    $('#amount').val(res.data.amount);
+                    $('#studentEditModal').modal('show');
                 }
-            });
+            }
         });
+    });
 
-        
-        
-        $(document).on('submit', '#updateStudent', function (e) {
-            e.preventDefault();
+    // UPDATE CUSTOMER
+    $(document).on('submit', '#updateStudent', function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        formData.append("update_student", true);
 
-            var formData = new FormData(this);
-            formData.append("update_student", true);
-
-            $.ajax({
-                type: "POST",
-                url: "code.php",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    
-                    var res = jQuery.parseJSON(response);
-                    if(res.status == 200) {
-
-                        $('#errorMessageUpdate').addClass('d-none');
-
-                        alertify.set('notifier','position', 'top-right');
-                        alertify.success(res.message);
-                        
-                        $('#studentEditModal').modal('hide');
-                        $('#updateStudent')[0].reset();
-                        setTimeout(function() {
-                            location.reload();
-                          }, 1000);
-                    } else {
-                        alert(res.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    // Handle error cases
-                    console.error('AJAX error:', error);  // Log the error for debugging
-                    alert('An error occurred: ' + error); // Display a user-friendly message
+        $.ajax({
+            type: "POST",
+            url: "code.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                var res = jQuery.parseJSON(response);
+                if(res.status == 200) {
+                    $('#studentEditModal').modal('hide');
+                    $('#updateStudent')[0].reset();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated',
+                        text: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => { location.reload(); });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Error', text: res.message });
                 }
-            });
-
+            },
+            error: function (xhr, status, error) {
+                 Swal.fire({ icon: 'error', title: 'System Error', text: 'An error occurred: ' + error });
+            }
         });
-        
-        
+    });
 
-        $(document).on('click', '.deleteStudentBtn', function (e) {
-            e.preventDefault();
-            var student_id = $(this).val();
-            
-            // Open the Bootstrap modal
-            $('#exampleModal').modal('show');
+    // DELETE CUSTOMER
+    $(document).on('click', '.deleteStudentBtn', function (e) {
+        e.preventDefault();
+        var student_id = $(this).val();
         
-            $('#confirmDeleteBtn').click(function() {
-              // Send the AJAX request to delete the student
-              $.ajax({
-                type: "POST",
-                url: "code.php",
-                data: {
-                  'delete_student': true,
-                  'student_id': student_id
-                },
-                success: function (response) {
-                  var res = jQuery.parseJSON(response);
-                  if (res.status == 500) {
-                    alert(res.message);
-                  } else {
-                    alertify.set('notifier', 'position', 'top-right');
-                    alertify.success(res.message);
-        
-                    // Reload the page after successful deletion
-
-                    setTimeout(function() {
-                        location.reload();
-                    }, 1000);
-                  }
-                }
-              });
-        
-              // Close the Bootstrap modal
-              $('#exampleModal').modal('hide');
-            });
-          });
-
-    </script>
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef476f',
+            cancelButtonColor: '#8d99ae',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "code.php",
+                    data: {
+                        'delete_student': true,
+                        'student_id': student_id
+                    },
+                    success: function (response) {
+                        var res = jQuery.parseJSON(response);
+                        if (res.status == 500) {
+                            Swal.fire('Error!', res.message, 'error');
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: res.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => { location.reload(); });
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
 
 <?php include 'footer.php'?>
-
 
 <?php }else{
 	header("Location: index.php");

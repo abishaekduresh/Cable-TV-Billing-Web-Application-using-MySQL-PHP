@@ -21,6 +21,7 @@ if ($result->num_rows > 0) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <?php include 'favicon.php'; ?>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- <title>Bootstrap Navbar with Dropdown</title> -->
@@ -37,7 +38,10 @@ if ($result->num_rows > 0) {
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="employee-dashboard.php"><b><?= $appName2 ?></b></a>
+    <a class="navbar-brand" href="employee-dashboard.php">
+        <img src="https://files.catbox.moe/sepcbf.png" alt="Logo" height="40" class="d-inline-block align-top mr-2">
+        <b><?= $appName2 ?></b>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -89,6 +93,8 @@ if ($result->num_rows > 0) {
             <a class="dropdown-item" href="bill-filter-by-all.php">Indiv Bill by All</a>
              <div class="dropdown-divider"></div>
              <a class="dropdown-item" href="rptgroupbill.php">Group Bill</a>
+             <div class="dropdown-divider"></div>
+             <a class="dropdown-item" href="rpt-group-adv-dynamic.php">Dynamic Group & Adv Report</a>
              <!--<a class="dropdown-item" href="#">Billing Dashboard</a> -->
              <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="rptadvindivbill.php">Advance Indiv Bill</a>

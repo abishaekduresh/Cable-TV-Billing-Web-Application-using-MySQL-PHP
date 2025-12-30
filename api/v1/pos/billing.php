@@ -236,7 +236,7 @@ if ($insertStmt->execute()) {
     $response = array(
         "status" => "success",
         "message" => "Bill processed successfully",
-        "data" => array("token" => $unic_token,"bill_no" => $bill_no, "tot_price"=>$total_price),
+        "data" => array("token" => $unic_token,"bill_no" => $bill_no, "tot_price"=>$total_price, "pos_bill_id" => $pos_bill_id),
         "code" => "200"
     );
     echo json_encode($response);

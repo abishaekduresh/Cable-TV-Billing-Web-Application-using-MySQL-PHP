@@ -24,6 +24,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <?php include 'favicon.php'; ?>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -269,7 +270,7 @@ async function fetchUsersBillingData() {
                 <div class="row">
                     <div class="col">
                         <div class="highlight-section m-2" style="font-size: 18px;">
-                            Indiv/Group/POS/Income (Cash - Discount) Rs: <span style="font-size: 20px;">${resData.cashCollection}</span>
+                            Indiv/Group/POS/Income (Cash - Discount) Rs: <span style="font-size: 20px;">${resData.amountInHand}</span>
                         </div>
                         <!--div class="highlight-section m-2">
                             Total - Expense: ${data.overall}

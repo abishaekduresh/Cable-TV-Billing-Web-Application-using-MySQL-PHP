@@ -2,361 +2,275 @@
    session_start();
    require_once "dbconfig.php";
    require_once 'preloader.php';
-  require_once 'component.php';
+   require_once 'component.php';
       
     if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         $session_username = $_SESSION['username']; 
-        ?>
-  
+        $currentDate = date('Y-m-d');
+?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <?php include 'favicon.php'; ?>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- jQuery (Required for dashboard logic) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/592a9320b6.js" crossorigin="anonymous"></script>
-<style>
-body
-{
-	background:#00bcd4;
-}
 
-h1
-{
-	color:#fff;
-	margin:40px 0 60px 0;
-	font-weight:300;
-}
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --text-dark: #2b2d42;
+            --bg-light: #f8f9fa;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
 
-.our-team-main
-{
-	width:100%;
-	height:auto;
-	border-bottom:5px #323233 solid;
-	background:#fff;
-	text-align:center;
-	border-radius:10px;
-	overflow:hidden;
-	position:relative;
-	transition:0.5s;
-	margin-bottom:28px;
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: var(--text-dark);
+        }
 
+        .main-content {
+            padding: 2rem 1rem;
+        }
 
-.our-team-main img
-{
-	border-radius:50%;
-	margin-bottom:20px;
-	width: 90px;
-}
+        /* Card Styling */
+        .custom-card {
+            background: white;
+            border-radius: 16px;
+            border: none;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            height: 100%;
+            transition: transform 0.2s;
+        }
 
-.our-team-main h3
-{
-	font-size:20px;
-	font-weight:700;
-}
+        .card-header-gradient {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1.25rem 1.5rem;
+            color: white;
+            border: none;
+        }
 
-.our-team-main p
-{
-	margin-bottom:0;
-}
+        /* Stat Card */
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.75rem;
+        }
 
-.team-back
-{
-	width:100%;
-	height:auto;
-	position:absolute;
-	top:0;
-	left:0;
-	padding:5px 15px 0 15px;
-	text-align:left;
-	background:#fff;
-	
-}
+        .stat-info h6 {
+            margin: 0;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
 
-.team-front
-{
-	width:100%;
-	height:auto;
-	position:relative;
-	z-index:10;
-	background:#fff;
-	padding:15px;
-	bottom:0px;
-	transition: all 0.5s ease;
-}
+        .stat-info h3 {
+            margin: 0;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
 
-.our-team-main:hover .team-front
-{
-	bottom:-200px;
-	transition: all 0.5s ease;
-}
+        /* Form Controls */
+        .form-label {
+            font-weight: 600;
+            color: #4b5563;
+        }
+        
+        .form-control, .form-select {
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
 
-.our-team-main:hover
-{
-	border-color:#777;
-	transition:0.5s;
-}
+        .btn-modern {
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        
+        .btn-biometric {
+            background: linear-gradient(135deg, #2ec4b6, #20a4f3);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(32, 164, 243, 0.3);
+        }
+        .btn-biometric:hover {
+             transform: translateY(-2px);
+             box-shadow: 0 6px 12px rgba(32, 164, 243, 0.4);
+             color: white;
+        }
 
-.dt-img-fluid {
-    /*width: 10px;*/
-    height: 60px;
-}
-
-/*our-team-main*/
-
-
-</style>
-<style>
-    /* SweetAlert2 Styling */
-    .swal2-popup {
-        font-family: 'Arial', sans-serif;
-        font-size: 1rem;
-        padding: 0;
-        background: #f4f7fc;
-        border-radius: 20px;
-        max-width: 600px;
-    }
-
-    .swal2-title {
-        font-size: 1.8rem;
-        font-weight: bold;
-        color: #1e293b;
-        margin-top: 20px;
-    }
-
-    .swal2-html-container {
-        padding: 20px;
-    }
-
-    .modern-card {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        background: #ffffff;
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-    }
-
-    .modern-card .card-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        background: #f4f7fc;
-        border-radius: 10px;
-        padding: 15px;
-        border: 1px solid #e0e7ff;
-    }
-
-    .card-item h3 {
-        font-size: 1rem;
-        color: #1e293b;
-        margin-bottom: 5px;
-    }
-
-    .card-item span {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #0ea5e9;
-    }
-
-    .highlight-section {
-        text-align: center;
-        padding: 15px;
-        border-radius: 12px;
-        background: linear-gradient(90deg, #10b981, #34d399);
-        color: white;
-        font-weight: bold;
-        font-size: 1.2rem;
-        width: 100%; /* Full width */
-        word-wrap: break-word; /* Allow wrapping */
-    }
-
-    .swal2-confirm {
-        background: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 20px;
-        font-size: 1rem;
-        cursor: pointer;
-    }
-</style>
+        /* SweetAlert Custom Content Styles */
+        .modal-data-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .modal-data-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #6c757d;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .modal-data-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2b2d42;
+        }
+        
+        .modal-total-section {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+    </style>
 </head>
-<body >
+<body>
     
-    <?php include 'admin-menu-bar.php'?>
+<?php include 'admin-menu-bar.php'; ?>
 <br>
-    <?php include 'admin-menu-btn.php'?>
-    
-<!--<div class="container mt-2" style="text-align: center;">-->
-    <input type="hidden" id="date" class="form-control" style="display: inline-block; width: 230px;" value="<?= $currentDate ?>">
-<!--</div>-->
+<?php include 'admin-menu-btn.php'; ?>
 
-
-<div class="container">
-    <!-- Two-column layout -->
-    <div class="row">
-        <!-- Left Column -->
-        <div class="col-lg-6">
-            <div  id="dashboard-data">
-                <!-- <h4 style="text-align: center;">Credit Due Bill Amt</h4> -->
-                <div class="row">
-                    <!-- <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/credit.png" alt="Credit" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Individual</h3>
-                            </div>
-                            <div class="team-back">
-                                <div style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 20px;">
-                                    ₹ <span id="indivTotCreditAmt">
-                                    </span>
-                                </div>
-                                <p>Count &nbsp;&nbsp;: <span id="indivCreditBillCount"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/credit.png" alt="Credit" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Group</h3>
-                            </div>
-                            <div class="team-back">
-                                <div style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 20px;">
-                                    ₹ <span id="groupTotCreditAmt">
-                                    </span>
-                                </div>
-                                <p>Count &nbsp;&nbsp;: <span id="groupCreditBillCount"></span></p>
-                            </div>
-                        </div>
-                    </div> -->
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/smartphone.png" alt="SMS" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>SMS Bal</h3>
-                            </div>
-                            <div class="team-back" style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 40px;">
-                                    ₹<span id="avblSMSbalanceAmt">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+<div class="container main-content">
+    <div class="row g-4">
+        
+        <!-- Left Column: Quick Stats & Actions -->
+        <div class="col-lg-5">
+            
+            <!-- SMS Balance Card -->
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h6>SMS Balance</h6>
+                    <h3>₹ <span id="avblSMSbalanceAmt">0.00</span></h3>
                 </div>
-                <!-- <h4 style="text-align: center;"> Current Month </h4>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/month.png" alt="Month" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Income</h3>
-                            </div>
-                            <div class="team-back" style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 40px;">
-                                ₹ <span id="totIncomeAmt">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/expenses.png" alt="Expenses" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Expense</h3>
-                            </div>
-                            <div class="team-back" style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 40px;">
-                                ₹ <span id="totExpenseAmt">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="our-team-main">
-                            <div class="team-front">
-                                <img src="icons/profits.png" alt="Profits" class="dt-img-fluid" style="width: 60px; padding: 0px;" />
-                                <h3>Profit</h3>
-                            </div>
-                            <div class="team-back" style="font-size: 25px; font-weight: bold; text-align: center; padding-top: 40px;">
-                                ₹ <span id="incomeExpenseProfit">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-            </div>  <!--  dashboard-data div  -->
-
-            <!-- <div class="row justify-content-center mt-5">
-                <div class="col-md-6 d-flex justify-content-center">
-                    <button type="button" id="reload_btn" class="btn btn-primary">
-                      <i class="bi bi-arrow-clockwise"></i>
-                    </button>
+                <div class="stat-icon">
+                    <i class="bi bi-chat-square-text-fill"></i>
                 </div>
-            </div> -->
+            </div>
+
+            <!-- Biometric Action -->
+            <a href="https://biometric.pdpgroups.com/app/login?t=<?= urlencode(encrypt(($_SESSION['username'] ?? '') . '.' . getUnixTimestamp())) ?>" 
+               target="_blank" class="text-decoration-none">
+                <div class="btn-biometric">
+                     <i class="bi bi-fingerprint fs-4"></i>
+                     <span>Access Biometric System</span>
+                </div>
+            </a>
+
         </div>
 
-        <!-- Right Column (empty) -->
-        <div class="col-lg-6">
-            <div class="row pt-4">
-                <!-- First Column (Date Input) -->
-                <div class="col-md-4 mb-3">
-                    <label for="dueMonthDate" class="form-label">Select Due Date</label>
-                    <input type="date" class="form-control" value="<?= $currentDate ?>" id="dueMonthDate">
+        <!-- Right Column: Collection Search -->
+        <div class="col-lg-7">
+            <div class="custom-card">
+                <div class="card-header-gradient d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-search fs-4 me-2"></i>
+                        <h5 class="mb-0 fw-bold">User Collection Search</h5>
+                    </div>
                 </div>
-                
-                <!-- Second Column (Username Select) -->
-                <div class="col-md-4 mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <select class="form-select" name="username" id="username" required>
-                        <?php
-                            // Query to fetch data from the database (assuming you're fetching usernames)
-                            $sql = "SELECT username, name FROM user WHERE status = 1"; // Replace 'user' with your table name
-                            $result = $con->query($sql);
+                <div class="card-body p-4">
+                     <form onsubmit="event.preventDefault(); fetchUsersBillingData();">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="dueMonthDate" class="form-label">Select Due Date</label>
+                                <input type="date" class="form-control" value="<?= $currentDate ?>" id="dueMonthDate">
+                            </div>
 
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    echo '<option value="' . $row['username'] . '">' . htmlspecialchars($row['name']) . '</option>';
-                                }
-                            } else {
-                                echo '<option value="" selected>No users found</option>';
-                            }
-
-                            $con->close();
-                        ?>
-                    </select>
-                </div>
-                
-                <!-- Third Column (Button) -->
-                <div class="col-md-4 mb-3 d-flex align-items-end">
-                    <button type="button" class="btn btn-primary w-100 mr-2" 
-                            onclick="fetchUsersBillingData()" 
-                            style="padding: 8px 18px; font-size: 1rem; border-radius: 10px; background: linear-gradient(90deg, #0ea5e9, #3b82f6); color: white; border: none; cursor: pointer;" 
-                            data-origin="button1">
-                        Search
-                    </button>
+                            <div class="col-md-6">
+                                <label for="username" class="form-label">Select User</label>
+                                <select class="form-select" name="username" id="username" required>
+                                    <?php
+                                        $sql = "SELECT username, name FROM user WHERE status = 1"; 
+                                        $result = $con->query($sql);
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo '<option value="' . $row['username'] . '">' . htmlspecialchars($row['name']) . '</option>';
+                                            }
+                                        } else {
+                                            echo '<option value="" disabled>No users found</option>';
+                                        }
+                                        // $con->close(); // Keep connection open for other includes if needed
+                                    ?>
+                                </select>
+                            </div>
+                            
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" 
+                                        style="background: var(--primary-color); border: none;">
+                                    <i class="bi bi-search me-2"></i>Search Records
+                                </button>
+                            </div>
+                        </div>
+                     </form>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
-    
-    
-<!-- Bootstrap JS Bundle (including Popper) -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    
 <script type="text/javascript">
-
 var resData = null;
 
 async function fetchUsersBillingData() {
@@ -364,240 +278,192 @@ async function fetchUsersBillingData() {
     const dueMonthDate = document.getElementById('dueMonthDate').value;
 
     try {
-        // Define the JSON data to send
-        const requestData = {
-            dueMonthDate: dueMonthDate,
-            username: username
-        };
-
-        // Make the API call with POST method
         const response = await fetch('api/v1/users/getUserBillingData.php', {
-            method: 'POST', // Specify the method
-            headers: {
-                'Content-Type': 'application/json' // Set content type to JSON
-            },
-            body: JSON.stringify(requestData) // Convert the JSON data to a string
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dueMonthDate: dueMonthDate, username: username })
         });
 
-        // Check if the response is okay
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-        // Parse the response JSON
         const res = await response.json();
         resData = res.data;
-        console.log(resData);
+        
+        // Helper to format values
+        const formatVal = (data) => `₹${data.amt} <i class="bi bi-arrow-right-short text-muted"></i> ${data.count}`;
 
-        const data = {
-            username: `${resData.userData.username} (${resData.userData.name})`,
-            dueMonthDate: resData.dueMonthDate,
-            indivCash: `₹${resData.indivData.cash.amt} ~> ${resData.indivData.cash.count}`,
-            indivPaytm: `₹${resData.indivData.paytm.amt} ~> ${resData.indivData.paytm.count}`,
-            indivGpay: `₹${resData.indivData.gpay.amt} ~> ${resData.indivData.gpay.count}`,
-            indivCredit: `₹${resData.indivData.credit.amt} ~> ${resData.indivData.credit.count}`,
-
-            groupCash: `₹${resData.groupData.cash.amt} ~> ${resData.groupData.cash.count}`,
-            groupPaytm: `₹${resData.groupData.paytm.amt} ~> ${resData.groupData.paytm.count}`,
-            groupGpay: `₹${resData.groupData.gpay.amt} ~> ${resData.groupData.gpay.count}`,
-            groupCredit: `₹${resData.groupData.credit.amt} ~> ${resData.groupData.credit.count}`,
-
-            posCash: `₹${resData.posData.cash.amt}-${resData.posData.cash.discount}=${resData.posData.cash.amt - resData.posData.cash.discount} ~> ${resData.posData.cash.count}`,
-            posGpay: `₹${resData.posData.gpay.amt}-${resData.posData.gpay.discount}=${resData.posData.gpay.amt - resData.posData.gpay.discount} ~> ${resData.posData.gpay.count}`,
-            posPaytm: `₹${resData.posData.paytm.amt}-${resData.posData.paytm.discount}=${resData.posData.paytm.amt - resData.posData.paytm.discount} ~> ${resData.posData.paytm.count}`,
-            posCredit: `₹${resData.posData.credit.amt}-${resData.posData.credit.discount}=${resData.posData.credit.amt - resData.posData.credit.discount} ~> ${resData.posData.credit.count}`,
-            
-            incomeExpense: `₹${resData.incomeExpense.sumIncome} / ₹${resData.incomeExpense.sumExpense}`,
-            amountInHand: `₹${resData.amountInHand}`
-        };
-
-        // console.table(JSON.stringify(data, null, 2));
-
-        // Create content for SweetAlert
+        // Create Bootstrap-styled content for SweetAlert
         const content = `
-            <div class="modern-card">
-                <div class="card-item">
-                    <h3>User ID</h3>
-                    <span>${data.username}</span>
-                </div>
-                <div class="card-item">
-                    <h3>Billing Date</h3>
-                    <span>${data.dueMonthDate}</span>
-                </div>
-                <div class="card-item">
-                    <h3>Indiv Cash</h3>
-                    <span>${data.indivCash}</span>
-                    <h3>Group Cash</h3>
-                    <span>${data.groupCash}</span>
-                    <h3>POS Cash</h3>
-                    <span>${data.posCash}</span>
-                </div>
-                <div class="card-item">
-                    <h3>Indiv Paytm</h3>
-                    <span>${data.indivPaytm}</span>
-                    <h3>Group Paytm</h3>
-                    <span>${data.groupPaytm}</span>
-                    <h3>POS Paytm</h3>
-                    <span>${data.posPaytm}</span>
-                </div>
-                <div class="card-item">
-                    <h3>Indiv GPay</h3>
-                    <span>${data.indivGpay}</span>
-                    <h3>Group GPay</h3>
-                    <span>${data.groupGpay}</span>
-                    <h3>POS GPay</h3>
-                    <span>${data.posGpay}</span>
-                </div>
-                <div class="card-item">
-                    <h3>Indiv Credit</h3>
-                    <span>${data.indivCredit}</span>
-                    <h3>Group Credit</h3>
-                    <span>${data.groupCredit}</span>
-                    <h3>POS Credit</h3>
-                    <span>${data.posCredit}</span>
-                </div>
-                <div class="card-item">
-                    <h3>Indiv Total / Discount</h3>
-                    <span>₹${resData.indivData.totAmt} / ₹${resData.indivData.totDis}</span>
-                </div>
-                <div class="card-item">
-                    <h3>Group Total / Discount</h3>
-                    <span>₹${resData.groupData.totAmt} / ₹${resData.groupData.totDis}</span>
-                </div>
-                <div class="card-item">
-                    <h3>POS Total / Discount</h3>
-                    <span>₹${resData.posData.totAmt} / ₹${resData.posData.totDis}</span>
-                </div>
-                <div class="card-item">
-                    <h3>Income / Expense</h3>
-                    <span>${data.incomeExpense}</span>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col">
-                        <div class="highlight-section m-2">
-                            Amount in Hand: ₹ ${data.amountInHand}
-                        </div>
-                        <button type="button" class="btn btn-primary w-100" 
-                                onclick="printUsersBillingData()" 
-                                style="padding: 8px 18px; font-size: 1rem; border-radius: 10px; background: linear-gradient(90deg, #fbbf24, #f59e0b); color: white; border: none; cursor: pointer; margin-left: 10px;">
-                            <i class="fa-solid fa-print"></i> Print
-                        </button>
+            <div class="container-fluid px-0 text-start">
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                         <div class="p-2 border rounded bg-light">
+                            <small class="text-muted d-block text-uppercase" style="font-size:0.7rem;">User</small>
+                            <strong>${resData.userData.name}</strong>
+                         </div>
                     </div>
+                    <div class="col-6">
+                         <div class="p-2 border rounded bg-light">
+                            <small class="text-muted d-block text-uppercase" style="font-size:0.7rem;">Date</small>
+                            <strong>${resData.dueMonthDate}</strong>
+                         </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3 border shadow-sm">
+                    <div class="card-header bg-light fw-bold py-2 small text-uppercase text-center">Collection Details</div>
+                    <div class="card-body p-2">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm mb-0 text-center align-middle" style="font-size: 0.9rem;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Cash</th>
+                                        <th>Online (Paytm/GPay)</th>
+                                        <th>Credit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-bold text-primary">Indiv</td>
+                                        <td>${formatVal(resData.indivData.cash)}</td>
+                                        <td>
+                                            <div class="d-flex flex-column small">
+                                                <span>P: ${formatVal(resData.indivData.paytm)}</span>
+                                                <span>G: ${formatVal(resData.indivData.gpay)}</span>
+                                            </div>
+                                        </td>
+                                        <td>${formatVal(resData.indivData.credit)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-success">Group</td>
+                                        <td>${formatVal(resData.groupData.cash)}</td>
+                                        <td>
+                                            <div class="d-flex flex-column small">
+                                                <span>P: ${formatVal(resData.groupData.paytm)}</span>
+                                                <span>G: ${formatVal(resData.groupData.gpay)}</span>
+                                            </div>
+                                        </td>
+                                        <td>${formatVal(resData.groupData.credit)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-info">POS</td>
+                                        <td>${formatVal(resData.posData.cash)}</td>
+                                        <td>
+                                            <div class="d-flex flex-column small">
+                                                <span>P: ${formatVal(resData.posData.paytm)}</span>
+                                                <span>G: ${formatVal(resData.posData.gpay)}</span>
+                                            </div>
+                                        </td>
+                                        <td>${formatVal(resData.posData.credit)}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                 <div class="row g-2 text-center mb-3">
+                    <div class="col-4">
+                        <div class="border rounded p-2 bg-light">
+                            <div class="small text-muted text-uppercase" style="font-size:0.7rem;">Indiv Total</div>
+                            <div class="fw-bold text-primary">₹${resData.indivData.totAmt}</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border rounded p-2 bg-light">
+                            <div class="small text-muted text-uppercase" style="font-size:0.7rem;">Group Total</div>
+                            <div class="fw-bold text-success">₹${resData.groupData.totAmt}</div>
+                        </div>
+                    </div>
+                     <div class="col-4">
+                        <div class="border rounded p-2 bg-light">
+                            <div class="small text-muted text-uppercase" style="font-size:0.7rem;">POS Total</div>
+                            <div class="fw-bold text-info">₹${resData.posData.totAmt}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-success d-flex justify-content-between align-items-center mb-0 shadow-sm">
+                    <span class="fw-bold text-uppercase small">Total Amount In Hand</span>
+                    <span class="fs-4 fw-bold">₹ ${resData.amountInHand}</span>
+                </div>
+                
+                 <div class="mt-3 text-center">
+                    <button type="button" class="btn btn-warning text-white fw-bold w-100 shadow-sm" onclick="printUsersBillingData()">
+                        <i class="fa-solid fa-print me-2"></i> Print Summary
+                    </button>
                 </div>
             </div>
         `;
 
-        // Show SweetAlert
         Swal.fire({
+            title: '',
             html: content,
-            width: 'auto',
-            showCloseButton: true,
+            width: '650px',
             showConfirmButton: false,
+            showCloseButton: true,
+            customClass: {
+                popup: 'rounded-4'
+            }
         });
 
     } catch (error) {
-        // Handle any errors
         console.error('Error fetching data:', error);
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Failed to fetch user data. Please try again later.',
-            showConfirmButton: true,
+            title: 'Fetch Error',
+            text: 'Failed to retrieve billing data.',
+            confirmButtonColor: '#4361ee'
         });
     }
 }
 
-async function printUsersBillingData() {
+function printUsersBillingData() {
     Swal.fire({
-        title: `Collection Summary`,
+        title: 'Print Preview',
         html: `
-            <iframe 
-            width="100%" 
-            height="515" 
-            src="prtUserBillingData.php?d=${encodeURIComponent(JSON.stringify(resData))}" 
-            frameborder="0" 
-            allowfullscreen
-            style="max-width: 600px; width: 100%; height: 515px;">
-            </iframe>
-            <button id="myButton" class="swal2-confirm swal2-styled mt-2">Back</button>`,
+            <iframe width="100%" height="500" 
+                    src="prtUserBillingData.php?d=${encodeURIComponent(JSON.stringify(resData))}" 
+                    frameborder="0" style="border-radius: 8px; border: 1px solid #ddd;"></iframe>
+            <div class="mt-3">
+                <button id="backBtn" class="btn btn-secondary btn-sm">Back to Summary</button>
+            </div>
+        `,
+        width: '700px',
         showConfirmButton: false,
         showCloseButton: true,
-        position: 'top',
         didOpen: () => {
-            // Add event listener for the button
-            document.getElementById('myButton').addEventListener('click', () => {
-                fetchUsersBillingData();
+            document.getElementById('backBtn').addEventListener('click', () => {
+                // Re-open previous summary
+                fetchUsersBillingData(); // Logic re-runs to show previous view (simplest way approx)
+                // Or simply Swal.clickConfirm() if we Want to close? No, user wants back.
+                // Calling fetchUsersBillingData will overwrite current swal.
             });
         }
     });
 }
 
 function formatMoney(amount) {
-    // Convert amount to number and round to two decimal places
-    amount = parseFloat(amount).toFixed(2);
-
-    // Separate the whole number part from the decimal part
-    let parts = amount.toString().split('.');
-    let wholeNumber = parts[0];
-    let decimalPart = parts.length > 1 ? '.' + parts[1] : '';
-
-    // Add commas for thousands separator
-    wholeNumber = wholeNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-    // Combine whole number part with decimal part
-    return wholeNumber + decimalPart;
+    return parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
 
 $(document).ready(function() {
-    // Function to load data
-    function loadData() {
-        // Call PHP function and encode its return value into valid JS
-        var result = <?php echo json_encode(getAvblSMSbalanceAmt()); ?>;
-
-        if (result && result.status) {   // you set status = "true" in PHP
-            $("#avblSMSbalanceAmt").html(formatMoney(result.data[0].BalanceAmount));
-        } else {
-            $("#avblSMSbalanceAmt").html("0");
-        }
+    // Load SMS Balance
+    var result = <?php echo json_encode(getAvblSMSbalanceAmt()); ?>;
+    if (result && result.status && result.data && result.data[0]) {
+        $("#avblSMSbalanceAmt").html(formatMoney(result.data[0].BalanceAmount));
+    } else {
+        $("#avblSMSbalanceAmt").html("0.00");
     }
-
-    // Load initially
-    loadData();
-
-    // Reload on button click with SweetAlert2 toast
-    // $("#reload_btn").on("click", function() {
-    //     loadData();
-
-    //     // SweetAlert2 toast notification
-    //     Swal.fire({
-    //         toast: true,
-    //         position: 'top-end',
-    //         icon: 'success',
-    //         title: 'Reloaded Successfully',
-    //         showConfirmButton: false,
-    //         timer: 2000,
-    //         timerProgressBar: false
-    //     });
-    // });
 });
-
-
 </script>
 
-
-
-
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php // include 'footer.php'; ?>
 </body>
 </html>
-
-<?php //include 'footer.php'?>
-
-
-<?php }else{
-	header("Location: logout.php");
-} ?>
+<?php 
+   } else {
+       header("Location: logout.php");
+   } 
+?>

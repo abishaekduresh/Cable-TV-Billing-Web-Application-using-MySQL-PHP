@@ -45,7 +45,7 @@ $stmtOld->close();
 if (!$oldPmode) $oldPmode = "N/A";
 
 // Build final remark
-$finalRemark = $usernamePrefix . " - Changed payment mode from " . $oldPmode . " to " . $selectedValue . " | Note: " . $remark2Input;
+$finalRemark = $usernamePrefix . " - Changed payment mode from " . $oldPmode . " to " . $selectedValue . " | CREDIT: " . $remark2Input;
 
 // Update bill with remark2 and pMode
 $stmt = $con->prepare("UPDATE bill SET pMode = ?, remark2 = ? WHERE bill_id = ?");
@@ -53,7 +53,7 @@ $stmt->bind_param("ssi", $selectedValue, $finalRemark, $bill_no);
 $updateResult = $stmt->execute();
 
 // Prepare log message
-$logMessage = $usernamePrefix . " updated bill for STB: $stbNo | Bill No: $bill_no | Payment mode changed from $oldPmode to $selectedValue | Note: $remark2Input";
+$logMessage = $usernamePrefix . " updated bill for STB: $stbNo | Bill No: $bill_no | Payment mode changed from $oldPmode to $selectedValue | CREDIT: $remark2Input";
 
 if ($updateResult) {
     if (isset($_SESSION['id'])) {

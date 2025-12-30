@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <?php include 'favicon.php'; ?>
     <title>Database Connection Field</title>
     <style>
         h1 {

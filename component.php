@@ -1028,14 +1028,14 @@ function send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbn
         if ($pMode == 'cash' || $pMode == 'gpay' || $pMode == 'Paytm' ) {
             $pMode1 = 'paid';
         } elseif ($pMode == 'credit') {
-            $pMode1 = 'unpaid - Credit Bill';
+            $pMode1 = 'Unpaid - Credit Bill';
         } else {
-            $pMode1 = '-';
+            $pMode1 = '-1';
         }
     } elseif ($bill_status == 'cancel') {
         $pMode1 = 'cancelled';
     } else {
-        $pMode1 = '-';
+        $pMode1 = '-2' . $bill_status;
     }
 
     // Replace placeholders with actual values
@@ -1343,9 +1343,9 @@ function getUserGroupBillPayModeData($currentDate, $username, $pMode) {
     $Rs = 0;
 
     // Correct SQL query
-    $sql = "SELECT Rs, discount 
+    $sql = "SELECT *
             FROM billgroupdetails 
-            WHERE date = ? 
+            WHERE DATE(created_at) = ? 
             AND billBy = ? 
             AND pMode = ? 
             AND status = 'approve'";
@@ -1575,5 +1575,56 @@ function fetchBiometricAttendance($eno = null) {
     return $decoded;
 }
 
-?>
+function getUnixTimestamp(?string $datetime = null): int
+{
+    return $datetime ? strtotime($datetime) : time();
+}
 
+/**
+ * Encrypt a plain text using AES-256-CBC.
+ *
+ * @param string $plainText
+ * @param string $secretKey
+ * @param string $secretIv
+ * @return string
+ */
+function encrypt(string $plainText, string $secretKey = 'default_secret_key_123', string $secretIv = 'default_secret_iv_123'): string
+{
+    if ($plainText === '') {
+        return '';
+    }
+
+    $method = 'AES-256-CBC';
+    $key = hash('sha256', $secretKey);
+    $iv  = substr(hash('sha256', $secretIv), 0, 16);
+
+    $encrypted = openssl_encrypt($plainText, $method, $key, 0, $iv);
+    return base64_encode($encrypted);
+}
+
+/**
+ * Decrypt an encrypted string using AES-256-CBC.
+ *
+ * @param string $encryptedText
+ * @param string $secretKey
+ * @param string $secretIv
+ * @return string
+ */
+function decrypt(string $encryptedText, string $secretKey = 'default_secret_key_123', string $secretIv = 'default_secret_iv_123'): string
+{
+    if ($encryptedText === '') {
+        return '';
+    }
+
+    $method = 'AES-256-CBC';
+    $key = hash('sha256', $secretKey);
+    $iv  = substr(hash('sha256', $secretIv), 0, 16);
+
+    $decoded = base64_decode($encryptedText, true);
+    if ($decoded === false) {
+        throw new RuntimeException("Decryption failed: Invalid base64 input.");
+    }
+
+    $decrypted = openssl_decrypt($decoded, $method, $key, 0, $iv);
+    return $decrypted ?: '';
+}

@@ -14,7 +14,7 @@ if (isset($_SESSION['username'], $_SESSION['id'], $_SESSION['role'])) {
     exit(); // Always exit after redirection
 } 
 
-$token = isset($_GET['token']) ? $_GET['token'] : '-';
+$id = isset($_GET['id']) ? $_GET['id'] : '-';
 
 $sql_settings = "SELECT * FROM settings";
 $result_settings = $con->query($sql_settings);
@@ -42,9 +42,9 @@ if ($result_settings && $result_settings->num_rows > 0) {
     
 }
 
-$sql_bill = "SELECT * FROM pos_bill WHERE token = ?";
+$sql_bill = "SELECT * FROM pos_bill WHERE pos_bill_id = ?";
 $stmt_bill = $con->prepare($sql_bill);
-$stmt_bill->bind_param("s", $token);
+$stmt_bill->bind_param("s", $id);
 $stmt_bill->execute();
 $result_bill = $stmt_bill->get_result();
 
@@ -135,9 +135,9 @@ $html .= '<table>
         <th>Amt</th>
       </tr>';
 
-$query_items = "SELECT * FROM pos_bill_items WHERE token = ?";
+$query_items = "SELECT * FROM pos_bill_items WHERE pos_bill_id = ?";
 $stmt_items = $con->prepare($query_items);
-$stmt_items->bind_param("s", $token);
+$stmt_items->bind_param("s", $id);
 $stmt_items->execute();
 $result_items = $stmt_items->get_result();
 

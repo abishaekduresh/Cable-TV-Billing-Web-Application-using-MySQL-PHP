@@ -37,6 +37,7 @@ $hidePromotion = ($footer1 == NULL);
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Print Indiv Adv bill</title>
     <head>
+    <?php include 'favicon.php'; ?>
         <style>
             body {
             font-family: Arial, sans-serif; 

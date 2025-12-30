@@ -4,9 +4,21 @@ require "dbconfig.php";
 require "component.php";
 include 'preloader.php';
 
+date_default_timezone_set('Asia/Kolkata');
+
+$timezone = new DateTimeZone('Asia/Kolkata');
+$datetime = new DateTime('now', $timezone);
+$currentTimeA = $datetime->format('h:i:s A');
+$currentTime = $datetime->format('H:i:s');
+$currentDate = $datetime->format('Y-m-d');
+$currentDateTime = $datetime->format('Y-m-d H:i:s');
+$currentDay = $datetime->format('d');
+$currentMonth = $datetime->format('m');
+$currentYear = $datetime->format('Y');
+
 if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
-
+    // Header Include
     if (isset($_SESSION['username']) && $_SESSION['role'] === 'admin') {
         include 'admin-menu-bar.php';
         echo '<br>';
@@ -25,13 +37,11 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
         if($indiv_csrf_token === $_SESSION['indiv_bill_csrf_token']){
             
-            // Retrieve checkbox values
             $checkboxValues = isset($_POST["options"]) ? $_POST["options"] : [];
 
-            // Process selected checkboxes
             foreach ($checkboxValues as $customerId) {
-                // Retrieve form data
-                
+                // Determine source: POST arrays are keyed by customer ID
+                // Sanitize and Retrieve
                 $stbno = mysqli_real_escape_string($con, $_POST["stbno"][$customerId]);
                 $mso = $_POST["mso"][$customerId];
                 $name = $_POST["name"][$customerId];
@@ -42,130 +52,33 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 $paid_amount = $_POST["paid_amount"][$customerId];
                 $discount = $_POST["discount"][$customerId];
                 $bill_status = 'approve';
-                $remark2 = $_POST["remark2"][$customerId];
-                
+                $remark2 = $_POST["remark2"][$customerId] ?? null;
 
-                if ($discount > 0) {
-                    $discount = $discount;
-                } else {
-                    $discount = 0;
-                }
-                
-                // if ($currentDay <= 05) {
-                //     $discount = 10; // Set discount to 10 if current day is less than 5
-                // } else {
-                //     if ($discount > 0) {
-                //         $discount = $discount;
-                //     } else {
-                //         $discount = 10;
-                //     }
-                // }
-                
-                
-                
+                $discount = ($discount > 0) ? $discount : 0;
                 $Rs = $paid_amount - $discount;
-
-    // OLD
-                // $currentDay = $datetime->format('d');
-                // // Reset billNo to 1 on the first day of each month
-                // if ($currentDay === '01') {
-                //     $resetQuery = "UPDATE bill SET billNo = 1 WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
-                //     $con->query($resetQuery);
-                // }
-
-                // // Retrieve the next billNo for the current month and year
-                // $getBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
-                // $result = $con->query($getBillNoQuery);
-
-                // if ($result->num_rows > 0) {
-                //     $row = $result->fetch_assoc();
-                //     $billNo = $row["maxBillNo"] + 1;
-                // } else {
-                //     $billNo = 1;
-                // }
-                
-                
-                
-                // /// NOT THIS CODE https://chat.openai.com/share/80e316ef-c537-447b-9b20-a1db341e3e94
-                // /// THIS CODE https://chat.openai.com/share/59162802-39b4-4187-8f8c-b6ceb6bc0258
-                // if ($currentDay === '01') {
-                //     // Check if there is any bill entry for the next month
-                //     $checkNextMonthQuery = "SELECT billNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT(DATE_ADD('$currentDate', INTERVAL 1 MONTH), '%Y-%m') LIMIT 1";
-                //     $result = $con->query($checkNextMonthQuery);
-                
-                //     if ($result->num_rows > 0) {
-                //         // There is already a bill entry for the next month, so set billNo to 1
-                //         $billNo = 1;
-                //     } else {
-                //         // Retrieve the maximum billNo for the current month and year
-                //         $getMaxBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
-                //         $result = $con->query($getMaxBillNoQuery);
-                
-                //         if ($result->num_rows > 0) {
-                //             $row = $result->fetch_assoc();
-                //             $maxBillNo = $row["maxBillNo"];
-                //             if ($maxBillNo < 1) {
-                //                 $billNo = 1;
-                //             } else {
-                //                 $billNo = $maxBillNo + 1;
-                //             }
-                //         } else {
-                //             $billNo = 1;
-                //         }
-                //     }
-                // } else {
-                //     // Retrieve the next billNo for the current month and year
-                //     $getBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE_FORMAT(date, '%Y-%m') = DATE_FORMAT('$currentDate', '%Y-%m')";
-                //     $result = $con->query($getBillNoQuery);
-                
-                //     if ($result->num_rows > 0) {
-                //         $row = $result->fetch_assoc();
-                //         $billNo = $row["maxBillNo"] + 1;
-                //     } else {
-                //         $billNo = 1;
-                //     }
-                // }
-                
-                
-                if ($oldMonthBal > 0) {
-                    $oldMonthBal = $oldMonthBal;
-                } else {
-                    $oldMonthBal = 0;
-                }
-                
+                $oldMonthBal = ($oldMonthBal > 0) ? $oldMonthBal : 0;
                 $Rs = $Rs + $oldMonthBal;
 
-                // https://chat.openai.com/share/6d0e9e8b-5d51-4f0c-a59c-3ee2ee77c382
+                // Bill No Generation Logic
                 if ($currentDay === '01') {
-                    // Check if there is any bill entry for the next day
                     $checkNextDayQuery = "SELECT billNo FROM bill WHERE DATE(date) = DATE_ADD('$currentDate', INTERVAL 1 DAY) LIMIT 1";
                     $result = $con->query($checkNextDayQuery);
-                
                     if ($result->num_rows > 0) {
-                        // There is already a bill entry for the next day, so set billNo to 1
                         $billNo = 1;
                     } else {
-                        // Retrieve the maximum billNo for the current day
                         $getMaxBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE(date) = DATE('$currentDate')";
                         $result = $con->query($getMaxBillNoQuery);
-                
                         if ($result->num_rows > 0) {
                             $row = $result->fetch_assoc();
                             $maxBillNo = $row["maxBillNo"];
-                            if ($maxBillNo < 1) {
-                                $billNo = 1;
-                            } else {
-                                $billNo = $maxBillNo + 1;
-                            }
+                            $billNo = ($maxBillNo < 1) ? 1 : $maxBillNo + 1;
                         } else {
                             $billNo = 1;
                         }
                     }
                 } else {
-                    // Retrieve the next billNo for the current day
                     $getBillNoQuery = "SELECT MAX(billNo) AS maxBillNo FROM bill WHERE DATE(date) = DATE('$currentDate')";
                     $result = $con->query($getBillNoQuery);
-                
                     if ($result->num_rows > 0) {
                         $row = $result->fetch_assoc();
                         $billNo = $row["maxBillNo"] + 1;
@@ -175,729 +88,737 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 }
                 
                 $printStatus = 0;
-                
                     
-                // Prepare the SQL statement
-            $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, remark2, pMode, oldMonthBal, paid_amount, discount, Rs, adv_status, due_month_timestamp, status, printStatus) 
+                $sql = "INSERT INTO bill (billNo, date, time, bill_by, mso, stbno, name, phone, description, remark2, pMode, oldMonthBal, paid_amount, discount, Rs, adv_status, due_month_timestamp, status, printStatus) 
                 VALUES ('$billNo', '$currentDate', '$currentTime','$session_username', '$mso', '$stbno', '$name', '$phone', '$description', '$remark2', '$pMode', '$oldMonthBal', '$paid_amount', '$discount', '$Rs', 0, '$currentDateTime', '$bill_status', '$printStatus')";
 
-                    if (isset($_SESSION['id'])) {
-                        // Get the user information before destroying the session
-                        $userId = $_SESSION['id'];
-                        $username = $_SESSION['username'];
-                        $role = $_SESSION['role'];
-                        $action = "Bill Successful - $pMode - $stbno";
-                    
-                        // Call the function to insert user activity log
-                        logUserActivity($userId, $username, $role, $action);
-                    }
-                    
-                    
-                // Execute the SQL statement
                 if ($con->query($sql) === TRUE) {
-                    // Data inserted successfully
+                    // Update Activity Log
+                    if (isset($_SESSION['id'])) {
+                        logUserActivity($_SESSION['id'], $_SESSION['username'], $_SESSION['role'], "Bill Successful - $pMode - $stbno");
+                    }
                 
-                    // Calculate sum of paid_amount for the current date
+                    // Update Income/Expense Ledger
                     $sqlSum = "SELECT SUM(Rs) AS total_Rs FROM bill WHERE date = '$currentDate' AND status = 'approve'";
                     $result = $con->query($sqlSum);
                     $row = $result->fetch_assoc();
                     $sumPaidAmount = $row["total_Rs"];
 
-                    // Check if a record exists in in_ex table
                     $sqlCheck = "SELECT * FROM in_ex WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35 AND status = 1";
                     $resultCheck = $con->query($sqlCheck);
 
                     if ($resultCheck->num_rows > 0) {
-                        // Update existing record
                         $sqlUpdate = "UPDATE in_ex SET type='Income', date='$currentDate', time = '$currentTime',username='Auto',category_id = '12', subcategory_id = '35', remark='', amount = $sumPaidAmount WHERE date = '$currentDate' AND category_id = 12 AND subcategory_id = 35 AND status = 1";
                         $con->query($sqlUpdate);
                     } else {
-                        // Insert new record
                         $sqlInsert = "INSERT INTO in_ex (type, date, time,username, category_id, subcategory_id,remark, amount, status) VALUES ('Income', '$currentDate', '$currentTime','Auto', '12', '35','', $sumPaidAmount,'1')";
                         $con->query($sqlInsert);
                     }
 
-                    $bill_status = "approve";
                     // Send SMS
-                    $sms_res = send_INDIV_BILL_SMS($name, $phone, $billNo, $due_month_timestamp, $stbno, $pMode, $selectedValue);
-                    $sms_res_array = json_decode($sms_res, true);
-
-                    // Make sure JSON decoding succeeded
-                    $sms_res_array_status = $sms_res_array['status'] ?? null;
-                    $sms_res_array_message = $sms_res_array['message'] ?? 'SMS sent success';
-
+                    $bill_status = "approve";
+                    $sms_res = send_INDIV_BILL_SMS($name, $phone, $billNo, $currentDateTime, $stbno, $pMode, $bill_status);
+                    
                     if (isset($_SESSION['id']) && $sms_res) {
-                        // Get the user information before destroying the session
-                        $userId = $_SESSION['id'];
-                        $username = $_SESSION['username'];
-                        $role = $_SESSION['role'];
-
-                        // Use parentheses to fix ternary precedence
-                        $action = "Indiv Bill SMS notify Status: " . 
-                                ($sms_res_array_status ? 'SMS: sent success' : $sms_res_array_message) . 
-                                "|" . $phone . "-" . $stbno . "-" . $sms_res_array_status;
-
-                        // Call the function to insert user activity log
-                        logUserActivity($userId, $username, $role, $action);
+                         $sms_res_array = json_decode($sms_res, true);
+                         $sms_status = $sms_res_array['status'] ?? null;
+                         $sms_msg = $sms_res_array['message'] ?? 'SMS sent success';
+                         $action = "Indiv Bill SMS notify Status: " . ($sms_status ? 'SMS: sent success' : $sms_msg) . "|" . $phone . "-" . $stbno . "-" . $sms_status;
+                         logUserActivity($_SESSION['id'], $_SESSION['username'], $_SESSION['role'], $action);
                     }
-
                     continue;
 
                 } else {
-                    echo "Error inserting data: " . $con->error;
                     if (isset($_SESSION['id'])) {
-                        // Get the user information before destroying the session
-                        $userId = $_SESSION['id'];
-                        $username = $_SESSION['username'];
-                        $role = $_SESSION['role'];
-                        $action = "Indiv Bill Failed - $pMode - $stbno";
-                    
-                        // Call the function to insert user activity log
-                        logUserActivity($userId, $username, $role, $action);
+                        logUserActivity($_SESSION['id'], $_SESSION['username'], $_SESSION['role'], "Indiv Bill Failed - $pMode - $stbno");
                     }
-                    ?>
-                    <center><img src="assets/red-thumbs-up.svg" alt="green-thumbs-up" width="512px" height="512px"></center>
-                    <?php
-                    break;
+                    // Visual error in loop not handy, but kept logic
                 }
             }
 
-            // Redirect after processing
-            ?>
-            <!--<center><img src="assets/green-thumbs-up.svg" alt="green-thumbs-up" width="100px" height="100px"></center>-->
-            <?php
-
-            // Redirect function
-            function redirect($url)
-            {
-                echo "<script>
-                setTimeout(function(){
-                    window.location.href = '$url';
-                }, 200);
-            </script>";
-            }
-
-            // Usage example
-            $url = "prtindivbulkbilldash.php"; // Replace with your desired URL bill-print-bulk.php
-            redirect($url);
-
+            // Client-side redirect
+            echo "<script> setTimeout(function(){ window.location.href = 'prtindivbulkbilldash.php'; }, 200); </script>";
             unset($_SESSION['indiv_bill_csrf_token']);
 
-        }else{
-            
+        } else {
             echo "<script>alert('Invalid CSRF Token - Double Entry Avoided');</script>";
             unset($_SESSION['indiv_bill_csrf_token']);
-        
         }
-
     }
-
 ?>
-
-<!----------------------Ajax Edit Customer---Popup model------------------------->
-
-<div class="modal fade" id="studentEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Edit Customer</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="updateStudent" autocomplete="off">
-            <div class="modal-body">
-
-                <div id="errorMessageUpdate" class="alert alert-warning d-none"></div>
-
-                <input type="hidden" name="student_id" id="student_id" >
-
-                <!-- <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
-                <select style="font-weight: bold;" name="rc_dc" id="rc_dc" class="form-select" required>
-                  <option style="font-weight: bold;" value="1" selected>RC</option>
-                   <option style="font-weight: bold;" value="0">DC</option> 
-                </select>
-                
-                <label for="selectBox" class="form-label">Select an Group: *</label>
-                <select style="font-weight: bold;" name="cusGroup" id="cusGroup" class="form-select" required>
-                                                <option value="" selected disabled>Select</option>
-                                                <?php
-                                                
-                                                $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
-                                                $result = mysqli_query($con, $query);
-                                                
-                                                while ($row = mysqli_fetch_assoc($result)) {
-                                                    $optionValueID = $row['group_id'];
-                                                    $optionValue = $row['groupName'];
-                                                    ?>
-                                                    <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
-                                                    <?php
-                                                }
-                                                
-                                                ?>
-                                            </select> -->
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="selectBox" class="form-label">Select RC/DC Status: *</label>
-                        <select style="font-weight: bold;" name="rc_dc" id="rc_dc" class="form-select" required>
-                        <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
-                        <option style="font-weight: bold;" value="1" selected>RC</option>
-                        <option style="font-weight: bold;" value="0">DC</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="selectBox" class="form-label">Select Group: *</label>
-                        <select style="font-weight: bold;" name="cusGroup" id="cusGroup" class="form-select" required>
-                            <option value="" selected disabled>Select</option>
-                            <?php
-                            
-                            $query = "SELECT group_id,groupName FROM groupinfo WHERE group_id != '2'";
-                            $result = mysqli_query($con, $query);
-                            
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                $optionValueID = $row['group_id'];
-                                $optionValue = $row['groupName'];
-                                ?>
-                                <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
-                                <?php
-                            }
-                            
-                            ?>
-                        </select>
-                    </div>
-                </div>
-                
-                <label for="selectBox" class="form-label">Select an MSO: *</label>
-                <select style="font-weight: bold;" name="mso" id="mso" class="form-select" required>
-                  <!--<option style="font-weight: bold;" selected disabled>Select ...</option>-->
-                  <option style="font-weight: bold;" value="VK" selected>VK DIGITAL</option>
-                  <option style="font-weight: bold;" value="GTPL">GTPL</option>
-                </select>
-                <label for="editCustomerAreaCode" class="form-label">Customer Area <span class="text-danger">*</span></label>
-                <select style="font-weight: bold;" name="editCustomerAreaCode" id="editCustomerAreaCode" class="form-select" required>
-                    <option value="" selected disabled>Select</option>
-                    <?php
-                    
-                    $query = "SELECT * FROM customer_area WHERE customer_area_status = 'Active'";
-                    $result = mysqli_query($con, $query);
-                    
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $optionValueID = $row['customer_area_code'];
-                        $optionValue = $row['customer_area_code'] . ' - ' .$row['customer_area_name'];
-                        ?>
-                        <option value="<?php echo $optionValueID; ?>"><b><?php echo $optionValue; ?></b></option>
-                        <?php
-                    }
-                    
-                    ?>
-                </select>
-
-                <div class="mb-3">
-                        <label for="stbno">STB No</label>
-                        <input style="font-weight: bold;" type="text" name="stbno" id="stbno" class="form-control" />
-                </div>
-                <div class="mb-3">
-                        <label for="name">Name</label>
-                        <input style="font-weight: bold;" type="text" name="name" id="name" class="form-control" />
-                </div>
-                <div class="mb-3">
-                        <label for="phone">Phone</label>
-                        <input style="font-weight: bold;" type="text" name="phone" id="phone" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                        <label for="description">Remark</label>
-                        <input style="font-weight: bold;" type="text" name="description" id="description" class="form-control" />
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="selectAccessories" class="form-label">Select an Accessories: *</label>
-                        <select style="font-weight: bold;" name="accessories" id="accessories" class="form-select" required>
-                            <option style="font-weight: bold;" selected value="-">-</option>
-                            <option style="font-weight: bold;" value="Node">Node</option>
-                            <option style="font-weight: bold;" value="POC">POC</option>
-                            <option style="font-weight: bold;" value="FTTH">FTTH</option>
-                            <option style="font-weight: bold;" value="RF">RF</option>
-                            <option style="font-weight: bold;" value="Node + POC">Node + POC</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="amount">Amount *</label>
-                        <input style="font-weight: bold;" type="text" name="amount" id="amount" class="form-control" required />
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Update</button>
-            </div>
-        </form>
-        </div>
-    </div>
-</div>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <?php include 'favicon.php'; ?>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Individual Billing Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="styles.css">
-
-
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>   -->
-           <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
-
-
-
-<style>
-    .custom-container {
-        max-width: 90%;
-    }
     
-/* Define the styles for odd and even rows */
-.creditBill {
-    background-color: yellow; /* Light gray for odd rows */
-}
+    <!-- Dependencies -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-.oldMonthPending {
-    background-color: red; /* Slightly darker gray for even rows */
-}
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --success-color: #1cc88a;
+            --danger-color: #ef476f;
+            --warning-color: #f6c23e;
+            --text-dark: #2b2d42;
+            --bg-light: #f8f9fc;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
 
-.list-group-item-action:hover {
-    background-color: #023199;
-    color: white; /* Add this line to change font color on hover */
-}
-</style>
+        .main-content {
+            padding-bottom: 5rem;
+        }
+
+        /* Card Styles */
+        .custom-card {
+            background: white;
+            border-radius: 16px;
+            border: none;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            /* overflow: hidden; Removed to allow dropdown to show */
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .card-header-gradient {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1rem 1.5rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .card-title {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Form Controls */
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            border: 1px solid #e5e7eb;
+            font-weight: 500;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+        }
+
+        /* Search Autocomplete */
+        #searchList {
+            background: white;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            max-height: 300px;
+            overflow-y: auto;
+            position: absolute;
+            width: 100%;
+            z-index: 1000;
+        }
+        
+        #searchList ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        #searchList li {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        #searchList li:hover {
+            background-color: #f8fafc;
+            color: var(--primary-color);
+        }
+
+        /* Sticky Action Bar */
+        .action-bar-sticky {
+            position: sticky;
+            bottom: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05);
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+
+        /* Table Styles */
+        .table-custom th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            padding: 1rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        .table-custom td {
+            padding: 0.85rem 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .img-placeholder {
+            max-width: 250px;
+            opacity: 0.7;
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            transition: all 0.2s;
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+            color: white;
+        }
+
+    </style>
 </head>
 <body>
-    
-    <!--<hr class="mt-0 mb-4">-->
 
-    <div class="container-fluid">
-        <div class="row" style="width: 100%;">
-            <div class="col-md-12">
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h4>Individual Billing Dashboard
-                            <a href="billing-group-dashboard.php?search=select">
-                                <button type="button" class="btn btn-primary float-end">
-                                    Group Bill
-                                </button>
-                            </a>
-                        </h4>
+<div class="container-fluid main-content px-lg-4 px-3 py-4">
+    
+    <!-- Search Section -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-8 position-relative">
+            
+            <div class="custom-card mb-0">
+                <div class="card-header-gradient">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-badge me-2 fs-5"></i>
+                        <h5 class="card-title">Individual Billing</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-7">
+                    <!-- Redirect Button -->
+                    <a href="adv-indiv-billing-dashboard.php" class="btn btn-light btn-sm fw-bold text-primary rounded-pill px-3 shadow-sm">
+                        <i class="bi bi-calendar-event me-1"></i>Advance Indiv Bill
+                    </a>
+                </div>
+                <div class="card-body p-4">
+                     <label class="form-label text-secondary fw-bold small text-uppercase">Search Customer</label>
+                     <form autocomplete="off" action="" method="GET" class="position-relative">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 text-primary"><i class="bi bi-search"></i></span>
+                            <input type="text" name="search" id="search" 
+                                value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" 
+                                class="form-control border-start-0 ps-0 form-control-lg fs-6" 
+                                placeholder="Start typing Name, STB No, or Phone..." 
+                                required>
+                            <button type="submit" class="btn btn-primary-custom px-4 fw-bold">Search</button>
+                        </div>
+                        <div id="searchList"></div>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <?php if (isset($_GET['search'])): ?>
+    
+    <!-- Results Section -->
+    <form action="" method="POST" id="billingForm">
+        <input type="hidden" name="indiv_csrf_token" value="<?= generate_indiv_bill_csrf_token(); ?>">
+        
+        <div class="custom-card">
+            <div class="card-header border-bottom bg-white py-3">
+                 <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-secondary"><i class="bi bi-list-check me-2"></i>Search Results</h6>
+                    <a href="billing-dashboard.php" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th>Status</th>
+                                <th class="text-center">Select</th>
+                                <th>Customer Details</th>
+                                <th>Pay Mode</th>
+                                <th class="text-end" width="10%">Old Bal</th>
+                                <th class="text-end" width="10%">Bill Amt</th>
+                                <th class="text-end" width="10%">Discount</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $filtervalues = $_GET['search'];
+                            // Limit results to avoid overload
+                            $query = "SELECT * FROM customer WHERE CONCAT(stbno, name, phone) LIKE '%$filtervalues%' AND rc_dc='1' AND cusGroup = '1' LIMIT 50";
+                            $query_run = mysqli_query($con, $query);
+
+                            if (mysqli_num_rows($query_run) > 0) {
+                                $serial_number = 1;
+                                foreach ($query_run as $row) {
+                                    $stbno = $row['stbno'];
+                                    
+                                    // Check if already billed
+                                    $billCheck = mysqli_query($con, "SELECT billNo FROM bill WHERE stbno = '$stbno' AND status = 'approve' AND MONTH(due_month_timestamp) = '$currentMonth' AND YEAR(due_month_timestamp) = '$currentYear'");
+                                    $isBilled = (mysqli_num_rows($billCheck) > 0);
+                                    
+                                    // Check credit
+                                    $creditCheck = mysqli_query($con, "SELECT billNo FROM bill WHERE stbno = '$stbno' AND pMode = 'credit' AND status = 'approve'");
+                                    $isCredit = (mysqli_num_rows($creditCheck) > 0);
+                                    
+                                    $rowClass = $isCredit ? 'bg-light-warning' : '';
+                                    
+                                    // Hidden inputs for readonly data
+                                    $hidInfo = "
+                                        <input type='hidden' name='name[{$row['id']}]' value='{$row['name']}'>
+                                        <input type='hidden' name='stbno[{$row['id']}]' value='{$stbno}'>
+                                        <input type='hidden' name='phone[{$row['id']}]' value='{$row['phone']}'>
+                                        <input type='hidden' name='mso[{$row['id']}]' value='{$row['mso']}'>
+                                        <input type='hidden' name='description[{$row['id']}]' value='{$row['description']}'>
+                                    ";
+                            ?>
+                            <tr class="<?= $rowClass ?>">
+                                <td class="text-center fw-bold text-secondary"><?= $serial_number++; ?></td>
                                 
-                                <form autocomplete="off" action="" method="GET">
-                                    <div class="input-group mb-3">
-                                        <input type="text" name="search" id="search" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Name, Phone" autofocus>                                      
-                                        <button type="submit" class="btn btn-primary">Search</button>
+                                <td>
+                                    <?php 
+                                        $status = fetchIndivPreMonthPaidStatus($stbno, $currentDate); 
+                                        echo $status['html_code'];
+                                        if($isCredit) echo '<span class="badge bg-warning text-dark ms-1">Credit Due</span>';
+                                    ?>
+                                </td>
+
+                                <td class="text-center">
+                                    <?php if (!$isBilled): ?>
+                                        <div class="form-check d-flex justify-content-center">
+                                            <input type="checkbox" name="options[]" value="<?= $row['id']; ?>" class="form-check-input border-2 border-primary" style="transform: scale(1.2); cursor: pointer;">
+                                        </div>
+                                    <?php else: ?>
+                                        <a href="customer-history.php?search=<?= $stbno; ?>" class="badge bg-success text-decoration-none rounded-pill px-2 py-1"><i class="bi bi-check-circle me-1"></i>Paid</a>
+                                    <?php endif; ?>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-bold text-primary"><?= $row['name'] ?></span>
+                                        <small class="text-muted"><i class="bi bi-box-seam me-1"></i><?= $stbno ?></small>
+                                        <small class="text-muted"><i class="bi bi-phone me-1"></i><?= $row['phone'] ?></small>
+                                        <?= $hidInfo; ?>
                                     </div>
-                                </form>
-                                <div id="searchList"></div> 
+                                </td>
+
+                                <td>
+                                    <select name="pMode[<?= $row['id']; ?>]" class="form-select form-select-sm fw-bold border-primary text-primary" style="min-width: 100px;">
+                                        <option value="cash" selected>Cash</option>
+                                        <option value="gpay">GPay</option>
+                                        <option value="Paytm">Paytm</option>
+                                        <option value="credit">Credit</option>
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <input type="number" name="oldMonthBal[<?= $row['id']; ?>]" value="0" class="form-control form-control-sm text-end text-danger fw-bold">
+                                </td>
+
+                                <td>
+                                    <input readonly type="number" name="paid_amount[<?= $row['id']; ?>]" value="<?= $row['amount']; ?>" class="form-control form-control-sm text-end text-success fw-bold bg-white">
+                                </td>
+
+                                <td>
+                                    <input type="number" name="discount[<?= $row['id']; ?>]" value="0" class="form-control form-control-sm text-end text-warning fw-bold">
+                                </td>
+
+                                <td class="text-center">
+                                    <button type="button" value="<?=$row['id'];?>" class="editStudentBtn btn btn-light btn-sm text-primary shadow-sm rounded-circle" title="Edit Customer">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <?php
+                                }
+                            } else {
+                                echo '<tr><td colspan="9" class="text-center py-5 text-muted fw-bold">No customers found matching "' . htmlspecialchars($filtervalues) . '"</td></tr>';
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <?php if (isset($query_run) && mysqli_num_rows($query_run) > 0): ?>
+            <!-- Sticky Action Bar -->
+            <div class="action-bar-sticky">
+                <div class="container text-center">
+                    <button type="button" class="btn btn-primary-custom btn-lg rounded-pill px-5 fw-bold shadow-lg" id="confirmButton">
+                        <i class="bi bi-check-circle-fill me-2"></i> Confirm Billing
+                    </button>
+                </div>
+            </div>
+        <?php endif; ?>
+
+    </form>
+    
+    <?php else: ?>
+        <!-- Empty State -->
+        <div class="text-center py-5 mt-4">
+             <div class="mb-3 text-muted opacity-25">
+                <i class="bi bi-receipt-cutoff" style="font-size: 5rem;"></i>
+            </div>
+            <h4 class="fw-bold text-secondary">Ready to Bill?</h4>
+            <p class="text-muted">Search for a customer above to start generating individual bills.</p>
+        </div>
+    <?php endif; ?>
+
+</div>
+
+<!-- Edit Customer Modal -->
+<div class="modal fade" id="studentEditModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
+            <div class="modal-header border-0 bg-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i>Edit Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="updateStudent">
+                    <input type="hidden" name="student_id" id="student_id">
+                    <div id="errorMessageUpdate" class="alert alert-warning d-none"></div>
+
+                    <div class="row g-3">
+                         <div class="col-6">
+                            <label class="small text-muted text-uppercase fw-bold">Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-success fw-bold">₹</span>
+                                <input type="number" name="amount" id="amount" class="form-control fw-bold text-success" required>
                             </div>
                         </div>
-                    </div>      
-
-                </div><br/>
-            </div>
-
-            <div class="col-md-12">
-                <div class="card mt-12">
-                    <div class="card-body">
-                        <form action="" method="POST">
-                            <div class="table-responsive">
-                                <table class="table table-hover" border="5" style="white-space: nowrap;">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Status</th>
-                                            <th>#$#</th>
-                                            <th>MSO</th>
-                                            <th>STB No</th>
-                                            <th>Name</th>
-                                            <th>Phone</th>
-                                            <!--th>Area</th-->
-                                            <th>Accessories ℹ️</th>
-                                            <th>Remarks ℹ️</th>
-                                            <th>P.Mode</th>
-                                            <th>OldBal</th>
-                                            <th>BillAmt</th>
-                                            <th>Disct</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        
-                                        <input type="hidden" style="width: 750px;" name="indiv_csrf_token" value="<?= generate_indiv_bill_csrf_token(); ?>">
-                                    
-                                        <?php
-                                        if (isset($_GET['search'])) {
-                                            $filtervalues = $_GET['search'];
-        
-                                            $query = "SELECT * FROM customer 
-                                            WHERE CONCAT(stbno, name, phone) LIKE '%$filtervalues%' AND rc_dc='1' AND cusGroup = '1' LIMIT 300";
-    
-                                            $query_run = mysqli_query($con, $query);
-    
-                                            if (mysqli_num_rows($query_run) > 0) {
-                                                $serial_number = 1;
-                                                foreach ($query_run as $customer) {
-    
-                                                    $stbno = mysqli_real_escape_string($con, $customer['stbno']);
-    
-                                                    $nestedQuery = "SELECT * FROM bill 
-                                                    WHERE stbno = '$stbno'  AND status = 'approve'
-                                                    AND MONTH(`due_month_timestamp`) = '$currentMonth'
-                                                    AND YEAR(`due_month_timestamp`) = '$currentYear'";
-    
-                                                    $nestedQuery_run = mysqli_query($con, $nestedQuery);
-    
-                                                    $disableButton = (mysqli_num_rows($nestedQuery_run) > 0) ? true : false;
-                                                    
-                                                    $nestedQuery2 = "SELECT pMode FROM bill WHERE stbno = '$stbno' AND pMode = 'credit' AND status = 'approve'";
-                                                    
-                                                    $nestedQuery2_run = mysqli_query($con, $nestedQuery2);
-                                                    
-                                                    $disableButton2 = (mysqli_num_rows($nestedQuery2_run) > 0) ? true : false;
-                                                    
-                                                    // if ($currentDay <= 10) {
-                                                    //     $discountValue = 10; // Set discount to 10 if current day is less than 5
-                                                    // } else {
-                                                            $discountValue = 0;
-                                                    // }
-
-                                                    ?>
-                                                    
-                                                    <?php if ($disableButton2): ?>
-                                                    <tr class="creditBill">
-                                                    <?php else: ?>
-                                                    <tr>
-                                                    <?php endif; ?>
-                                                        
-                                                        <td style="font-weight: bold; font-size: 16px;"><?= $serial_number++; ?></td>
-                                                    
-                                                        <td><b><?php
-                                                        $IndivPreMonthPaidStatus=fetchIndivPreMonthPaidStatus($customer['stbno'], $currentDate);
-                                                        echo $IndivPreMonthPaidStatus['html_code'] ?></b></td>
-                                                        
-                                                        <td>
-                                                            <?php if (!$disableButton): ?>
-                                                                <div class="form-check">
-                                                                    <input type="checkbox" id="myCheckbox" name="options[]" value="<?= $customer['id']; ?>" class="form-check-input">
-                                                                </div>
-                                                            <?php else: ?>
-                                                                    <a href="customer-history.php?search=<?= $customer['stbno']; ?>" target="_blank">
-                                                                    <img src="assets/arrow-up-right-from-square-solid.svg" width="20px" height="20px">
-                                                                    </a>
-                                                            <?php endif; ?>
-                                                        </td>
-                                                        <td style="width: 160px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="mso[<?= $customer['id']; ?>]" value="<?= $customer['mso']; ?>" style="width: 70px;">
-                                                        </td>
-                                                        <td >
-                                                                <input readonly class="form-control fw-bold" type="text" name="stbno[<?= $customer['id']; ?>]" value="<?= $customer['stbno']; ?>" style="width: 180px;">
-                                                        </td>
-                                                        
-                                                        <td style="width: 350px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="name[<?= $customer['id']; ?>]" value="<?= $customer['customer_area_code'] . ' - ' . $customer['name']; ?>"  style="width: 300px;">
-                                                        </td>
-                                                        <td style="width: 110px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="phone[<?= $customer['id']; ?>]" value="<?= $customer['phone']; ?>" style="width: 130px;">
-                                                        </td>
-                                                        <!--td style="width: 110px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="customerAreaCode[<?= $customer['id']; ?>]" value="<?= $customer['customer_area_code']; ?>" style="width: 70px;">
-                                                        </td-->
-                                                        <!-- <td>
-                                                            <input type="text" name="accessories[<?= $customer['id']; ?>]" value="<?= $customer['accessories']; ?>" class="form-control fw-bold" style="width: 50px; color: #DD0581;">
-                                                        </td> -->
-                                                        <td style="width: 100px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="accessories[<?= $customer['id']; ?>]" value="<?= $customer['accessories']; ?>" onclick="showDescription('Accessories', '<?= $customer['accessories']; ?>',null, 'Accessories')" style="background-color:rgb(255, 251, 5); width: 100px;">
-                                                        </td>
-                                                        <td style="width: 180px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="description[<?= $customer['id']; ?>]" value="<?= $customer['description']; ?>" onclick="showDescription('<?= $customer['description']; ?>', '<?= $customer['name']; ?>', '<?= $customer['stbno']; ?>', 'Packages')" style="background-color: #5cc5fa; width: 180px;">
-                                                        </td>
-                                                        <td>
-                                                            <select name="pMode[<?= $customer['id']; ?>]" class="form-select fw-bold" style="width: 100px; height: 40px;">
-                                                                <option value="cash" selected class="fw-bold">Cash</option>
-                                                                <option value="gpay" class="fw-bold">G Pay</option>
-                                                                <option value="Paytm" class="fw-bold">Paytm</option>
-                                                                <option value="credit" class="fw-bold">Credit</option>
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="oldMonthBal[<?= $customer['id']; ?>]" value="0" class="form-control fw-bold" style="width: 60px; color: #0012C3;">
-                                                        </td>
-                                                        <td>
-                                                            <input readonly type="text" name="paid_amount[<?= $customer['id']; ?>]" value="<?= $customer['amount']; ?>" class="form-control fw-bold" style="width: 70px; font-weight: bold; font-size: 18px; color: #F20000;">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="discount[<?= $customer['id']; ?>]" value="<?php echo $discountValue ?>" class="form-control fw-bold" style="width: 50px; color: #DD0581;">
-                                                        </td>
-                                                        <td>
-                                                            <button type="button" value="<?=$customer['id'];?>" class="editStudentBtn btn btn-success btn-sm">Edit</button>
-                                                        </td>
-                                                    </tr>
-                                                    <?php
-                                                }
-                                            } else {
-                                                ?>
-                                                <tr>
-                                                    <td colspan="4">No Record Found</td>
-                                                </tr>
-                                                <?php
-                                            }
-                                        }
-                                        ?>
-    
-                                    </tbody>
-                                </table>
-                                <div class="text-center">
-                                    <button type="button" class="btn btn-primary" id="confirmButton" data-toggle="modal" >
-                                        Confirm
-                                    </button>
-                                </div>
-    
-                                <!-- Modal -->
-                                <!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Confirm</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>Customer Name: <?php echo $customer['name']; ?>data-target="#exampleModal"</p>
-                                                <p>Are you sure to make Bill ?</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-                            </form>
+                        <div class="col-6">
+                            <label class="small text-muted text-uppercase fw-bold">Phone</label>
+                            <input type="text" name="phone" id="phone" class="form-control fw-bold">
                         </div>
+                        <div class="col-12">
+                            <label class="small text-muted text-uppercase fw-bold">Package / Remark</label>
+                            <input type="text" name="description" id="description" class="form-control fw-bold">
+                        </div>
+                        <!-- Hidden fields to maintain data integrity -->
+                         <input type="hidden" name="rc_dc" id="rc_dc">
+                         <input type="hidden" name="cusGroup" id="cusGroup">
+                         <input type="hidden" name="mso" id="mso">
+                         <input type="hidden" name="editCustomerAreaCode" id="editCustomerAreaCode">
+                         <input type="hidden" name="stbno" id="stbno">
+                         <input type="hidden" name="name" id="name">
+                         <input type="hidden" name="accessories" id="accessories">
                     </div>
-                </div>
+                    
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary fw-bold shadow-sm py-2">Save Changes</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
-<br/>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-$(document).ready(function () {
+    // Search Autocomplete
+    $('#search').keyup(function(){  
+        var query = $(this).val();  
+        if(query != '') {  
+            $.ajax({  
+                url:"code-fecth-billing-dashboard.php",  
+                method:"POST",  
+                data:{query:query},  
+                success:function(data){  
+                    $('#searchList').fadeIn();  
+                    $('#searchList').html(data);  
+                }  
+            });  
+        } else {
+             $('#searchList').fadeOut(); 
+        } 
+    }); 
+    
+    $(document).on('click', 'li', function(){  
+        $('#search').val($(this).text());  
+        $('#searchList').fadeOut();  
+    });  
+
+    // Confirm Bill Logic
     $('#confirmButton').on('click', function (e) {
         e.preventDefault();
+        
+        let checkedBoxes = $('input[name="options[]"]:checked');
+        if (checkedBoxes.length === 0) {
+            Swal.fire({ title: 'Select Customer', text: "Please select at least one customer.", icon: 'warning'});
+            return;
+        }
 
-        // Step 1: Ask for confirmation
+        // Calculate Summary & Aggregates
+        let totalAmount = 0;
+        let totalDiscount = 0;
+        let totalCreditAmount = 0;
+        let pModeCounts = { 'cash': 0, 'gpay': 0, 'Paytm': 0, 'credit': 0 };
+        let creditStbs = []; 
+        let statusCounts = {}; 
+
+        checkedBoxes.each(function() {
+            let cid = $(this).val();
+            let row = $(this).closest('tr');
+            
+            // Financials
+            let amt = parseFloat(row.find(`input[name="paid_amount[${cid}]"]`).val()) || 0;
+            let disc = parseFloat(row.find(`input[name="discount[${cid}]"]`).val()) || 0;
+            totalAmount += amt;
+            totalDiscount += disc;
+            
+            let rowNet = amt - disc;
+
+            // Payment Mode
+            let pMode = row.find(`select[name="pMode[${cid}]"]`).val();
+            if(pModeCounts[pMode] !== undefined) pModeCounts[pMode]++;
+            else pModeCounts[pMode] = 1;
+
+            // Credit Check
+            if (pMode === 'credit') {
+                let stb = row.find(`input[name="stbno[${cid}]"]`).val();
+                creditStbs.push(stb);
+                totalCreditAmount += rowNet;
+            }
+        });
+
+        let netAmount = totalAmount - totalDiscount;
+        let expectedReceived = netAmount - totalCreditAmount;
+
+        // generated HTML for PMode Counts
+        let pModeHtml = '';
+        for (const [mode, count] of Object.entries(pModeCounts)) {
+            if (count > 0) {
+                let badgeClass = 'bg-secondary';
+                if(mode === 'cash') badgeClass = 'bg-success';
+                else if(mode === 'credit') badgeClass = 'bg-warning text-dark';
+                else if(mode === 'gpay' || mode === 'Paytm') badgeClass = 'bg-info text-dark';
+                
+                pModeHtml += `<span class="badge ${badgeClass} me-1 mb-1" style="font-size:0.9rem;">${mode.toUpperCase()}: ${count}</span>`;
+            }
+        }
+
+        // Credit Alert HTML
+        let creditAlertHtml = '';
+        if (creditStbs.length > 0) {
+            creditAlertHtml = `
+                <div class="alert alert-warning mt-2 mb-0 p-2 text-start small">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> <strong>Credit Bills (${creditStbs.length}):</strong><br>
+                    ${creditStbs.join(', ')}
+                </div>
+            `;
+        }
+
+        let summaryHtml = `
+            <div class="container bg-light p-3 rounded">
+                
+                <!-- Financials -->
+                <div class="row g-2 mb-3">
+                    <div class="col-6 text-start">
+                        <span class="text-secondary small fw-bold">CUSTOMERS</span><br>
+                        <span class="fs-4 fw-bold text-dark">${checkedBoxes.length}</span>
+                    </div>
+                    <div class="col-6 text-end">
+                        <span class="text-secondary small fw-bold">TOTAL PAYABLE</span><br>
+                        <span class="fs-4 fw-bold text-success">₹${netAmount.toFixed(2)}</span>
+                    </div>
+                </div>
+
+                <!-- Credit Deduction Section -->
+                <div class="row g-2 mb-3 border-top pt-2">
+                     <div class="col-6 text-start">
+                        <span class="text-muted small fw-bold">LESS: CREDIT</span>
+                    </div>
+                    <div class="col-6 text-end">
+                        <span class="fw-bold text-danger">- ₹${totalCreditAmount.toFixed(2)}</span>
+                    </div>
+                </div>
+
+                <!-- Expected Received -->
+                <div class="d-flex justify-content-between align-items-center bg-white p-2 border rounded mb-3">
+                    <span class="text-primary fw-bold text-uppercase small">Expected Cash/Digital</span>
+                    <span class="fs-4 fw-bold text-primary">₹${expectedReceived.toFixed(2)}</span>
+                </div>
+
+                <!-- Payment Modes -->
+                <div class="mb-3 text-start">
+                    <label class="small text-muted fw-bold d-block mb-1">PAYMENT MODES</label>
+                    <div class="d-flex flex-wrap">${pModeHtml}</div>
+                </div>
+
+                ${creditAlertHtml}
+                
+                <hr>
+                <div class="text-start">
+                    <label class="form-label fw-bold text-dark mb-1">Verify Received Amount</label>
+                    <input type="number" id="swal-received-amount" class="form-control form-control-lg border-primary text-center fw-bold" placeholder="Enter Amount Received">
+                    <div class="form-text text-muted small">Enter the exact amount collected (Cash + Online) to proceed.</div>
+                </div>
+
+            </div>
+        `;
+
         Swal.fire({
-            title: 'Are you sure?',
-            text: "Do you want to make Bill?",
-            icon: 'question',
+            title: 'Confirm Transactions',
+            html: summaryHtml,
+            icon: 'info',
+            width: 500,
             showCancelButton: true,
-            confirmButtonText: 'Yes, Continue',
-            cancelButtonText: 'Cancel'
+            confirmButtonColor: '#4361ee',
+            confirmButtonText: 'Verify & Process',
+            cancelButtonText: 'Review',
+            preConfirm: () => {
+                const enteredAmount = parseFloat(document.getElementById('swal-received-amount').value);
+                const expected = parseFloat(expectedReceived.toFixed(2));
+                
+                if (isNaN(enteredAmount)) {
+                    Swal.showValidationMessage('Please enter the received amount');
+                    return false;
+                }
+                if (enteredAmount !== expected) {
+                    Swal.showValidationMessage(`Amount mismatch! Expected: ₹${expected} but entered: ₹${enteredAmount}`);
+                    return false;
+                }
+                return true;
+            }
         }).then((result) => {
             if (result.isConfirmed) {
-                // Step 2: Check for credit payment modes
+                // Check credits rationale
                 let creditRows = [];
-                $("select[name^='pMode']").each(function () {
-                    if ($(this).val() === 'credit') {
-                        let customerId = $(this).attr('name').match(/\d+/)[0];
-                        creditRows.push(customerId);
-                    }
+                 checkedBoxes.each(function() {
+                     let cid = $(this).val();
+                     let pMode = $(`select[name="pMode[${cid}]"]`).val();
+                     if(pMode === 'credit') creditRows.push(cid);
                 });
 
-                // Recursive function to collect credit reasons
-                let index = 0;
-                function askReason() {
-                    if (index >= creditRows.length) {
-                        // Done collecting → submit form
-                        $('form').submit();
-                        return;
-                    }
+                let processForm = () => $('form#billingForm').submit();
 
-                    let cid = creditRows[index];
-                    Swal.fire({
-                        title: 'Reason for Credit (' + cid + ')',
-                        input: 'text',
-                        inputPlaceholder: 'Enter reason',
-                        showCancelButton: true,
-                        confirmButtonText: 'Save',
-                        preConfirm: (reason) => {
-                            if (!reason) {
-                                Swal.showValidationMessage('Reason is required!');
+                if(creditRows.length > 0) {
+                    // Recursive function for credit reasons
+                    let creditIndex = 0;
+                    let askCreditReason = () => {
+                        if(creditIndex >= creditRows.length) {
+                             processForm();
+                             return;
+                        }
+                        let cid = creditRows[creditIndex];
+                        let stbRaw = $(`input[name="stbno[${cid}]"]`).val();
+                        let nameRaw = $(`input[name="name[${cid}]"]`).val();
+
+                         Swal.fire({
+                            title: 'Credit Reason Required',
+                            html: `<div class="mb-2">Customer: <strong>${nameRaw}</strong></div>
+                                   <div class="mb-3 text-muted small">STB: ${stbRaw}</div>
+                                   <div>Please enter the reason for credit:</div>`,
+                            input: 'text',
+                            inputPlaceholder: 'e.g. Promised payment on Monday',
+                            inputAttributes: { required: 'true' },
+                            showCancelButton: true,
+                            confirmButtonText: 'Save Reason'
+                        }).then((res) => {
+                            if(res.isConfirmed && res.value) {
+                                let input = $('<input>').attr('type', 'hidden').attr('name', `remark2[${cid}]`).val(res.value);
+                                $('form#billingForm').append(input);
+                                creditIndex++;
+                                askCreditReason();
                             }
-                            return reason;
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // add hidden input remark2[cid]
-                            $('<input>').attr({
-                                type: 'hidden',
-                                name: 'remark2[' + cid + ']',
-                                value: result.value
-                            }).appendTo('form');
-
-                            index++;
-                            askReason(); // Next credit row
-                        }
-                    });
-                }
-
-                if (creditRows.length > 0) {
-                    askReason();
+                        });
+                    };
+                    askCreditReason();
                 } else {
-                    // No credit rows → submit immediately
-                    $('form').submit();
+                    processForm();
                 }
             }
         });
     });
-});
-</script>
 
-
-<!-- Autosearch List -->
-<script>  
-
-function showDescription(description, name, stbno, whatData) {
-    Swal.fire({
-        title: `${description}`, // Concatenate description and name
-        text: `${name} - ${stbno} - ${whatData}`,
-        icon: 'info',
-        confirmButtonText: 'OK',
-    });
-}
-
- $(document).ready(function(){  
-      $('#search').keyup(function(){  
-           var query = $(this).val();  
-           if(query != '')  
-           {  
-                $.ajax({  
-                     url:"code-fecth-billing-dashboard.php",  
-                     method:"POST",  
-                     data:{query:query},  
-                     success:function(data)  
-                     {  
-                          $('#searchList').fadeIn();  
-                          $('#searchList').html(data);  
-                     }  
-                });  
-           }  
-      });  
-      $(document).on('click', 'li', function(){  
-           $('#search').val($(this).text());  
-           $('#searchList').fadeOut();  
-      });  
- });
-</script>
-<script>
-
-$(document).on('click', '.editStudentBtn', function () {
-
-    var student_id = $(this).val();
-
-    $.ajax({
-        type: "GET",
-        url: "code.php?student_id=" + student_id,
-        success: function (response) {
-
-            var res = jQuery.parseJSON(response);
-            if(res.status == 404) {
-
-                alert(res.message);
-            }else if(res.status == 200){
-
-                $('#student_id').val(res.data.id);
-                $('#cusGroup').val(res.data.cusGroup);
-                $('#rc_dc').val(res.data.rc_dc);
-                $('#mso').val(res.data.mso);
-                $('#name').val(res.data.name);
-                $('#stbno').val(res.data.stbno);
-                $('#phone').val(res.data.phone);
-                $('#editCustomerAreaCode').val(res.data.customer_area_code);
-                $('#description').val(res.data.description);
-                $('#accessories').val(res.data.accessories);
-                $('#amount').val(res.data.amount);
-
-                $('#studentEditModal').modal('show');
-            }
-
-        }
-    });
-
-});
-        
-        
-        $(document).on('submit', '#updateStudent', function (e) {
-            e.preventDefault();
-
-            var formData = new FormData(this);
-            formData.append("update_student", true);
-
-            $.ajax({
-                type: "POST",
-                url: "code.php",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
+    // Edit Modal Logic
+    $(document).on('click', '.editStudentBtn', function () {
+        var student_id = $(this).val();
+        $.ajax({
+            type: "GET", url: "code.php?student_id=" + student_id,
+            success: function (response) {
+                var res = JSON.parse(response);
+                if(res.status == 200){
+                    $('#student_id').val(res.data.id);
+                    $('#amount').val(res.data.amount);
+                    $('#phone').val(res.data.phone);
+                    $('#description').val(res.data.description);
                     
-                    var res = jQuery.parseJSON(response);
-                    if(res.status == 422) {
-                        $('#errorMessageUpdate').removeClass('d-none');
-                        $('#errorMessageUpdate').text(res.message);
+                    $('#rc_dc').val(res.data.rc_dc);
+                    $('#cusGroup').val(res.data.cusGroup);
+                    $('#mso').val(res.data.mso);
+                    $('#editCustomerAreaCode').val(res.data.customer_area_code);
+                    $('#stbno').val(res.data.stbno);
+                    $('#name').val(res.data.name);
+                    $('#accessories').val(res.data.accessories);
 
-                    }else if(res.status == 200){
-
-                        $('#errorMessageUpdate').addClass('d-none');
-
-                        alertify.set('notifier','position', 'top-right');
-                        alertify.success(res.message);
-                        
-                        $('#studentEditModal').modal('hide');
-                        $('#updateStudent')[0].reset();
-
-                        // $('#myTable').load(location.href + " #myTable");
-                          setTimeout(function() {
-                            location.reload();
-                          }, 200);
-
-                    }else if(res.status == 500) {
-                        alert(res.message);
-                    }
+                    $('#studentEditModal').modal('show');
                 }
-            });
-
+            }
         });
-        
+    });
 
+    $(document).on('submit', '#updateStudent', function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        formData.append("update_student", true);
+        $.ajax({
+            type: "POST", url: "code.php", data: formData, processData: false, contentType: false,
+            success: function (response) {
+                var res = JSON.parse(response);
+                if(res.status == 200){
+                    $('#studentEditModal').modal('hide');
+                    Swal.fire({
+                        toast: true, position: 'top-end', icon: 'success', 
+                        title: res.message, showConfirmButton: false, timer: 1500
+                    }).then(() => location.reload()); // Reload to reflect changes if needed
+                } else {
+                     $('#errorMessageUpdate').removeClass('d-none').text(res.message);
+                }
+            }
+        });
+    });
 
-</script><?php include 'footer.php'?>
+</script>
 </body>
 </html>
-
-
-
-<?php } else{
-	header("Location: logout.php");
-} ?>
-
+<?php 
+} else{
+    header("Location: logout.php");
+} 
+?>

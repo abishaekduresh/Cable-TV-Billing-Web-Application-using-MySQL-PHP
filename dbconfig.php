@@ -1,5 +1,5 @@
 <?php
-$con = mysqli_connect("localhost", "uxxhv0w9uvg6t", "DFff48^*&*K6Jj", "dbnqnobrek5ptr");
+$con = mysqli_connect("localhost", "root", "", "pdpctv_dt_com");
 
 // Check if connection is null
 if (!$con) {
@@ -30,41 +30,42 @@ $currentDay = $datetime->format('d');
 $currentMonth = $datetime->format('m');
 $currentYear = $datetime->format('Y');
 
-// $session_username = $_SESSION['username'];
-
-$stmt = $con->prepare("SELECT * FROM settings LIMIT 1");
-$stmt->execute();
-$settingsResult = $stmt->get_result();
-
-// Fetch single row as associative array
-$settings = $settingsResult->fetch_assoc();
-
-$isSentSMS = false; // default
-
-if ($settings && isset($settings['sentSMS']) && $settings['sentSMS']) {
-    $isSentSMS = true;
+// Advanced Billing: Set Target Month/Year based on GET selection or default
+if (isset($_GET['billing_month']) && !empty($_GET['billing_month'])) {
+    $selectedBillingDate = $_GET['billing_month']; // YYYY-MM
+    $targetMonth = date('m', strtotime($selectedBillingDate));
+    $targetYear = date('Y', strtotime($selectedBillingDate));
+    $displayDate = $selectedBillingDate; // For setting the input value
+} else {
+    $targetMonth = $currentMonth;
+    $targetYear = $currentYear;
+    $displayDate = $currentYear . '-' . $currentMonth;
 }
 
-$SMS_GATEWAY_URL = "https://smsplans.com/api";
-$SMS_API_ID = 'APIDbQz6fZ13';
-$SMS_API_KEY = 'iui&*&';
-$SMS_INDIV_BILLING_SENDER_ID = 'XXXX';
-$SMS_INDIV_BILLING_TEMP_ID = '1707175688389463';
+// $session_username = $_SESSION['username'];
+
+$isSentSMS = true; // Set to true to enable SMS sending, false to disable
+
+$SMS_GATEWAY_URL = "https://bulksmsplans.com/api";
+$SMS_API_ID = 'APIDbQz6fZT137842';
+$SMS_API_KEY = 'iuiub*&*&';
+$SMS_INDIV_BILLING_SENDER_ID = 'DURTEH';
+$SMS_INDIV_BILLING_TEMP_ID = '1707175688387594631';
 // Use only 2 variables
-// Dear Customer, your PDP Cable TV bill for Service No: 00008317000ABCD, Due: MAY-2025, is paid. Thank you. - XXXX
-$SMS_INDIV_BILLING_TEMP = 'Dear Customer, your PDP Cable TV bill for Service No: {#var1#}, Due: {#var2#}, is {#var3#}. Thank you. - XXXX';
+// Dear Customer, your PDP Cable TV bill for Service No: 00008317000ABCD, Due: MAY-2025, is paid. Thank you. - DURTEH
+$SMS_INDIV_BILLING_TEMP = 'Dear Customer, your PDP Cable TV bill for Service No: {#var1#}, Due: {#var2#}, is {#var3#}. Thank you. - DURTEH';
 // ------------------------------------------------------------
-$SMS_LOGIN_SENDER_ID = 'XXXX';
-$SMS_LOGIN_TEMP_ID = '1707172657082336';
+$SMS_LOGIN_SENDER_ID = 'DURTEH';
+$SMS_LOGIN_TEMP_ID = '1707172657083442336';
 // Use only 1 Variable
 $SMS_LOGIN_TEMP = 'Your OTP is {#var1#} to securely access your account. Software by DURESH TECH.';
 
-// $SMS_LOC_SENDER_ID = rawurlencode('XXXX');
-// $SMS_LOC_TEMP_ID = rawurlencode('170717317398510997');
+// $SMS_LOC_SENDER_ID = rawurlencode('DURTEH');
+// $SMS_LOC_TEMP_ID = rawurlencode('1707173173985140997');
 // // Use only 1 Variable
 // $SMS_LOC_TEMP = 'Dear Customer, Your Cable TV LOC bill for {#var#}. For more details, please contact us. Software by DURESH TECH.';
 
-$BIOMETRIC_API_URL = "https://api.xyz.com/biometric/public/api";
+$BIOMETRIC_API_URL = "http://localhost/api.pdpgroups.com/public/api";
 $BIOMETRIC_API_TOKEN = "YOUR_BEARER_TOKEN_HERE"; // Replace with your API token
 
 ?>
