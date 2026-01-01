@@ -49,7 +49,6 @@ CREATE TABLE IF NOT EXISTS `bill` (
 CREATE TABLE IF NOT EXISTS `billgroup` (
   `id` int NOT NULL AUTO_INCREMENT,
   `billNo` int NOT NULL,
-  `transaction_id` varchar(100) DEFAULT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
   `group_id` int NOT NULL,
@@ -67,9 +66,8 @@ CREATE TABLE IF NOT EXISTS `billgroup` (
 -- Dumping structure for table pdpctv_dt_com.billgroupdetails
 CREATE TABLE IF NOT EXISTS `billgroupdetails` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `ad` tinyint NOT NULL DEFAULT (0),
   `billNo` int NOT NULL,
-  `transaction_id` varchar(100) DEFAULT NULL,
-  `ad` tinyint NOT NULL DEFAULT (0) COMMENT 'Is advanced bill',
   `date` date NOT NULL,
   `time` time NOT NULL,
   `billBy` varchar(10) NOT NULL,
@@ -191,7 +189,7 @@ CREATE TABLE IF NOT EXISTS `loc_bills` (
   `channel_uid` varchar(5) NOT NULL,
   `paid_amount` int NOT NULL,
   `discount` int NOT NULL,
-  `remark` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT '',
+  `remark` varchar(30) DEFAULT '',
   `status` tinyint(1) NOT NULL,
   `updated_at` datetime NOT NULL,
   `updated_user_id` int NOT NULL,
@@ -322,8 +320,8 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `addr2` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `phone` bigint NOT NULL,
   `sentSMS` tinyint(1) NOT NULL,
-  `prtFooter1` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `prtFooter2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `prtFooter1` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `prtFooter2` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `lastUpdateBy` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `latestUpdate` datetime NOT NULL,
   PRIMARY KEY (`id`)

@@ -353,10 +353,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                         <td class="fw-bold text-dark"><?= $row['entityName']; ?></td>
                                                         <td><?= $row['phone']; ?></td>
                                                         <td><?= strtoupper($row['pMode']); ?></td>
-                                                        <td class="text-end text-secondary fw-bold"><?= number_format($row['oldMonthBal']); ?></td>
-                                                        <td class="text-end text-success fw-bold"><?= number_format($row['mainAmount']); ?></td>
-                                                        <td class="text-end text-danger fw-bold"><?= number_format($row['discount']); ?></td>
-                                                        <td class="text-end text-danger fw-bolder fs-6"><?= number_format($row['Rs']); ?></td>
+                                                        <td class="text-end text-secondary fw-bold"><?= number_format($row['oldMonthBal'], 2); ?></td>
+                                                        <td class="text-end text-success fw-bold"><?= number_format($row['mainAmount'], 2); ?></td>
+                                                        <td class="text-end text-danger fw-bold"><?= number_format($row['discount'], 2); ?></td>
+                                                        <td class="text-end text-danger fw-bolder fs-6"><?= number_format($row['Rs'], 2); ?></td>
                                                         <td class="text-center">
                                                             <div class="d-flex justify-content-center">
                                                                 <a href="prtgroupbillrpt.php?group_id=<?= $row['idVal']; ?>&date=<?= $row['date']; ?>" 
@@ -368,8 +368,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                                                         title="View Item List"
                                                                         data-billno="<?= $row['billNo']; ?>" 
                                                                         data-groupid="<?= $row['idVal']; ?>"
-                                                                        data-date="<?= $row['date']; ?>"
-                                                                        data-transid="<?= $row['transaction_id']; ?>">
+                                                                        data-date="<?= $row['date']; ?>">
                                                                     <i class="bi bi-list-ul"></i>
                                                                 </button>
                                                             </div>
@@ -384,10 +383,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                     <tfoot>
                                         <tr class="bg-light">
                                             <th colspan="8" class="text-end fw-bold text-dark">Grand Total:</th>
-                                            <th class="text-end fw-bold text-secondary" id="sumOldBal"><?php echo $sumOldBal; ?></th>
-                                            <th class="text-end fw-bold text-success" id="sumAmt"><?php echo $sumAmt; ?></th>
-                                            <th class="text-end fw-bold text-warning" id="sumDisc"><?php echo $sumDisc; ?></th>
-                                            <th class="text-end fw-bold text-danger fs-6" id="sumTotal"><?php echo $sumTotal; ?></th>
+                                            <th class="text-end fw-bold text-secondary" id="sumOldBal"><?php echo number_format($sumOldBal, 2); ?></th>
+                                            <th class="text-end fw-bold text-success" id="sumAmt"><?php echo number_format($sumAmt, 2); ?></th>
+                                            <th class="text-end fw-bold text-warning" id="sumDisc"><?php echo number_format($sumDisc, 2); ?></th>
+                                            <th class="text-end fw-bold text-danger fs-6" id="sumTotal"><?php echo number_format($sumTotal, 2); ?></th>
                                             <th></th>
                                         </tr>
                                     </tfoot>
@@ -466,8 +465,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                         data: {
                             billNo: billNo,
                             group_id: groupId,
-                            date: date,
-                            transaction_id: $(this).data('transid')
+                            date: date
                         },
                         success: function(response) {
                             $('#groupListModalBody').html(response);

@@ -7,6 +7,7 @@
     if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         $session_username = $_SESSION['username']; 
         $currentDate = date('Y-m-d');
+        $logged_username = $_SESSION['username'];
 ?>
 
 <!DOCTYPE html>
@@ -30,6 +31,9 @@
     
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
@@ -182,6 +186,25 @@
             background: #e0f2fe;
             color: #0369a1;
         }
+        .modal-total-section {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        /* Privacy Mode */
+        .privacy-blur {
+            filter: blur(6px);
+            user-select: none;
+            transition: filter 0.3s ease;
+        }
+        
+        .privacy-active .stat-card h3,
+        .privacy-active canvas,
+        .privacy-active #avblSMSbalanceAmt {
+            filter: blur(8px);
+            opacity: 0.6;
+            pointer-events: none; /* Prevent tooltip hover when blurred */
+        }
     </style>
 </head>
 <body>
@@ -191,6 +214,118 @@
 <?php include 'admin-menu-btn.php'; ?>
 
 <div class="container main-content">
+    <div class="row g-4 mb-4">
+        <?php if(str_contains($session_username, 'A')) { ?>
+        <div class="col-12">
+<div class="row g-4 mb-4">
+        <!-- Control Bar -->
+        <div class="col-12">
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 bg-white rounded-3 shadow-sm border">
+                
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Privacy Toggle -->
+                    <button class="btn btn-secondary btn-lg" id="privacyBtn" onclick="togglePrivacy()" title="Toggle Privacy Mode">
+                        <i class="bi bi-eye-slash-fill" id="privacyIcon"></i>
+                    </button>
+                    
+                    <h5 class="mb-0 fw-bold ms-2 text-secondary border-start ks-3 ps-3">Analytics Control</h5>
+                </div>
+
+                <div class="d-flex flex-wrap align-items-center gap-2 mt-2 mt-md-0">
+                    <!-- Date Preset -->
+                    <select class="form-select w-auto" id="datePreset" onchange="applyDatePreset()">
+                        <option value="today" selected>Today</option>
+                        <option value="yesterday">Yesterday</option>
+                        <option value="this_month">This Month</option>
+                        <option value="last_month">Last Month</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+
+                    <!-- Date Inputs -->
+                    <input type="date" class="form-control w-auto" id="startDate" value="<?= date('Y-m-d') ?>">
+                    <input type="date" class="form-control w-auto" id="endDate" value="<?= date('Y-m-d') ?>">
+
+                    <!-- Filter Button -->
+                    <button class="btn btn-primary" onclick="refreshDashboard()" title="Apply Filter">
+                        <i class="bi bi-funnel-fill"></i>
+                    </button>
+
+                    <!-- Refresh Button -->
+                    <button class="btn btn-outline-primary" onclick="refreshDashboard()" title="Refresh Data">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <h5 class="fw-bold mb-3"><i class="bi bi-calendar-check me-2 text-primary"></i>Period Overview <small class="text-muted fw-normal fs-6 ms-2" id="periodLabel">(Today)</small></h5>
+            <div class="row g-3">
+                <!-- Total Collection -->
+                <div class="col-lg">
+                    <div class="stat-card p-3 h-100 border-start-0 border-top border-4 border-primary">
+                        <div class="stat-info">
+                            <h6>Total Collection</h6>
+                            <h3 class="text-primary">₹ <span id="todayTotal">0</span></h3>
+                        </div>
+                        <div class="stat-icon bg-soft-primary text-primary">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Indiv -->
+                <div class="col-lg">
+                    <div class="stat-card p-3 h-100 border-start-0 border-top border-4 border-info">
+                        <div class="stat-info">
+                            <h6>Individual</h6>
+                            <h3 class="text-info">₹ <span id="todayIndiv">0</span></h3>
+                        </div>
+                        <div class="stat-icon bg-soft-info text-info">
+                            <i class="bi bi-person-check"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Group -->
+                <div class="col-lg">
+                    <div class="stat-card p-3 h-100 border-start-0 border-top border-4 border-success">
+                        <div class="stat-info">
+                            <h6>Group</h6>
+                            <h3 class="text-success">₹ <span id="todayGroup">0</span></h3>
+                        </div>
+                        <div class="stat-icon bg-soft-success text-success">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- POS -->
+                <div class="col-lg">
+                    <div class="stat-card p-3 h-100 border-start-0 border-top border-4 border-warning">
+                        <div class="stat-info">
+                            <h6>POS</h6>
+                            <h3 class="text-warning">₹ <span id="todayPOS">0</span></h3>
+                        </div>
+                        <div class="stat-icon bg-soft-warning text-warning">
+                            <i class="bi bi-shop"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Expense -->
+                <div class="col-lg">
+                    <div class="stat-card p-3 h-100 border-start-0 border-top border-4 border-danger">
+                        <div class="stat-info">
+                            <h6>Expense</h6>
+                            <h3 class="text-danger">₹ <span id="todayExpense">0</span></h3>
+                        </div>
+                        <div class="stat-icon bg-soft-danger text-danger">
+                            <i class="bi bi-arrow-down-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php } ?>
+    </div>
+
     <div class="row g-4">
         
         <!-- Left Column: Quick Stats & Actions -->
@@ -264,8 +399,70 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Dashboard Graphs Section -->
+        <?php if(str_contains($session_username, 'A')) { ?>
+        <div class="col-12 mt-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-graph-up-arrow me-2 text-primary"></i>Analytics Overview</h5>
+            <div class="row g-4">
+                
+                <!-- Revenue Trend -->
+                <div class="col-lg-6">
+                    <div class="custom-card p-3">
+                         <h6 class="text-uppercase text-muted fw-bold small mb-3">Revenue Trend <span id="revenueTrendLabel" class="text-primary smaller"></span></h6>
+                         <div style="height: 300px;">
+                             <canvas id="revenueChart"></canvas>
+                         </div>
+                    </div>
+                </div>
+
+                <!-- Collection Source -->
+                <div class="col-lg-3">
+                    <div class="custom-card p-3">
+                         <h6 class="text-uppercase text-muted fw-bold small mb-3">Collection Source</h6>
+                         <div style="height: 250px;">
+                             <canvas id="sourceChart"></canvas>
+                         </div>
+                    </div>
+                </div>
+                
+                <!-- Customer Status -->
+                <div class="col-lg-3">
+                     <div class="custom-card p-3">
+                         <h6 class="text-uppercase text-muted fw-bold small mb-3">Customer Status</h6>
+                         <div style="height: 250px;">
+                             <canvas id="customerChart"></canvas>
+                         </div>
+                    </div>
+                </div>
+
+            </div>
+</div>
+            
+            <div class="row g-4 mt-2">
+                 <!-- Income vs Expense -->
+                 <div class="col-lg-8">
+                    <div class="custom-card p-3">
+                         <h6 class="text-uppercase text-muted fw-bold small mb-3">Income vs Expense (This Month)</h6>
+                         <div style="height: 300px;">
+                             <canvas id="incomeExpenseChart"></canvas>
+                         </div>
+                    </div>
+                 </div>
+
+                 <!-- Payment Modes -->
+                 <div class="col-lg-4">
+                    <div class="custom-card p-3">
+                         <h6 class="text-uppercase text-muted fw-bold small mb-3">Payment Modes (This Month)</h6>
+                         <div style="height: 300px;">
+                             <canvas id="paymentModeChart"></canvas>
+                         </div>
+                    </div>
+                 </div>
+            </div>
 
     </div>
+    <?php } ?>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -484,6 +681,317 @@ $(document).ready(function() {
     }
 });
 </script>
+
+    <!-- Chart.js (UMD version for compatibility) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <script type="text/javascript">
+    
+    // --- Privacy & Control Logic ---
+    let isPrivacyOn = false; // Start false, so the initial toggle turns it ON (True)
+    let chartsInstance = {}; // Store chart instances to destroy/update
+
+    function togglePrivacy() {
+        isPrivacyOn = !isPrivacyOn;
+        const icon = document.getElementById('privacyIcon');
+        const btn = document.getElementById('privacyBtn');
+        const body = document.body;
+        
+        if(isPrivacyOn) {
+            body.classList.add('privacy-active');
+            icon.classList.remove('bi-eye-fill');
+            icon.classList.add('bi-eye-slash-fill');
+            btn.classList.remove('btn-outline-secondary');
+            btn.classList.add('btn-secondary'); // Solid when hiding
+        } else {
+            body.classList.remove('privacy-active');
+            icon.classList.remove('bi-eye-slash-fill');
+            icon.classList.add('bi-eye-fill');
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-outline-secondary');
+        }
+    }
+
+    function applyDatePreset() {
+        const preset = document.getElementById('datePreset').value;
+        const startEl = document.getElementById('startDate');
+        const endEl = document.getElementById('endDate');
+        const today = new Date();
+        
+        let start, end;
+        
+        switch(preset) {
+            case 'today':
+                start = today;
+                end = today;
+                break;
+            case 'yesterday':
+                start = new Date(today);
+                start.setDate(today.getDate() - 1);
+                end = start;
+                break;
+            case 'this_month':
+                start = new Date(today.getFullYear(), today.getMonth(), 1);
+                end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                break;
+            case 'last_month':
+                start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                end = new Date(today.getFullYear(), today.getMonth(), 0);
+                break;
+            default: // Custom
+                return; // Do nothing, let user pick
+        }
+        
+        // Helper to format YYYY-MM-DD
+        const fmt = (d) => d.toISOString().split('T')[0];
+        
+        if(start && end) {
+            startEl.value = fmt(start);
+            endEl.value = fmt(end);
+            refreshDashboard(); // Auto-refresh on preset change
+        }
+    }
+
+    function refreshDashboard() {
+        const start = document.getElementById('startDate').value;
+        const end = document.getElementById('endDate').value;
+        const presetText = document.getElementById('datePreset').options[document.getElementById('datePreset').selectedIndex].text;
+        
+        document.getElementById('periodLabel').innerText = `(${presetText}: ${start} to ${end})`;
+        
+        loadDashboardCharts(start, end);
+    }
+
+
+    // --- Chart.js Integration ---
+    async function loadDashboardCharts(startDate = '', endDate = '') {
+        // Check if Chart is loaded
+        if (typeof Chart === 'undefined') {
+            return;
+        }
+
+        try {
+            let url = 'api/v1/admin/getDashboardStats.php?t=' + new Date().getTime();
+            if(startDate && endDate) {
+                url += `&startDate=${startDate}&endDate=${endDate}`;
+            }
+
+            const response = await fetch(url);
+            const text = await response.text();
+            
+            let res;
+            try {
+                res = JSON.parse(text);
+            } catch (e) {
+                console.error("Server Response:", text);
+                return;
+            }
+            
+            if(res.status && res.data) {
+                const d = res.data;
+                
+                // --- Update Period Overview ---
+                
+                // Determine Date Range Diff for Label
+                if(startDate && endDate) {
+                    const startDt = new Date(startDate);
+                    const endDt = new Date(endDate);
+                    const diffTime = Math.abs(endDt - startDt);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                    
+                    const labelSpan = document.getElementById('revenueTrendLabel');
+                    if(labelSpan) {
+                         labelSpan.textContent = (diffDays <= 31) ? '(Daily)' : '(Monthly)';
+                    }
+                }
+                if(d.periodOverview) {
+                    const to = d.periodOverview;
+                    const fmt = (n) => parseFloat(n).toLocaleString('en-IN');
+                    document.getElementById('todayTotal').innerText = fmt(to.totalCollection);
+                    document.getElementById('todayIndiv').innerText = fmt(to.indiv);
+                    document.getElementById('todayGroup').innerText = fmt(to.group);
+                    document.getElementById('todayPOS').innerText = fmt(to.pos);
+                    document.getElementById('todayExpense').innerText = fmt(to.expense);
+                }
+
+                // Helper to destroy existing chart before re-creating
+                const destroyChart = (id) => {
+                    if(chartsInstance[id]) {
+                        chartsInstance[id].destroy();
+                    }
+                };
+
+                // Common Chart Options
+                const commonOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false
+                };
+
+                // 1. Revenue Chart (Stays same mostly, but we reload it)
+                const revCtx = document.getElementById('revenueChart');
+                if (revCtx) {
+                    destroyChart('Revenue');
+                    chartsInstance['Revenue'] = new Chart(revCtx, {
+                        type: 'line',
+                        data: {
+                            labels: d.revenueTrend.labels,
+                            datasets: [{
+                                label: 'Revenue (₹)',
+                                data: d.revenueTrend.data,
+                                borderColor: '#4361ee',
+                                backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                fill: true,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#4361ee',
+                                pointBorderWidth: 2
+                            }]
+                        },
+                        options: {
+                            ...commonOptions,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { beginAtZero: true, grid: { color: '#f3f4f6' } },
+                                x: { grid: { display: false } }
+                            }
+                        }
+                    });
+                }
+                
+                // 2. Source Chart
+                const srcCtx = document.getElementById('sourceChart');
+                if (srcCtx) {
+                    destroyChart('Source');
+                    chartsInstance['Source'] = new Chart(srcCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: d.collectionSource.labels,
+                            datasets: [{
+                                data: d.collectionSource.data,
+                                backgroundColor: ['#4361ee', '#2ec4b6', '#3f37c9'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            ...commonOptions,
+                            plugins: { 
+                                legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true } } 
+                            },
+                            cutout: '70%'
+                        }
+                    });
+                }
+
+                // 3. Customer Chart
+                const custCtx = document.getElementById('customerChart');
+                if (custCtx) {
+                    destroyChart('Customer');
+                    chartsInstance['Customer'] = new Chart(custCtx, {
+                        type: 'pie',
+                        data: {
+                            labels: d.customerStatus.labels,
+                            datasets: [{
+                                data: d.customerStatus.data,
+                                backgroundColor: ['#06d6a0', '#ef476f'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            ...commonOptions,
+                            plugins: { 
+                                legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true } }
+                            }
+                        }
+                    });
+                }
+
+                // 4. Income vs Expense Chart
+                const incExpCtx = document.getElementById('incomeExpenseChart');
+                if (incExpCtx) {
+                    destroyChart('IncExp');
+                    chartsInstance['IncExp'] = new Chart(incExpCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: d.incomeVsExpense.labels,
+                            datasets: [{
+                                label: 'Amount (₹)',
+                                data: d.incomeVsExpense.data,
+                                backgroundColor: ['#06d6a0', '#ef476f'],
+                                borderRadius: 5,
+                                barPercentage: 0.6
+                            }]
+                        },
+                        options: {
+                            ...commonOptions,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { beginAtZero: true, grid: { color: '#f3f4f6' } },
+                                x: { grid: { display: false } }
+                            }
+                        }
+                    });
+                }
+
+                // 5. Payment Mode Chart
+                const payModeCtx = document.getElementById('paymentModeChart');
+                if (payModeCtx) {
+                    destroyChart('PayMode');
+                    chartsInstance['PayMode'] = new Chart(payModeCtx, {
+                        type: 'polarArea',
+                        data: {
+                            labels: d.paymentMode.labels,
+                            datasets: [{
+                                data: d.paymentMode.data,
+                                backgroundColor: [
+                                    'rgba(67, 97, 238, 0.7)',
+                                    'rgba(46, 196, 182, 0.7)',
+                                    'rgba(63, 55, 201, 0.7)',
+                                    'rgba(247, 37, 133, 0.7)',
+                                    'rgba(72, 149, 239, 0.7)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            ...commonOptions,
+                            plugins: { 
+                                legend: { position: 'bottom', labels: { boxWidth: 10, usePointStyle: true } }
+                            },
+                            scales: {
+                                r: { ticks: { display: false }, grid: { color: '#f3f4f6' } }
+                            }
+                        }
+                    });
+                }
+
+            } else {
+                Swal.fire('Data Fetch Error', res.message || 'Unknown error occurred', 'warning');
+            }
+        } catch (e) {
+            console.error(e);
+            Swal.fire('Network Error', 'Failed to fetch dashboard data.', 'error');
+        }
+    }
+
+    $(document).ready(function() {
+        // Load SMS Balance
+        var result = <?php echo json_encode(getAvblSMSbalanceAmt()); ?>;
+        if (result && result.status && result.data && result.data[0]) {
+            $("#avblSMSbalanceAmt").html(formatMoney(result.data[0].BalanceAmount));
+        } else {
+            $("#avblSMSbalanceAmt").html("0.00");
+        }
+        
+        // Initialize Privacy & Dashboard (Only if controls exist)
+        if(document.getElementById('startDate')) {
+            togglePrivacy(); // Sets initial state (On)
+            refreshDashboard(); // Initial Fetch
+        }
+    });
+    </script>
 
 <?php // include 'footer.php'; ?>
 </body>

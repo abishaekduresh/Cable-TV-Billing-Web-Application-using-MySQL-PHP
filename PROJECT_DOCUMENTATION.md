@@ -15,7 +15,10 @@ This project is a comprehensive **Cable TV Billing & Management System** built w
 - **Utilities**:
     - **Global Calculator**: Accessible via Menu Bar. Features Casio-style UI, Keyboard Support, and Auto-Reset.
 - **Employee Dashboard**: Standardized premium UI for employees (`employee-dashboard.php`) with collection summaries.
-- **Admin Dashboard**: Central hub for administrative actions (`admin-dashboard.php`).
+- **Admin Dashboard**: Central hub (`admin-dashboard.php`) featuring:
+    - **Analytics Overview**: Interactive Visualization for Revenue Trends (Daily/Monthly), Collection Sources, and Payment Modes. (Visible only to Super Admin 'A').
+    - **Privacy Mode**: One-click toggle to blur sensitive financial data, active by default.
+    - **Data Filtering**: Date presets (Today, Yesterday, Custom) for precise reporting.
 - **Payment & Cancellation**: Cancel bills (`admin-bill-cancel.php`), credit bills (`admin-bill-credit.php`).
 
 ### Reports

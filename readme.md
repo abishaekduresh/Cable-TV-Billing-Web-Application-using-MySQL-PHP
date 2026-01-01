@@ -14,6 +14,9 @@ A comprehensive web-based billing and management solution for Cable TV operators
 ## Development Updates
 
 ### Latest Changes
+- **Admin Dashboard Analytics**: Implemented premium visual analytics with interactive charts (Revenue Trend, Collection Source, Payment Modes). Features **Dynamic Graphs** (auto-switching Daily/Monthly views) and **Privacy Mode** (default blur).
+- **Data Accuracy**: Refined Dashboard logic to strictly match legacy reports (Approved status only, item-based POS calculation).
+- **Access Control**: Restricted full Analytics visibility to Super Admin ('A') only; other admins see a streamlined view.
 - **Global Calculator**: Added Casio-style calculator with keyboard support and auto-reset to Admin/Employee Nav.
 - **Group Billing**: Enhanced security with "Manual Received Amount Verification" and detailed financial breakdown (Old Bal/Discount). Removed `transaction_id`.
 - **Advance Billing**: Added internal calculator and real-time "Payable" column.
