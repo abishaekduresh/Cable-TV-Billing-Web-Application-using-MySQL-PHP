@@ -370,6 +370,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                 <th class="text-end" width="10%">Old Bal</th>
                                 <th class="text-end" width="10%">Bill Amt</th>
                                 <th class="text-end" width="10%">Discount</th>
+                                <th class="text-end" width="10%">Payable</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
@@ -455,10 +456,17 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                     <input type="number" name="discount[<?= $row['id']; ?>]" value="0" class="form-control form-control-sm text-end text-warning fw-bold">
                                 </td>
 
+                                <td>
+                                    <input readonly type="number" name="payable_amount[<?= $row['id']; ?>]" value="<?= $row['amount']; ?>" class="form-control form-control-sm text-end text-primary fw-bold bg-light">
+                                </td>
+
                                 <td class="text-center">
                                     <button type="button" value="<?=$row['id'];?>" class="editStudentBtn btn btn-light btn-sm text-primary shadow-sm rounded-circle" title="Edit Customer">
                                         <i class="bi bi-pencil-square"></i>
                                     </button>
+                                    <a href="customer-details.php?search=<?= $stbno ?>" class="btn btn-light btn-sm text-info shadow-sm rounded-circle ms-1" title="Go to Details">
+                                        <i class="bi bi-box-arrow-in-up-right"></i>
+                                    </a>
                                 </td>
                             </tr>
                             <?php
@@ -513,6 +521,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     <div id="errorMessageUpdate" class="alert alert-warning d-none"></div>
 
                     <div class="row g-3">
+                        <div class="col-12">
+                            <label class="small text-muted text-uppercase fw-bold">Name</label>
+                            <input type="text" name="editName" id="editName" class="form-control fw-bold">
+                        </div>
                          <div class="col-6">
                             <label class="small text-muted text-uppercase fw-bold">Amount</label>
                             <div class="input-group">
@@ -573,6 +585,19 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
         $('#searchList').fadeOut();  
     });  
 
+    // Real-time Payable Calculation
+    $(document).on('input', 'input[name^="oldMonthBal"], input[name^="discount"]', function() {
+        let row = $(this).closest('tr');
+        let amt = parseFloat(row.find('input[name^="paid_amount"]').val()) || 0;
+        let oldBal = parseFloat(row.find('input[name^="oldMonthBal"]').val()) || 0;
+        let disc = parseFloat(row.find('input[name^="discount"]').val()) || 0;
+        
+        let payable = (amt + oldBal) - disc;
+        
+        // Update the payable field
+        row.find('input[name^="payable_amount"]').val(payable.toFixed(2));
+    });
+
     // Confirm Bill Logic
     $('#confirmButton').on('click', function (e) {
         e.preventDefault();
@@ -583,8 +608,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             return;
         }
 
+
         // Calculate Summary & Aggregates
-        let totalAmount = 0;
+        let totalBillAmount = 0;
+        let totalOldBal = 0;
         let totalDiscount = 0;
         let totalCreditAmount = 0;
         let pModeCounts = { 'cash': 0, 'gpay': 0, 'Paytm': 0, 'credit': 0 };
@@ -597,11 +624,14 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             
             // Financials
             let amt = parseFloat(row.find(`input[name="paid_amount[${cid}]"]`).val()) || 0;
+            let oldBal = parseFloat(row.find(`input[name="oldMonthBal[${cid}]"]`).val()) || 0;
             let disc = parseFloat(row.find(`input[name="discount[${cid}]"]`).val()) || 0;
-            totalAmount += amt;
+            
+            totalBillAmount += amt;
+            totalOldBal += oldBal;
             totalDiscount += disc;
             
-            let rowNet = amt - disc;
+            let rowNet = (amt + oldBal) - disc;
 
             // Payment Mode
             let pMode = row.find(`select[name="pMode[${cid}]"]`).val();
@@ -616,7 +646,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             }
         });
 
-        let netAmount = totalAmount - totalDiscount;
+        let netAmount = (totalBillAmount + totalOldBal) - totalDiscount;
         let expectedReceived = netAmount - totalCreditAmount;
 
         // generated HTML for PMode Counts
@@ -646,7 +676,19 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
         let summaryHtml = `
             <div class="container bg-light p-3 rounded">
                 
-                <!-- Financials -->
+                <!-- Financials Breakdown -->
+                <div class="row g-2 mb-2 pb-2 border-bottom">
+                    <div class="col-6 text-start text-muted small">Bill Amount:</div>
+                    <div class="col-6 text-end fw-bold text-success">₹${totalBillAmount.toFixed(2)}</div>
+                    
+                    <div class="col-6 text-start text-muted small">Old Balance:</div>
+                    <div class="col-6 text-end fw-bold text-success">+ ₹${totalOldBal.toFixed(2)}</div>
+                    
+                    <div class="col-6 text-start text-muted small">Discount:</div>
+                    <div class="col-6 text-end fw-bold text-danger">- ₹${totalDiscount.toFixed(2)}</div>
+                </div>
+
+                <!-- Total Payable -->
                 <div class="row g-2 mb-3">
                     <div class="col-6 text-start">
                         <span class="text-secondary small fw-bold">CUSTOMERS</span><br>
@@ -654,7 +696,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     </div>
                     <div class="col-6 text-end">
                         <span class="text-secondary small fw-bold">TOTAL PAYABLE</span><br>
-                        <span class="fs-4 fw-bold text-success">₹${netAmount.toFixed(2)}</span>
+                        <span class="fs-4 fw-bold text-primary">₹${netAmount.toFixed(2)}</span>
                     </div>
                 </div>
 
@@ -670,8 +712,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
                 <!-- Expected Received -->
                 <div class="d-flex justify-content-between align-items-center bg-white p-2 border rounded mb-3">
-                    <span class="text-primary fw-bold text-uppercase small">Expected Cash/Digital</span>
-                    <span class="fs-4 fw-bold text-primary">₹${expectedReceived.toFixed(2)}</span>
+                    <span class="text-success fw-bold text-uppercase small">Expected Cash/Digital</span>
+                    <span class="fs-4 fw-bold text-success">₹${expectedReceived.toFixed(2)}</span>
                 </div>
 
                 <!-- Payment Modes -->
@@ -784,6 +826,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                     $('#mso').val(res.data.mso);
                     $('#editCustomerAreaCode').val(res.data.customer_area_code);
                     $('#stbno').val(res.data.stbno);
+                    $('#editName').val(res.data.name);
                     $('#name').val(res.data.name);
                     $('#accessories').val(res.data.accessories);
 

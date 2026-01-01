@@ -133,8 +133,97 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
         background: var(--danger-color);
         color: white;
     }
+    .btn-outline-danger-custom:hover {
+        background: var(--danger-color);
+        color: white;
+    }
     
-    .navbar-toggler {
+    .btn-outline-warning-custom {
+        border: 1px solid rgba(246, 194, 62, 0.8);
+        color: #fff3cd;
+    }
+    .btn-outline-warning-custom:hover {
+        background: var(--warning-color);
+        color: #000;
+    }
+
+    /* Calculator Styles - Casio Theme */
+    .casio-modal {
+        background-color: #2c3e50; /* Dark casing */
+        border: 4px solid #1a252f;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    }
+    .casio-display-container {
+        background-color: #9ea7a6; /* LCD Background */
+        padding: 15px;
+        border-radius: 10px;
+        border: 3px solid #576574;
+        margin-bottom: 20px;
+        box-shadow: inset 0 3px 8px rgba(0,0,0,0.3);
+    }
+    .calc-display {
+        font-family: 'Courier New', Courier, monospace; /* LCD-ish font */
+        font-size: 3rem;
+        height: 80px;
+        background: transparent;
+        color: #1a252f;
+        border: none;
+        text-align: right;
+        padding: 0;
+        font-weight: 700;
+        letter-spacing: 3px;
+    }
+    .calc-brand {
+        color: #bfc7c6;
+        font-size: 0.9rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+    .calc-btn {
+        height: 65px;
+        font-size: 1.5rem;
+        border-radius: 10px;
+        font-weight: bold;
+        box-shadow: 0 4px 0 #1a252f;
+        border: none;
+        transition: all 0.1s;
+    }
+    .calc-btn:active {
+        transform: translateY(4px);
+        box-shadow: none;
+    }
+    
+    /* Mobile Responsive Tweaks */
+    @media (max-width: 576px) {
+        .calc-btn { height: 55px; font-size: 1.2rem; }
+        .calc-display { font-size: 2.2rem; height: 60px; }
+        .casio-modal { border-width: 3px; }
+    }
+    .btn-num {
+        background-color: #34495e;
+        color: #ecf0f1;
+    }
+    .btn-num:hover { background-color: #2c3e50; color: white; }
+    
+    .btn-op {
+        background-color: #95a5a6;
+        color: #2c3e50;
+    }
+    .btn-op:hover { background-color: #7f8c8d; }
+
+    .btn-clear {
+        background-color: #e74c3c;
+        color: white;
+    }
+    .btn-clear:hover { background-color: #c0392b; color: white; }
+
+    .btn-equal {
+        background-color: #e67e22; /* Casio Orange/Yellowish */
+        color: white;
+    }
+    .btn-equal:hover { background-color: #d35400; color: white; }
         border: 1px solid rgba(255,255,255,0.3);
         padding: 0.5rem;
     }
@@ -272,6 +361,9 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                 </div>
 
                 <div class="nav-btn-group d-flex gap-2">
+                    <button type="button" class="btn btn-outline-warning-custom" data-bs-toggle="modal" data-bs-target="#globalCalcModal">
+                        <i class="fas fa-calculator"></i>
+                    </button>
                     <a href="app-settings.php" class="btn btn-outline-info-custom">
                         <i class="fas fa-cog"></i> <span class="d-none d-md-inline">Settings</span>
                     </a>
@@ -284,8 +376,127 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
     </div>
 </nav>
 
+<!-- Global Calculator Modal -->
+<div class="modal fade" id="globalCalcModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="false">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content casio-modal">
+            <div class="modal-header border-0 pb-0 pt-3 px-4">
+                <div class="ms-1 calc-brand">CASIO <span style="font-size: 0.7rem; opacity: 0.7;">FX-GLOBAL</span></div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-1 px-4 pb-4">
+                <div class="casio-display-container">
+                    <input type="text" class="form-control calc-display" id="gCalcDisplay" readonly value="0">
+                </div>
+                <div class="row g-2">
+                     <!-- Row 1 -->
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-clear" onclick="gCalcClear()">AC</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-op" onclick="gCalcBackspace()">DEL</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-op" onclick="gCalcAppend('%')">%</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-op" onclick="gCalcAppend('/')">÷</button></div>
+                    
+                    <!-- Row 2 -->
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-num" onclick="gCalcAppend('7')">7</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-num" onclick="gCalcAppend('8')">8</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-num" onclick="gCalcAppend('9')">9</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-op" onclick="gCalcAppend('*')">×</button></div>
+                    
+                    <!-- Row 3 -->
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-num" onclick="gCalcAppend('4')">4</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-num" onclick="gCalcAppend('5')">5</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-num" onclick="gCalcAppend('6')">6</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-op" onclick="gCalcAppend('-')">-</button></div>
+                    
+                    <!-- Row 4 -->
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-num" onclick="gCalcAppend('1')">1</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-num" onclick="gCalcAppend('2')">2</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-num" onclick="gCalcAppend('3')">3</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-op" onclick="gCalcAppend('+')">+</button></div>
+                    
+                    <!-- Row 5 -->
+                    <div class="col-6"><button class="btn w-100 calc-btn btn-num" onclick="gCalcAppend('0')">0</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-num" onclick="gCalcAppend('.')">.</button></div>
+                    <div class="col-3"><button class="btn w-100 calc-btn btn-equal" onclick="gCalcCalculate()">=</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Global Calculator Functions
+    var calcModalEl = document.getElementById('globalCalcModal');
+    
+    // Auto-Reset on Close
+    if(calcModalEl) {
+        calcModalEl.addEventListener('hidden.bs.modal', function () {
+            gCalcClear();
+        });
+        
+        // Keyboard Support
+        document.addEventListener('keydown', function(event) {
+            // Only if modal is open
+            if(calcModalEl.classList.contains('show')) {
+                const key = event.key;
+                
+                // Numbers
+                if(/[0-9]/.test(key) && key.length === 1) {
+                    gCalcAppend(key);
+                } 
+                // Operators
+                else if(key === '+' || key === '-' || key === '*' || key === '/') {
+                    gCalcAppend(key);
+                } 
+                else if(key === '.') {
+                    gCalcAppend('.');
+                }
+                // Enter / Equal
+                else if(key === 'Enter' || key === '=') {
+                    event.preventDefault(); // Stop form submit etc
+                    gCalcCalculate();
+                }
+                // Backspace
+                else if(key === 'Backspace') {
+                    gCalcBackspace();
+                }
+                // Esc
+                else if(key === 'Escape') {
+                    // Modal handles close automatically, listener handles clear
+                }
+            }
+        });
+    }
+
+    function gCalcAppend(val) {
+        const display = document.getElementById('gCalcDisplay');
+        if(!display) return;
+        if(display.value === '0' && val !== '.') display.value = val;
+        else display.value += val;
+    }
+    function gCalcClear() {
+        const display = document.getElementById('gCalcDisplay');
+        if(display) display.value = '0';
+    }
+    function gCalcBackspace() {
+        const display = document.getElementById('gCalcDisplay');
+        if(!display) return;
+        display.value = display.value.slice(0, -1);
+        if(display.value === '') display.value = '0';
+    }
+    function gCalcCalculate() {
+        const display = document.getElementById('gCalcDisplay');
+        if(!display) return;
+        try {
+            // Using Function constructor for safer eval alternative
+            // replace x with * just in case, though we used *
+            display.value = new Function('return ' + display.value)();
+        } catch {
+            display.value = 'Error';
+            setTimeout(() => display.value = '0', 1000);
+        }
+    }
+
     function goBack() {
         window.history.back();
     }

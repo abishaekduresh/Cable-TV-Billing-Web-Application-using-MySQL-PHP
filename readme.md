@@ -14,7 +14,9 @@ A comprehensive web-based billing and management solution for Cable TV operators
 ## Development Updates
 
 ### Latest Changes
-### Latest Changes
+- **Global Calculator**: Added Casio-style calculator with keyboard support and auto-reset to Admin/Employee Nav.
+- **Group Billing**: Enhanced security with "Manual Received Amount Verification" and detailed financial breakdown (Old Bal/Discount). Removed `transaction_id`.
+- **Advance Billing**: Added internal calculator and real-time "Payable" column.
 - **UI Consistency**: Unified Admin and Employee dashboards with Premium Gradient Blue theme (Bootstrap 5). Updated `menu-bar.php`, `sub-menu-btn.php`, and `employee-dashboard.php`.
 - **Group Billing**: Implemented `transaction_id` for robust data linking. Fixed `rptgroupbill.php` grand total calculations and added "Billing Date" vs "Entry Date" columns.
 - **Bug Fixes**: Fixed `bill-last5-print.php` undefined array key error and corrected POS print button linking.

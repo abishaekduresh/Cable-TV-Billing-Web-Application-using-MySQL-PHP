@@ -190,7 +190,14 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                         newTab.focus();
                                         newTab2.focus();
                                     } else {
-                                        alert("Please allow popups for this website");
+                                        Swal.fire({
+                                            toast: true,
+                                            icon: "warning",
+                                            title: "Please allow popups for this website",
+                                            position: "top-end",
+                                            showConfirmButton: false,
+                                            timer: 3000
+                                        });
                                     }
                                 }
                             </script>';
@@ -237,21 +244,28 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
                     $run1 = $con->query($sql1);
 
-                    if ($run1) {
+                    if ($run1 && $run1->num_rows > 0) {
 
                         $row = $run1->fetch_assoc();
                         $run_result1 = $row['stbno'];
                         
                     } else {
-                        $run_result1 = 0;
+                        $run_result1 = null;
                     }
-                    
-
 
                     // Check if the query was successful
-                    if (isset($run_result1) == $stbno) {
+                    if ($run_result1 && $run_result1 == $stbno) {
 
-                        echo "<script>alert('Approved Bill Already Exists on Due Month Date !!!');</script>";
+                        echo "<script>
+                            Swal.fire({
+                                toast: true,
+                                icon: 'warning',
+                                title: 'Approved Bill Already Exists on Due Month Date !!!',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        </script>";
 
                     } else {
 
@@ -268,19 +282,34 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 
                         } else {  
 
-                            echo "<script>alert('Due Month Approved Bill already Exists for " . $name . "');</script>";
+                            echo "<script>
+                                Swal.fire({
+                                    toast: true,
+                                    icon: 'warning',
+                                    title: 'Due Month Approved Bill already Exists for " . $name . "',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                });
+                            </script>";
                             
                             redirect($url);
 
                         }  
                     }
 
-
-
                 } else {
                     
-                    echo "<script>alert('Incorrect Due Month Date \\nCheck Due Month Date !!!');</script>";
-          
+                    echo "<script>
+                        Swal.fire({
+                            toast: true,
+                            icon: 'error',
+                            title: 'Incorrect Due Month Date. Check Due Month Date !!!',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    </script>";
 
                 }
                             // redirect($url);
@@ -316,292 +345,477 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
 <head>
     <?php include 'favicon.php'; ?>
     <meta charset="UTF-8">
-    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advance Individual Billing Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>   -->
-           <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
-
-
-<style>
-    .custom-container {
-        max-width: 90%;
-    }
     
-/* Define the styles for odd and even rows */
-.creditBill {
-    background-color: yellow; /* Light gray for odd rows */
-}
+    <!-- Dependencies -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-.oldMonthPending {
-    background-color: red; /* Slightly darker gray for even rows */
-}
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --success-color: #1cc88a;
+            --danger-color: #ef476f;
+            --warning-color: #f6c23e;
+            --text-dark: #2b2d42;
+            --bg-light: #f8f9fc;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
 
-.list-group-item-action:hover {
-    background-color: #023199;
-    color: white; /* Add this line to change font color on hover */
-}
-</style>
+        .main-content {
+            padding-bottom: 5rem;
+        }
+
+        /* Card Styles */
+        .custom-card {
+            background: white;
+            border-radius: 16px;
+            border: none;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .card-header-gradient {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1rem 1.5rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .card-title {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Form Controls */
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            border: 1px solid #e5e7eb;
+            font-weight: 500;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+        }
+
+        /* Search Autocomplete */
+        #searchList {
+            background: white;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            max-height: 300px;
+            overflow-y: auto;
+            position: absolute;
+            width: 100%;
+            z-index: 1000;
+        }
+        
+        #searchList ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        #searchList li {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        #searchList li:hover {
+            background-color: #f8fafc;
+            color: var(--primary-color);
+        }
+
+        /* Table Styles */
+        .table-custom th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            padding: 1rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        .table-custom td {
+            padding: 0.85rem 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            transition: all 0.2s;
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+            color: white;
+        }
+
+        .creditBill {
+            background-color: #fff9c4 !important; /* Light yellow */
+        }
+
+        /* Sticky Action Bar */
+        .action-bar-sticky {
+            position: sticky;
+            bottom: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05);
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+    </style>
 </head>
 <body>
     
-    <!--<hr class="mt-0 mb-4">-->
-
-    <div class="container custom-container">
-        <div class="row" style="width: 100%;">
-            <div class="col-md-12">
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h4>Advance Individual Billing Dashboard
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-7">
-                                <form action="" method="GET">
-                                    <div class="input-group mb-3">
-                                        <input type="text" name="search" id="search" autocomplete="off" pattern="[A-Za-z0-9\s]{3,}" required value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" class="form-control" placeholder="Enter Minimum 3 Character of STB No, Name, Phone" >                                      
-                                        <button type="submit" class="btn btn-primary">Search</button>
-                                    </div>
-                                </form>
-                                <div id="searchList"></div> 
-                            </div>
-                        </div>
-                    </div>      
-
-                </div><br/>
-            </div>
-
-            <div class="col-md-12">
-                <div class="card mt-12">
-                    <div class="card-body">
-                        <form action="" method="POST">
-                            <div class="table-responsive">
-                                <table class="table table-hover" border="5">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th></th>
-                                            <!-- <th>MSO</th> -->
-                                            <th>STB No</th>
-                                            <th>Name</th>
-                                            <th>Phone</th>
-                                            <th>Remarks</th>
-                                            <th>P.Mode</th>
-                                            <th>OldBal</th>
-                                            <th>BillAmt</th>
-                                            <th>Disct</th>
-                                            <th>Due Month</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        if (isset($_GET['search'])) {
-                                            $filtervalues = $_GET['search'];
+    <div class="container-fluid main-content px-lg-4 px-3 py-4">
         
-                                            $query = "SELECT * FROM customer 
-                                            WHERE CONCAT(stbno,name,phone) LIKE '%$filtervalues%' AND rc_dc='1' AND cusGroup = '1' LIMIT 1 ";
-    
+        <!-- Search Section -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8 position-relative">
+                <div class="custom-card mb-0">
+                    <div class="card-header-gradient">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-calendar-check me-2 fs-5"></i>
+                            <h5 class="card-title">Advance Individual Billing</h5>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-light text-primary fw-bold shadow-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#calculatorModal">
+                                <i class="bi bi-calculator me-1"></i>Calculator
+                            </button>
+                            <a href="billing-dashboard.php" class="btn btn-sm btn-light text-primary fw-bold shadow-sm rounded-pill px-3">
+                                <i class="bi bi-arrow-left me-1"></i>Back to Indiv Billing
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <label class="form-label text-secondary fw-bold small text-uppercase">Search Customer</label>
+                        <form action="" method="GET" class="position-relative">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-primary"><i class="bi bi-search"></i></span>
+                                <input type="text" name="search" id="search" autocomplete="off" 
+                                    value="<?php if(isset($_GET['search'])){echo $_GET['search']; } ?>" 
+                                    class="form-control border-start-0 ps-0 form-control-lg fs-6" 
+                                    placeholder="Enter Name, STB No, or Phone..." 
+                                    pattern="[A-Za-z0-9\s]{3,}" required>
+                                <button type="submit" class="btn btn-primary-custom px-4 fw-bold">Search</button>
+                            </div>
+                        </form>
+                        <div id="searchList"></div> 
+                    </div>      
+                </div>
+            </div>
+        </div>
+
+        <?php if (isset($_GET['search'])): ?>
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <form action="" method="POST" id="billingForm">
+                        <div class="custom-card">
+                            <div class="card-header border-bottom bg-white py-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="m-0 fw-bold text-secondary"><i class="bi bi-list-check me-2"></i>Search Results</h6>
+                                    <a href="adv-indiv-billing-dashboard.php" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-custom table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">#</th>
+                                                <th class="text-center">Select</th>
+                                                <th>STB No</th>
+                                                <th>Name</th>
+                                                <th>Phone</th>
+                                                <th>Remarks</th>
+                                                <th>P.Mode</th>
+                                                <th>OldBal</th>
+                                                <th>BillAmt</th>
+                                                <th>Disct</th>
+                                                <th>Payable</th>
+                                                <th>Due Month</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $filtervalues = $_GET['search'];
+                                            $query = "SELECT * FROM customer WHERE CONCAT(stbno,name,phone) LIKE '%$filtervalues%' AND rc_dc='1' AND cusGroup = '1' LIMIT 1 ";
                                             $query_run = mysqli_query($con, $query);
-    
+
                                             if (mysqli_num_rows($query_run) > 0) {
                                                 $serial_number = 1;
                                                 foreach ($query_run as $customer) {
-    
                                                     $stbno = mysqli_real_escape_string($con, $customer['stbno']);
-    
-                                                    $nestedQuery = "SELECT * FROM bill 
-                                                    WHERE stbno = '$stbno'  AND status = 'approve'
-                                                    AND MONTH(`date`) = '$currentMonth'
-                                                    AND YEAR(`date`) = '$currentYear'";
-    
+                                                    
+                                                    // Check Existing Bill
+                                                    $nestedQuery = "SELECT * FROM bill WHERE stbno = '$stbno' AND status = 'approve' AND MONTH(`date`) = '$currentMonth' AND YEAR(`date`) = '$currentYear'";
                                                     $nestedQuery_run = mysqli_query($con, $nestedQuery);
-    
-                                                    $disableButton = (mysqli_num_rows($nestedQuery_run) > 0) ? true : false;
-                                                    
-                                                    $nestedQuery2 = "SELECT pMode FROM bill WHERE stbno = '$stbno' AND pMode = 'credit' AND status = 'approve'";
-                                                    
-                                                    $nestedQuery2_run = mysqli_query($con, $nestedQuery2);
-                                                    
-                                                    $disableButton2 = (mysqli_num_rows($nestedQuery2_run) > 0) ? true : false;
-                                                    
-                                                    if ($currentDay <= 05) {
-                                                        $discountValue = 10; // Set discount to 10 if current day is less than 5
-                                                    } else {
-                                                            $discountValue = 0;
-                                                    }
+                                                    $disableButton = (mysqli_num_rows($nestedQuery_run) > 0);
 
-                                                    ?>
+                                                    // Check Credit
+                                                    $nestedQuery2 = "SELECT pMode FROM bill WHERE stbno = '$stbno' AND pMode = 'credit' AND status = 'approve'";
+                                                    $nestedQuery2_run = mysqli_query($con, $nestedQuery2);
+                                                    $disableButton2 = (mysqli_num_rows($nestedQuery2_run) > 0);
                                                     
-                                                    <?php if ($disableButton2): ?>
-                                                    <tr class="creditBill">
-                                                    <?php else: ?>
-                                                    <tr>
-                                                    <?php endif; ?>
+                                                    $discountValue = ($currentDay <= 05) ? 10 : 0;
+                                                    $rowClass = $disableButton2 ? 'creditBill' : '';
+                                                    ?>
+                                                    <tr class="<?= $rowClass ?>">
+                                                        <td class="text-center fw-bold text-secondary"><?= $serial_number++; ?></td>
+                                                        <td class="text-center">
+                                                            <div class="form-check d-flex justify-content-center">
+                                                                <input type="checkbox" id="myCheckbox" name="options[]" value="<?= $customer['id']; ?>" class="form-check-input border-2 border-primary" style="transform: scale(1.2); cursor: pointer;">
+                                                            </div>
+                                                        </td>
+                                                        <!-- Hidden Inputs -->
+                                                        <input type="hidden" name="mso[<?= $customer['id']; ?>]" value="<?= $customer['mso']; ?>">
                                                         
-                                                        <td style="font-weight: bold; font-size: 16px;"><?= $serial_number++; ?></td>
                                                         <td>
-                                                            <?php //if (!$disableButton): ?>
-                                                                <div class="form-check">
-                                                                    <input type="checkbox" id="myCheckbox" name="options[]" value="<?= $customer['id']; ?>" class="form-check-input">
-                                                                </div>
-                                                            <?php //else: ?>
-                                                                    <!--<a href="customer-history.php?search=<?= $customer['stbno']; ?>" target="_blank">-->
-                                                                    <!--<img src="assets/arrow-up-right-from-square-solid.svg" width="20px" height="20px">-->
-                                                                    <!--</a>-->
-                                                            <?php //endif; ?>
-                                                        </td>
-                                                        <td style="width: 160px; font-weight: bold; display: none;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="mso[<?= $customer['id']; ?>]" value="<?= $customer['mso']; ?>" style="width: 70px;">
-                                                        </td>
-                                                        <td >
-                                                                <input readonly class="form-control fw-bold" type="text" name="stbno[<?= $customer['id']; ?>]" value="<?= $customer['stbno']; ?>" style="width: 180px;">
+                                                            <input readonly class="form-control-plaintext fw-bold" type="text" name="stbno[<?= $customer['id']; ?>]" value="<?= $customer['stbno']; ?>">
                                                         </td>
                                                         
-                                                        <td style="width: 350px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="name[<?= $customer['id']; ?>]" value="<?= $customer['name']; ?>"  style="width: 300px;">
-                                                        </td>
-                                                        <td style="width: 110px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="phone[<?= $customer['id']; ?>]" value="<?= $customer['phone']; ?>" style="width: 130px;">
-                                                        </td>
-                                                        <td style="width: 180px; font-weight: bold;">
-                                                                <input readonly class="form-control fw-bold" type="text" name="description[<?= $customer['id']; ?>]" value="<?= $customer['description']; ?> " style="width: 180px;">
+                                                        <td>
+                                                            <input readonly class="form-control-plaintext fw-bold text-primary" type="text" name="name[<?= $customer['id']; ?>]" value="<?= $customer['name']; ?>">
                                                         </td>
                                                         <td>
-                                                                <select name="pMode[<?= $customer['id']; ?>]" class="form-select fw-bold" style="width: 100px; height: 40px;">
-                                                                    <option value="cash" selected class="fw-bold">Cash</option>
-                                                                    <option value="gpay" class="fw-bold">G Pay</option>
-                                                                    <!-- <option value="credit" class="fw-bold">Credit</option> -->
-                                                                </select>
+                                                            <input readonly class="form-control-plaintext fw-bold" type="text" name="phone[<?= $customer['id']; ?>]" value="<?= $customer['phone']; ?>">
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="oldMonthBal[<?= $customer['id']; ?>]" value="0" class="form-control fw-bold" style="width: 60px; color: #0012C3;">
+                                                            <input readonly class="form-control-plaintext fw-bold text-muted" type="text" name="description[<?= $customer['id']; ?>]" value="<?= $customer['description']; ?>">
                                                         </td>
                                                         <td>
-                                                            <input readonly type="text" name="paid_amount[<?= $customer['id']; ?>]" value="<?= $customer['amount']; ?>" class="form-control fw-bold" style="width: 70px; font-weight: bold; font-size: 18px; color: #F20000;">
+                                                            <select name="pMode[<?= $customer['id']; ?>]" class="form-select form-select-sm fw-bold border-primary text-primary" style="min-width: 100px;">
+                                                                <option value="cash" selected>Cash</option>
+                                                                <option value="paytm">Paytm</option>
+                                                                <option value="gpay">G Pay</option>
+                                                                <!-- <option value="credit">Credit</option> -->
+                                                            </select>
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="discount[<?= $customer['id']; ?>]" value="<?php echo $discountValue ?>" class="form-control fw-bold" style="width: 50px; color: #DD0581;">
+                                                            <input type="text" name="oldMonthBal[<?= $customer['id']; ?>]" value="0" class="form-control form-control-sm fw-bold text-danger text-end">
                                                         </td>
                                                         <td>
-                                                            <input type="date" class="form-control" name="due_month_date[<?= $customer['id']; ?>]" value="<?= $currentDate ?>" required>
+                                                            <input readonly type="text" name="paid_amount[<?= $customer['id']; ?>]" value="<?= $customer['amount']; ?>" class="form-control form-control-sm fw-bold text-success text-end fs-6" style="min-width: 100px;">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="discount[<?= $customer['id']; ?>]" value="<?php echo $discountValue ?>" class="form-control form-control-sm fw-bold text-warning text-end">
+                                                        </td>
+                                                        <td>
+                                                            <input readonly type="text" name="payable_amount[<?= $customer['id']; ?>]" value="<?= $customer['amount'] + 0 - $discountValue; ?>" class="form-control form-control-sm fw-bold text-primary text-end fs-6 bg-light" style="min-width: 100px;">
+                                                        </td>
+                                                        <td>
+                                                            <input type="date" class="form-control form-control-sm" name="due_month_date[<?= $customer['id']; ?>]" value="<?= $currentDate ?>" required>
                                                         </td>
                                                     </tr>
                                                     <?php
                                                 }
                                             } else {
-                                                ?>
-                                                <tr>
-                                                    <td colspan="4">No Record Found</td>
-                                                </tr>
-                                                <?php
+                                                echo '<tr><td colspan="11" class="text-center py-5 text-muted fw-bold">No customers found.</td></tr>';
                                             }
-                                        }
-                                        ?>
-    
-                                    </tbody>
-                                </table>
-                                <div class="text-center">
-                                    <button type="button" class="btn btn-primary" id="confirmButton" data-toggle="modal" data-target="#exampleModal">
-                                        Confirm
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <?php if (isset($query_run) && mysqli_num_rows($query_run) > 0): ?>
+                            <div class="action-bar-sticky">
+                                <div class="container text-center">
+                                    <button type="button" class="btn btn-primary-custom btn-lg rounded-pill px-5 fw-bold shadow-lg" id="confirmButton">
+                                        <i class="bi bi-check-circle-fill me-2"></i> Confirm Advance Bill
                                     </button>
                                 </div>
-    
-                                <!-- Modal -->
-                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Confirm</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <!--<p>Customer Name: <?php echo $customer['name']; ?></p>-->
-                                                <p>Are you sure to make Bill ?
-                                                    <br/>
-                                                   <b>Check Due Date Properly !!!</b>
-                                                </p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                            </div>
+                        <?php endif; ?>
+
+                    </form>
+                </div>
+            </div>
+            
+            <?php else: ?>
+                <!-- Empty State -->
+                <div class="text-center py-5 mt-4">
+                    <div class="mb-3 text-muted opacity-25">
+                        <i class="bi bi-receipt-cutoff" style="font-size: 5rem;"></i>
+                    </div>
+                    <h4 class="fw-bold text-secondary">Ready to Bill?</h4>
+                    <p class="text-muted">Search for a customer above to start generating individual bills.</p>
+                </div>
+            <?php endif; ?>
+
+    </div>
+
+    <?php include 'footer.php'?>
+
+    <!-- Advance Calculator Modal -->
+    <div class="modal fade" id="calculatorModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 bg-primary text-white rounded-top-4 py-2">
+                    <h6 class="modal-title fw-bold"><i class="bi bi-calculator me-2"></i>Advance Calculator</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            <label class="small text-muted fw-bold">Monthly Amt</label>
+                            <input type="number" id="calcAmount" class="form-control form-control-sm border-primary fw-bold text-primary" placeholder="0">
+                        </div>
+                        <div class="col-6">
+                             <label class="small text-muted fw-bold">Months</label>
+                            <input type="number" id="calcMonths" class="form-control form-control-sm border-primary fw-bold text-primary" placeholder="0">
                         </div>
                     </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="small text-muted fw-bold">Old Bal (+)</label>
+                            <input type="number" id="calcOldBal" class="form-control form-control-sm border-danger fw-bold text-danger" placeholder="0">
+                        </div>
+                        <div class="col-6">
+                             <label class="small text-muted fw-bold">Discount (-)</label>
+                            <input type="number" id="calcDiscount" class="form-control form-control-sm border-success fw-bold text-success" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="p-2 bg-light rounded text-center border">
+                        <small class="text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Net Payable Amount</small>
+                        <div class="fs-4 fw-bold text-dark" id="calcTotal">₹0.00</div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-2 justify-content-between">
+                     <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="resetCalc">Reset</button>
+                     <button type="button" class="btn btn-sm btn-primary rounded-pill px-3" data-bs-dismiss="modal">Done</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
+    <script>  
+     $(document).ready(function(){  
+          
+          // Calculator Logic
+          function updateCalculator() {
+              let amount = parseFloat($('#calcAmount').val()) || 0;
+              let months = parseFloat($('#calcMonths').val()) || 0;
+              let oldBal = parseFloat($('#calcOldBal').val()) || 0;
+              let discount = parseFloat($('#calcDiscount').val()) || 0;
+              
+              let total = (amount * months) + oldBal - discount;
+              $('#calcTotal').text('₹' + total.toFixed(2));
+          }
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
+          $('#calcAmount, #calcMonths, #calcOldBal, #calcDiscount').on('input', updateCalculator);
+          
+          $('#resetCalc').click(function(){
+              $('#calcAmount, #calcMonths, #calcOldBal, #calcDiscount').val('');
+              updateCalculator();
+          });
 
+          // Real-time Payable Calculation (Table)
+            $(document).on('input', 'input[name^="oldMonthBal"], input[name^="discount"]', function() {
+                let row = $(this).closest('tr');
+                let amt = parseFloat(row.find('input[name^="paid_amount"]').val()) || 0;
+                let oldBal = parseFloat(row.find('input[name^="oldMonthBal"]').val()) || 0;
+                let disc = parseFloat(row.find('input[name^="discount"]').val()) || 0;
+                
+                let payable = (amt + oldBal) - disc;
+                
+                // Update the payable field
+                row.find('input[name^="payable_amount"]').val(payable.toFixed(2));
+            });
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Autosearch List -->
-<script>  
- $(document).ready(function(){  
-      $('#search').keyup(function(){  
-           var query = $(this).val();  
-           if(query != '')  
-           {  
-                $.ajax({  
-                     url:"code-fecth-adv-billing-dashboard.php",  
-                     method:"POST",  
-                     data:{query:query},  
-                     success:function(data)  
-                     {  
-                          $('#searchList').fadeIn();  
-                          $('#searchList').html(data);  
-                     }  
-                });  
-           }  
-      });  
-      $(document).on('click', 'li', function(){  
-           $('#search').val($(this).text());  
-           $('#searchList').fadeOut();  
-      });  
- });
-</script>
-<script>        
+          // Autocomplete
+          $('#search').keyup(function(){  
+               var query = $(this).val();  
+               if(query != '') {  
+                    $.ajax({  
+                         url:"code-fecth-adv-billing-dashboard.php",  
+                         method:"POST",  
+                         data:{query:query},  
+                         success:function(data){  
+                              $('#searchList').fadeIn();  
+                              $('#searchList').html(data);  
+                         }  
+                    });  
+               } else {
+                   $('#searchList').fadeOut();
+               }
+          });  
+          $(document).on('click', 'li', function(){  
+               $('#search').val($(this).text());  
+               $('#searchList').fadeOut();  
+          });  
 
+          // Confirm Button Logic with SweetAlert2
+          $('#confirmButton').on('click', function (e) {
+                e.preventDefault();
+                
+                let checkedBoxes = $('input[name="options[]"]:checked');
+                if (checkedBoxes.length === 0) {
+                    Swal.fire({ 
+                        title: 'Selection Required', 
+                        text: "Please select a customer to bill.", 
+                        icon: 'warning',
+                        confirmButtonColor: '#4361ee'
+                    });
+                    return;
+                }
 
-</script><?php include 'footer.php'?>
+                Swal.fire({
+                    title: 'Confirm Advance Bill',
+                    html: `
+                        <div class="text-start alert alert-info small">
+                            <strong>Note:</strong> ensure the <b>Due Month Date</b> is set correctly before proceeding.
+                        </div>
+                        <p class="mb-0">Are you sure you want to generate this bill?</p>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4361ee',
+                    cancelButtonColor: '#ef476f',
+                    confirmButtonText: 'Yes, Generate Bill'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#billingForm').submit();
+                    }
+                });
+          });
+     });
+    </script>
 </body>
 </html>
 
-
-
 <?php } else{
-	header("Location: index.php");
+	header("Location: logout.php");
 } ?>

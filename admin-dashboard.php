@@ -239,7 +239,7 @@
                                 <label for="username" class="form-label">Select User</label>
                                 <select class="form-select" name="username" id="username" required>
                                     <?php
-                                        $sql = "SELECT username, name FROM user WHERE status = 1"; 
+                                        $sql = "SELECT username, name FROM user WHERE status = 1 ORDER BY id DESC"; 
                                         $result = $con->query($sql);
                                         if ($result->num_rows > 0) {
                                             while ($row = $result->fetch_assoc()) {
@@ -317,10 +317,13 @@ async function fetchUsersBillingData() {
                             <table class="table table-bordered table-sm mb-0 text-center align-middle" style="font-size: 0.9rem;">
                                 <thead class="table-light">
                                     <tr>
+                                    <tr>
                                         <th>Type</th>
                                         <th>Cash</th>
                                         <th>Online (Paytm/GPay)</th>
                                         <th>Credit</th>
+                                        <th>Discount</th>
+                                        <th class="text-danger">Cancelled</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -334,6 +337,8 @@ async function fetchUsersBillingData() {
                                             </div>
                                         </td>
                                         <td>${formatVal(resData.indivData.credit)}</td>
+                                        <td class="text-warning fw-bold">₹${resData.indivData.totDis}</td>
+                                        <td class="text-danger fw-bold">${resData.indivCancelCount}</td>
                                     </tr>
                                     <tr>
                                         <td class="fw-bold text-success">Group</td>
@@ -345,6 +350,8 @@ async function fetchUsersBillingData() {
                                             </div>
                                         </td>
                                         <td>${formatVal(resData.groupData.credit)}</td>
+                                        <td class="text-warning fw-bold">₹${resData.groupData.totDis}</td>
+                                        <td class="text-danger fw-bold">${resData.groupCancelCount}</td>
                                     </tr>
                                     <tr>
                                         <td class="fw-bold text-info">POS</td>
@@ -356,6 +363,8 @@ async function fetchUsersBillingData() {
                                             </div>
                                         </td>
                                         <td>${formatVal(resData.posData.credit)}</td>
+                                        <td class="text-warning fw-bold">₹${resData.posData.totDis}</td>
+                                        <td class="text-danger fw-bold">${resData.posCancelCount}</td>
                                     </tr>
 
                                     <tr>
@@ -363,10 +372,14 @@ async function fetchUsersBillingData() {
                                         <td>${formatVal({amt: resData.incomeExpense.sumIncome, count: resData.incomeExpense.countIncome})}</td>
                                         <td>-</td>
                                         <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
                                     </tr>
                                     <tr>
                                         <td class="fw-bold text-danger">Expense</td>
                                         <td>${formatVal({amt: resData.incomeExpense.sumExpense, count: resData.incomeExpense.countExpense})}</td>
+                                        <td>-</td>
+                                        <td>-</td>
                                         <td>-</td>
                                         <td>-</td>
                                     </tr>

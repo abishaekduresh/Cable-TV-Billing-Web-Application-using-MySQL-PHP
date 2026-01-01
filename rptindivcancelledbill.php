@@ -201,7 +201,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 
                             if (!empty($from_date) && !empty($to_date)) {
                                 $has_run = true;
-                                $query = "SELECT * FROM bill WHERE status ='cancel' AND date BETWEEN '$from_date' AND '$to_date' ORDER BY date DESC";
+                                $query = "SELECT * FROM bill WHERE status ='cancel' AND date BETWEEN '$from_date' AND '$to_date' ORDER BY bill_id DESC";
                                 $query_run = mysqli_query($con, $query);
 
                                 if (mysqli_num_rows($query_run) > 0) {

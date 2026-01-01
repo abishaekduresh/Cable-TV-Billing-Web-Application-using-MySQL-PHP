@@ -53,12 +53,12 @@ try {
 
     // Get the user information before destroying the session
     $userId = isset($_SESSION['id'])?$_SESSION['id']:'API Call';
-    $username = isset($_SESSION['username'])?$_SESSION['username']:'API Call';
+    $session_username = isset($_SESSION['username'])?$_SESSION['username']:'API Call';
     $role = isset($_SESSION['role'])?$_SESSION['role']:'API Call';
     $action = $jsonData['username']." - Indiv bill info fetched";
     
     // Call the function to insert user activity log
-    logUserActivity($userId, $username, $role, $action);
+    logUserActivity($userId, $session_username, $role, $action);
     
     $indivTotalAmt = $userIndivCashPayModeData['amt'] +
                     $userIndivGpayPayModeData['amt'] +
@@ -109,6 +109,27 @@ try {
     $userCountIncome = $userIncomeExpenseData['countIncome'] ?? 0;
     $userSumExpense = $userIncomeExpenseData['sumExpense'] ?? 0;
     $userCountExpense = $userIncomeExpenseData['countExpense'] ?? 0;
+
+    // --- Cancelled Bills Counts ---
+    // Individual
+    $sql_indiv_cancel = "SELECT COUNT(*) as count FROM bill WHERE DATE(date) = '$dueMonthDate' AND bill_by = '$username' AND status = 'cancel'";
+    $res_indiv_cancel = $con->query($sql_indiv_cancel);
+    $indivCancelCount = ($res_indiv_cancel && $row = $res_indiv_cancel->fetch_assoc()) ? $row['count'] : 0;
+
+    // Group
+    $sql_group_cancel = "SELECT COUNT(*) as count FROM billgroupdetails WHERE DATE(created_at) = '$dueMonthDate' AND billBy = '$username' AND status = 'cancel'";
+    $res_group_cancel = $con->query($sql_group_cancel);
+    $groupCancelCount = ($res_group_cancel && $row = $res_group_cancel->fetch_assoc()) ? $row['count'] : 0;
+
+    // POS (assuming status '0' or similar for cancel, checking context showed '1' is active. Usually 0 is deleted/cancelled)
+    // Checking schema or context: usually strict deletion or status change. Let's assume status != 1 for now or check if there is specific 'cancel' status.
+    // Based on previous code: `prtposinvoice.php` checks `$row_bill['pay_mode'] != 4` for 'Paid'.
+    // `bill-last5-print.php` checks `status = '1'`. 
+    // Usually systems use 0 for inactive/cancelled.
+    $sql_pos_cancel = "SELECT COUNT(*) as count FROM pos_bill WHERE DATE(entry_timestamp) = '$dueMonthDate' AND username = '$username' AND status = '0'"; 
+    $res_pos_cancel = $con->query($sql_pos_cancel);
+    $posCancelCount = ($res_pos_cancel && $row = $res_pos_cancel->fetch_assoc()) ? $row['count'] : 0;
+
                     
     $totalAmt = $indivTotalAmt + $groupTotalAmt + $posTotalAmt + $userSumIncome ?? 0;
     // $totalDis = $indivTotalDis + $groupTotalDis + $posTotalDis + $userSumExpense ?? 0;
@@ -177,6 +198,9 @@ try {
             "totAmt" => $totalAmt,
             "totDis" => $totalDis,
             "totCount" => $totalCount,
+            "indivCancelCount" => $indivCancelCount,
+            "groupCancelCount" => $groupCancelCount,
+            "posCancelCount" => $posCancelCount,
             "bal" => $balance,
             "date" => $currentDate,
             "time" => $currentTime,

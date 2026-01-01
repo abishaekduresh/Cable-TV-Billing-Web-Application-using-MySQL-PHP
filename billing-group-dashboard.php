@@ -72,11 +72,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
     
             ///////        Insert Data into billGroupDetails    ////////////
 
-            // Generating Unique Transaction ID
-            // Format: TXN_YYYYMMDD_RandomHex
-            $txnDateStr = date('Ymd');
-            $uniqueHex = strtoupper(bin2hex(random_bytes(3))); // 6 Chars
-            $transaction_id = "TXN_" . $txnDateStr . "_" . $uniqueHex;
+            ///////        Insert Data into billGroupDetails    ////////////
+
 
             $Rs =0;
                         
@@ -101,8 +98,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             $advance_bill = isset($_POST['advance_bill']) ? 1 : 0;
             
             // Prepare the INSERT query
-            $sql = "INSERT INTO `billgroupdetails` (`billNo`, `transaction_id`, `date`, `time`, `billBy`, `group_id`, `groupName`, `phone`, `pMode`, `oldMonthBal`, `billAmount`, `discount`, `Rs`, `status`, `created_at`, `ad`) 
-            VALUES ('$billNo', '$transaction_id', '$billDateInput', '$currentTime', '$session_username', '$groupID', '$groupName', '$phone', '$pMode', '$oldMonthBal', '$billAmount', '$discount', '$Rs', '$status', '$currentDateTime', '$advance_bill')";
+            $sql = "INSERT INTO `billgroupdetails` (`billNo`, `date`, `time`, `billBy`, `group_id`, `groupName`, `phone`, `pMode`, `oldMonthBal`, `billAmount`, `discount`, `Rs`, `status`, `created_at`, `ad`) 
+            VALUES ('$billNo', '$billDateInput', '$currentTime', '$session_username', '$groupID', '$groupName', '$phone', '$pMode', '$oldMonthBal', '$billAmount', '$discount', '$Rs', '$status', '$currentDateTime', '$advance_bill')";
 
             if ($con->query($sql) === true) {
                 // Success
@@ -122,8 +119,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                 $remark = mysqli_real_escape_string($con, $_POST["description"][$customerId]);
                 $status = 'approve';
                 
-                $sql = "INSERT INTO billgroup (billNo, transaction_id, date, time, group_id, mso, stbNo, name, remark, status, created_at)
-                    VALUES ('$billNo', '$transaction_id', '$billDateInput', '$currentTime', '$groupID1', '$mso', '$stbNo', '$cusName', '$remark','$status', '$currentDateTime')";
+                $sql = "INSERT INTO billgroup (billNo, date, time, group_id, mso, stbNo, name, remark, status, created_at)
+                    VALUES ('$billNo', '$billDateInput', '$currentTime', '$groupID1', '$mso', '$stbNo', '$cusName', '$remark','$status', '$currentDateTime')";
 
                 if ($con->query($sql) === TRUE) {
                     // Logic for sum calculation
@@ -686,20 +683,65 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
                                 <span class="text-muted">Type:</span>
                                 <span class="badge ${isAdvanceChecked ? 'bg-danger' : 'bg-success'}">${isAdvanceChecked ? 'Advance Bill' : 'Regular Bill'}</span>
                             </div>
-                            <hr class="my-2">
-                             <div class="d-flex justify-content-between">
-                                <span class="fw-bold text-secondary">Total Payable:</span>
+                            <div class="border-top border-bottom py-2 my-2">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Bill Amount:</span>
+                                    <span class="fw-bold">₹ ${(billAmt).toFixed(2)}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Old Balance:</span>
+                                    <span class="fw-bold text-danger">+ ₹ ${(oldBal).toFixed(2)}</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Discount:</span>
+                                    <span class="fw-bold text-success">- ₹ ${(discount).toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold text-secondary">Expected Amount:</span>
                                 <span class="fw-bold text-success fs-5">₹ ${totalRs}</span>
                             </div>
                         </div>
-                        <p class="mt-3 text-muted small">Are you sure you want to generate bills for these customers?</p>
+                        
+                        <div class="mt-3">
+                            <label class="form-label fw-bold text-dark small">Verify Received Amount:</label>
+                            <input type="number" id="swal-input-received" class="form-control text-center mx-auto w-75 fw-bold border-primary fs-5" placeholder="Enter Amount">
+                        </div>
                     `,
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#4361ee',
                     cancelButtonColor: '#ef476f',
-                    confirmButtonText: '<i class="bi bi-check-lg"></i> Yes, Submit!',
-                    cancelButtonText: 'Cancel'
+                    confirmButtonText: '<i class="bi bi-check-lg"></i> Verify & Submit',
+                    cancelButtonText: 'Cancel',
+                    didOpen: () => {
+                        const input = Swal.getPopup().querySelector('#swal-input-received');
+                        input.focus();
+                        // Allow Enter key to submit
+                        input.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') {
+                                Swal.clickConfirm();
+                            }
+                        });
+                    },
+                    preConfirm: () => {
+                        const receivedInput = Swal.getPopup().querySelector('#swal-input-received').value;
+                        const receivedAmount = parseFloat(receivedInput);
+                        const expectedAmount = parseFloat(totalRs);
+
+                        if (!receivedInput || isNaN(receivedAmount)) {
+                            Swal.showValidationMessage('Please enter the received amount!');
+                            return false;
+                        }
+                        
+                        // Compare floats
+                        if (Math.abs(receivedAmount - expectedAmount) > 0.01) {
+                             Swal.showValidationMessage(`Amount Mismatch! Expected: ₹${expectedAmount} but entered: ₹${receivedAmount}`);
+                             return false;
+                        }
+                        
+                        return true;
+                    }
                 }).then((result) => {
                     if (result.isConfirmed) {
                         billingForm.submit();

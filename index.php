@@ -1,4 +1,10 @@
 <?php
+ob_start();
+session_start();
+if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
+    header("Location: redirect-login.php");
+    exit();
+}
 // Place this PHP code in your script where you want to clear the storage
 echo "<script>
     // Check if localStorage is available and clear it

@@ -462,7 +462,7 @@ if(isset($_POST['update_student']))
     $rc_dc = mysqli_real_escape_string($con, $_POST['rc_dc']);
     $mso = mysqli_real_escape_string($con, $_POST['mso']);
     $stbno = mysqli_real_escape_string($con, $_POST['stbno']);
-    $name = mysqli_real_escape_string($con, $_POST['name']);
+    $name = mysqli_real_escape_string($con, $_POST['editName']);
     $phone = mysqli_real_escape_string($con, $_POST['phone']);
     $description = mysqli_real_escape_string($con, $_POST['description']);
     $accessories = mysqli_real_escape_string($con, $_POST['accessories']);

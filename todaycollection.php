@@ -290,7 +290,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
             <div class="custom-card">
                  <div class="card-header-gradient">
                     <h4><i class="bi bi-table me-2"></i>Collection Report</h4>
-                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                    <span class="badge bg-primary bg-opacity-10 text-white px-3 py-2 rounded-pill">
                        <?php echo isset($_GET['from_date']) ? date('d M', strtotime($_GET['from_date'])) . ' - ' . date('d M', strtotime($_GET['to_date'])) : 'Today'; ?>
                     </span>
                 </div>

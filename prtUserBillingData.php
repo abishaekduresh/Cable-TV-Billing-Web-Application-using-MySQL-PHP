@@ -137,7 +137,7 @@ $html = '
 
     <!-- Individual Payments -->
     <tr>
-        <td rowspan="5">Individual</td>
+        <td rowspan="6">Individual</td>
         <td>Cash</td>
         <td>' . $data['indivData']['cash']['count'] . '</td>
         <td>' . $data['indivData']['cash']['amt'] . '</td>
@@ -161,6 +161,12 @@ $html = '
         <td>' . $data['indivData']['credit']['amt'] . '</td>
         <td>' . $data['indivData']['credit']['discount'] . '</td>
     </tr>
+    <tr>
+        <td style="color:red;">Cancelled</td>
+        <td style="color:red; font-weight:bold;">' . $data['indivCancelCount'] . '</td>
+        <td>-</td>
+        <td>-</td>
+    </tr>
     <tr class="category-total">
         <td>Total</td>
         <td>' . $data['indivData']['totCount'] . '</td>
@@ -170,7 +176,7 @@ $html = '
 
     <!-- Group Payments -->
     <tr>
-        <td rowspan="5">Group</td>
+        <td rowspan="6">Group</td>
         <td>Cash</td>
         <td>' . $data['groupData']['cash']['count'] . '</td>
         <td>' . $data['groupData']['cash']['amt'] . '</td>
@@ -194,6 +200,12 @@ $html = '
         <td>' . $data['groupData']['credit']['amt'] . '</td>
         <td>' . $data['groupData']['credit']['discount'] . '</td>
     </tr>
+    <tr>
+        <td style="color:red;">Cancelled</td>
+        <td style="color:red; font-weight:bold;">' . $data['groupCancelCount'] . '</td>
+        <td>-</td>
+        <td>-</td>
+    </tr>
     <tr class="category-total">
         <td>Total</td>
         <td>' . $data['groupData']['totCount'] . '</td>
@@ -203,7 +215,7 @@ $html = '
 
     <!-- POS Payments -->
     <tr>
-        <td rowspan="5">POS</td>
+        <td rowspan="6">POS</td>
         <td>Cash</td>
         <td>' . $data['posData']['cash']['count'] . '</td>
         <td>' . $data['posData']['cash']['amt'] . '</td>
@@ -226,6 +238,12 @@ $html = '
         <td>' . $data['posData']['credit']['count'] . '</td>
         <td>' . $data['posData']['credit']['amt'] . '</td>
         <td>' . $data['posData']['credit']['discount'] . '</td>
+    </tr>
+    <tr>
+        <td style="color:red;">Cancelled</td>
+        <td style="color:red; font-weight:bold;">' . $data['posCancelCount'] . '</td>
+        <td>-</td>
+        <td>-</td>
     </tr>
     <tr class="category-total">
         <td>Total</td>
