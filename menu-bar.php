@@ -304,7 +304,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id'])) {
             <!-- Right Side Controls -->
             <div class="d-flex align-items-center gap-3">
                 <div class="d-none d-lg-block text-end me-2">
-                    <div class="small fw-bold user-info-text"><?= htmlspecialchars($session_user) ?></div>
+                    <div class="small fw-bold user-info-text">Welcome, <?= htmlspecialchars($session_user) ?></div>
                     <div class="small user-date-text" style="font-size: 0.75rem;">
                         <span id="navbarDate"><?= date("d M Y") ?></span> 
                         <span class="mx-1 opacity-50">|</span> 

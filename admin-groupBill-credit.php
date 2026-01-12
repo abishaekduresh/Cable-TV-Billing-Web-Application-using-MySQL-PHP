@@ -207,7 +207,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                 <th>Old Bal</th>
                                 <th>Bill Amt</th>
                                 <th>Paid Amt</th>
-                                <th>New Bal</th>
+                                <th>Discount</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
@@ -243,21 +243,25 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
                                             <td class="text-success fw-bold"><?= $row['Rs']; ?></td>
                                             <td class="text-danger fw-bold"><?= $row['discount']; // Using Discount column as placeholder for New Bal or as is ?></td>
                                             <td class="text-center">
-                                                <!-- Adjusted link to pass 'id' or 'billNo' depending on what backend expects. Assuming 'id' is standard primary key -->
-                                                <a href="admin-code-groupBill-credit.php?id=<?= isset($row['id']) ? $row['id'] : $row['billNo']; ?>" class="btn btn-outline-danger btn-sm rounded-pill px-3">
-                                                    <i class="bi bi-arrow-counterclockwise me-1"></i>Credit
-                                                </a>
+                                                <form class="update-pmode-form d-flex gap-2 justify-content-center" method="POST">
+                                                    <select class="form-select form-select-sm bg-warning text-dark fw-bold border-0" name="selectedValue" style="width: 100px;">
+                                                        <option value="cash" <?php if ($row['pMode'] === 'cash') { echo 'selected'; } ?>>Cash</option>
+                                                        <option value="gpay" <?php if ($row['pMode'] === 'gpay') { echo 'selected'; } ?>>G Pay</option>
+                                                        <option value="paytm" <?php if ($row['pMode'] === 'paytm') { echo 'selected'; } ?>>Paytm</option>
+                                                        <option value="credit" <?php if ($row['pMode'] === 'credit') { echo 'selected'; } ?>>Credit</option>
+                                                    </select>
+                                                    
+                                                    <input type="hidden" name="id" value="<?= isset($row['id']) ? $row['id'] : ''; ?>">
+                                                    <input type="hidden" name="group_id" value="<?= $row['group_id']; ?>">
+                                                    <input type="hidden" name="date" value="<?= $row['date']; ?>">
+                                                    
+                                                    <button type="submit" class="btn btn-primary btn-sm px-3 fw-bold">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
-                                                        <input type="hidden" name="date" value="<?= $row1['date']; ?>">
-                                                        <input type="hidden" name="group_id" value="<?= $row1['group_id']; ?>">
-                                                        <!-- Assign 'bill_id' value to the hidden input field for 'bill_no' -->
-                                                        <button type="submit" class="btn btn-danger btn-sm" style="font-weight: bold;" >
-                                                            Submit
-                                                        </button>
-                                                    </td>
-                                                 </tr>
-                                            </form>
+
                                         <?php
                                                 
                                                     // Display the total sum
@@ -284,6 +288,80 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 <br/>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $(document).on("submit", ".update-pmode-form", function(e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let formData = form.serialize();
+
+        Swal.fire({
+            title: "Enter Remark",
+            text: "Please provide a note / reference for updating this group bill payment mode.",
+            input: "text",
+            inputPlaceholder: "Type your remark here...",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
+            preConfirm: (inputValue) => {
+                if (!inputValue || inputValue.trim().length < 4) {
+                    Swal.showValidationMessage("Remark is required and must be at least 4 characters!");
+                }
+                return inputValue.trim();
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                formData += "&remark2=" + encodeURIComponent(result.value);
+                
+                // Show loading state
+                Swal.fire({
+                    title: 'Processing...',
+                    didOpen: () => Swal.showLoading(),
+                    allowOutsideClick: false
+                });
+
+                $.ajax({
+                    url: "admin-code-groupBill-credit.php",
+                    type: "POST",
+                    data: formData,
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status === "success") {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Updated Successfully",
+                                text: response.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Action Failed",
+                                text: response.message || "Unknown error occurred"
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX Error:", status, error);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Server Error",
+                            text: "Something went wrong! Check console for details."
+                        });
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
 </body>
 
 </html>
@@ -291,6 +369,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['id']) && isset($_SESSION['r
 <?php include 'footer.php'?>
 
 <?php } else {
-    header("Location: index.php");
+    header("Location: logout.php");
 }
 ?>

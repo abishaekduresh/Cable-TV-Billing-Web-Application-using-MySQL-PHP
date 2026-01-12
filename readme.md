@@ -29,6 +29,8 @@ A comprehensive web-based billing and management solution for Cable TV operators
 - **Security**: Added passcode in profile for hassle-free login without OTP.
 - **Settings**: Added SMS turn on/off toggle in App Settings.
 - **Printing**: Added 3-inch print view for Income/Expense reports.
+- **POS Credit System**: Added "Credit" payment mode with mandatory Remark field. Auto-zeroes "Received Amount".
+- **POS Bill Management**: Overhauled `pos-bill-cancel.php` with modern UI. Added capability to **Update Payment Mode** (e.g., Credit -> Cash) and Status with audit trail logging (User + Timestamp + Reason).
 
 ### Previous Notes
 - Added prompt in credit and cancel action before processing.

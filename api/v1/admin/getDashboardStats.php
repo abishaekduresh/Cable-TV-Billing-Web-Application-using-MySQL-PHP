@@ -44,7 +44,7 @@ try {
     // --- 1. Period Overview (Replaces "Today's Overview") ---
     
     // 1a. Individual Collection (Strict 'approve' status matches todaycollection.php)
-    $sqlIndiv = "SELECT COALESCE(SUM(paid_amount),0) as total FROM bill WHERE date BETWEEN '$startDate' AND '$endDate' AND status = 'approve'";
+    $sqlIndiv = "SELECT COALESCE(SUM(paid_amount + oldMonthBal),0) as total FROM bill WHERE date BETWEEN '$startDate' AND '$endDate' AND status = 'approve'";
     $resIndiv = $con->query($sqlIndiv);
     if(!$resIndiv) throw new Exception("Indiv Query Failed: " . $con->error);
     $periodIndiv = (float)$resIndiv->fetch_assoc()['total'];

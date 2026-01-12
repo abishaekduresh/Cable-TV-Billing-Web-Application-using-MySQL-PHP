@@ -11,7 +11,7 @@ This project is a comprehensive **Cable TV Billing & Management System** built w
 - **Billing System**:
     - **Individual Billing**: `billing-dashboard.php`, `adv-indiv-billing-dashboard.php` (Includes Integrated Calculator & Real-Time Payable)
     - **Group Billing**: `billing-group-dashboard.php` (Features: Manual Received Amount Verification, Detailed Confirmation)
-    - **POS Billing**: Point of Sale interface (`pos-billing.php`, `pos-product.php`)
+    - **POS Billing**: Point of Sale interface (`pos-billing.php`, `pos-product.php`) - **Supports Credit Payments** with remarks.
 - **Utilities**:
     - **Global Calculator**: Accessible via Menu Bar. Features Casio-style UI, Keyboard Support, and Auto-Reset.
 - **Employee Dashboard**: Standardized premium UI for employees (`employee-dashboard.php`) with collection summaries.
@@ -19,7 +19,8 @@ This project is a comprehensive **Cable TV Billing & Management System** built w
     - **Analytics Overview**: Interactive Visualization for Revenue Trends (Daily/Monthly), Collection Sources, and Payment Modes. (Visible only to Super Admin 'A').
     - **Privacy Mode**: One-click toggle to blur sensitive financial data, active by default.
     - **Data Filtering**: Date presets (Today, Yesterday, Custom) for precise reporting.
-- **Payment & Cancellation**: Cancel bills (`admin-bill-cancel.php`), credit bills (`admin-bill-credit.php`).
+    - **Payment & Cancellation**: Cancel bills (`admin-bill-cancel.php`), credit bills (`admin-bill-credit.php`).
+    - **POS Bill Management**: `pos-bill-cancel.php` - Modern dashboard to Cancel POS bills or **Update Payment Mode** (Credit settling) with strict audit trails.
 
 ### Reports
 - **Financial Reports**: Income/Expense (`admin-in-ex-report.php`), Today's Collection (`todaycollection.php`).

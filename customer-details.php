@@ -430,7 +430,7 @@
                         
                          <div class="col-md-6">
                             <label class="form-label">Name <span class="text-danger">*</span></label>
-                            <input type="text" name="name" id="name" class="form-control" required />
+                            <input type="text" name="editName" id="editName" class="form-control" required />
                         </div>
                          <div class="col-md-6">
                              <label class="form-label">STB No <span class="text-danger">*</span></label>
@@ -529,7 +529,7 @@
                     $('#rc_dc').val(res.data.rc_dc);
                     $('#mso').val(res.data.mso);
                     $('#stbno').val(res.data.stbno);
-                    $('#name').val(res.data.name);
+                    $('#editName').val(res.data.name);
                     $('#phone').val(res.data.phone);
                     $('#accessories').val(accessories); 
                     $('#description').val(res.data.description);
@@ -622,5 +622,5 @@
 <?php include 'footer.php'?>
 
 <?php }else{
-	header("Location: index.php");
+	header("Location: logout.php");
 } ?>

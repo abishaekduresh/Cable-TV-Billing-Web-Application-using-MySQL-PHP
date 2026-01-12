@@ -32,7 +32,7 @@ $result = $con->query($query);
     <?php include 'favicon.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS Billing System</title>
+    <title>POS Billing System (Updated)</title>
       <style>
         /* Custom styles for the toggle slider */
         .toggle-slider {
@@ -116,6 +116,7 @@ $result = $con->query($query);
     transform: translateY(0);
 } 
       </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -201,7 +202,7 @@ $result = $con->query($query);
             </tfoot>
         </table>
         <!-- Scrollable modal -->
-        <div class="modal fade" id="paymentModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="paymentModel" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <!--<div class="modal fade" id="paymentModel" data-bs-backdrop="static" data-bs-keyboa/rd="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"-->
           <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
@@ -239,7 +240,7 @@ $result = $con->query($query);
                                     <option value="1">Cash</option>
                                     <option value="2">Gpay</option>
                                     <option value="3">Paytm</option>
-                                    <!-- <option value="4">Credit</option> -->
+                                    <option value="4">Credit</option>
                                 </select>
                             </div>
                         </div>
@@ -439,6 +440,57 @@ $result = $con->query($query);
             } else {
                 payBtn.style.display = 'block';
                 payErrorMsg.style.display = 'none';
+            }
+        });
+
+        // Add handler for Payment Mode Change to capture remark for Credit
+        let creditRemark = '';
+        $('#pay_mode').on('change', function() {
+            if ($(this).val() == '4') { // Credit
+                Swal.fire({
+                    title: 'Enter Reason for Credit',
+                    input: 'text',
+                    inputLabel: 'Remark',
+                    inputPlaceholder: 'Enter remark...',
+                    showCancelButton: true,
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'You need to write something!'
+                        }
+                        if (value.length < 4) {
+                            return 'Remark must be at least 4 characters long!'
+                        }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        creditRemark = result.value;
+                    } else {
+                        // If cancelled, reset selection or handle accordingly
+                        $(this).val('Select a payment mode'); // Or previous value
+                         payBtn.style.display = 'none'; // Re-evaluate button state
+                    }
+                });
+
+                // Set Received Amount to 0 and ReadOnly
+                $('#received_amount').val(0);
+                $('#received_amount').prop('readonly', true);
+                
+                // Recalculate balance
+                var payable_amount = parseFloat($("#payable_amount").val());
+                var balance_amount = 0 - payable_amount;
+                $("#balance_amount").val(balance_amount.toFixed(2));
+                
+                // Allow submitting since it's credit
+                payBtn.style.display = 'block';
+                payErrorMsg.style.display = 'none';
+
+            } else {
+                creditRemark = ''; // Reset remark if not credit
+                $('#received_amount').prop('readonly', false);
+                 // Optionally reset received amount to payable or keep as is? 
+                 // Let's trigger change to recalculate or just leave it for user to edit?
+                 // Behave like normal:
+                 $('#received_amount').trigger('change');
             }
         });
         
@@ -723,6 +775,7 @@ $result = $con->query($query);
                 r_or_hs: (r_or_hs == '1') ? '1' : '0',
                 // cus_phone: cusPhone,
                 discount: $("#discount").val().trim(),
+                remark: creditRemark, 
                 items: []
             };
                                 // console.log('posBilling()', r_or_hs);

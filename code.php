@@ -473,7 +473,7 @@ if(isset($_POST['update_student']))
     {
         $res = [
             'status' => 422,
-            'message' => 'All fields are mandatory'
+            'message' => 'All fields are mandatory11111111'
         ];
         echo json_encode($res);
         return;

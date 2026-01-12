@@ -18,11 +18,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Sanitize input
     $status = isset($data['status']) ? $data['status'] : null;
+    $pay_mode = isset($data['pay_mode']) ? $data['pay_mode'] : null;
+    $remark = isset($data['remark']) ? $data['remark'] : '';
     $pos_bill_id = isset($data['pos_bill_id']) ? $data['pos_bill_id'] : null;
     
     // Prepare and execute SQL query
-    $stmt = $con->prepare("UPDATE pos_bill SET status = ? WHERE pos_bill_id = ?");
-    $stmt->bind_param("ss", $status, $pos_bill_id);
+    $stmt = $con->prepare("UPDATE pos_bill SET status = ?, pay_mode = ?, remark = ? WHERE pos_bill_id = ?");
+    $stmt->bind_param("sisi", $status, $pay_mode, $remark, $pos_bill_id);
     
     if ($stmt->execute()) {
         $d=1;

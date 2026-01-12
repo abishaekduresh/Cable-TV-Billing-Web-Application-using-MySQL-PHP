@@ -3,85 +3,88 @@ session_start();
 require "dbconfig.php";
 require "component.php";
 
+header('Content-Type: application/json');
 
-// Check if the form is submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the selected fruit value from the form
-    $selectedValue = $_POST['selectedValue'];
-    $date = $_POST['date'];
-    $group_id = $_POST['group_id'];
-// $currentDate = $currentDate;
-// $currentTime = $currentTime;
-    // Perform any necessary validation or sanitization of the input data
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(["status" => "error", "message" => "Invalid request"]);
+    exit;
+}
 
-    // Connect to the database (assuming you have a database connection established)
+// Get POST values
+$selectedValue = $_POST['selectedValue'] ?? null;
+// Use unique identifier if possible, fallback to group_id + date combo if that's how it's keyed
+$group_id = $_POST['group_id'] ?? null;
+$date = $_POST['date'] ?? null;
+$id = $_POST['id'] ?? null; // ID if available
+$remark2Input = trim($_POST['remark2'] ?? '');
 
-    // Update the table with the selected fruit value
-    $updateQuery = "UPDATE billgroupdetails SET pMode = '$selectedValue' WHERE group_id = '$group_id' AND date='$date'";
+// Validate required fields
+if (!$selectedValue || (!$group_id && !$id)) {
+    echo json_encode(["status" => "error", "message" => "Missing required data"]);
+    exit;
+}
 
-    // $updateQuery = "UPDATE billgroup bg
-    //             JOIN billgroupdetails bgd ON bg.group_id = bgd.group_id
-    //             SET bg.status = '$selectedValue',
-    //                 bgd.column_name = '$new_value'
-    //             WHERE bg.group_id = '$group_id'";
+// Validate remark length (consistent with admin-code-bill-credit.php)
+if (empty($remark2Input) || strlen($remark2Input) < 4) {
+    echo json_encode(["status" => "error", "message" => "Remark is required and must be at least 4 characters"]);
+    exit;
+}
 
-    $updateResult = mysqli_query($con, $updateQuery);
+// Get session username
+$usernamePrefix = $_SESSION['username'] ?? "Unknown User";
 
-    if ($updateResult) {
-        // Database update successful, perform any additional actions or display a success message
-        // echo "Database update successful. Bill Status updated to: " . $selectedValue; 
-        
-        if (isset($_SESSION['id'])) {
-            // Get the user information before destroying the session
-            $userId = $_SESSION['id'];
-            $username = $_SESSION['username'];
-            $role = $_SESSION['role'];
-            $action = "Group Credit Update Successful - $selectedValue";
-        
-            // Call the function to insert user activity log
-            logUserActivity($userId, $username, $role, $action);
-        }
-    
-        ?>
-        <center><img src="assets/green-thumbs-up.svg" alt="green-thumbs-up" width="512px" height="512px"></center>
-        <?php
-    } else {
-        // Database update failed, handle the error
-        echo "Error updating the database.";
-
-        if (isset($_SESSION['id'])) {
-            // Get the user information before destroying the session
-            $userId = $_SESSION['id'];
-            $username = $_SESSION['username'];
-            $role = $_SESSION['role'];
-            $action = "Group Credit Update Failed - $selectedValue";
-        
-            // Call the function to insert user activity log
-            logUserActivity($userId, $username, $role, $action);
-        }
-        
-        ?>
-        <center><img src="assets/red-thumbs-down.svg" alt="green-thumbs-up" width="512px" height="512px"></center>
-        <?php
-    }
+// Fetch current info for logging
+if ($id) {
+    $stmtOld = $con->prepare("SELECT pMode, groupName, date FROM billgroupdetails WHERE id = ?");
+    $stmtOld->bind_param("i", $id);
 } else {
-    // Redirect the user to the form page if accessed directly without submitting the form
-    header("Location: admin-groupBill-credit.php");
-    exit();
+    $stmtOld = $con->prepare("SELECT pMode, groupName, date FROM billgroupdetails WHERE group_id = ? AND date = ?");
+    $stmtOld->bind_param("ss", $group_id, $date);
+}
+$stmtOld->execute();
+$stmtOld->bind_result($oldPmode, $groupName, $billDate);
+$stmtOld->fetch();
+$stmtOld->close();
+
+if (!$oldPmode) $oldPmode = "N/A";
+
+// Build final log remark (since we don't have a remark column in DB table)
+$finalRemark = "Changed payment mode from " . $oldPmode . " to " . $selectedValue . " | CREDIT: " . $remark2Input;
+
+// Update billgroupdetails
+// Note: We are updating pMode. 'status' usually implies 'approve' vs 'pending', but check if we need to set status='approve' too.
+// admin-groupBill-credit.php filters by status='approve' AND pMode='credit'. So we keep status='approve'.
+if ($id) {
+    $stmt = $con->prepare("UPDATE billgroupdetails SET pMode = ? WHERE id = ?");
+    $stmt->bind_param("si", $selectedValue, $id);
+} else {
+    $stmt = $con->prepare("UPDATE billgroupdetails SET pMode = ? WHERE group_id = ? AND date = ?");
+    $stmt->bind_param("sss", $selectedValue, $group_id, $date);
 }
 
-// Redirect function
-function redirect($url)
-{
-    echo "<script>
-            setTimeout(function(){
-                window.location.href = '$url';
-            }, 200);
-        </script>";
-}
+$updateResult = $stmt->execute();
 
-// Usage example
-// $url = "http://localhost/ctv/bill-last5-print.php"; 
-$url = "admin-groupBill-credit.php"; // Replace with your desired URL
-redirect($url);
+// Prepare log message
+$logMessage = $usernamePrefix . " updated Group Bill ($groupName - $billDate) | $finalRemark";
+
+if ($updateResult) {
+    if (isset($_SESSION['id'])) {
+        logUserActivity($_SESSION['id'], $_SESSION['username'], $_SESSION['role'], $logMessage);
+    }
+    echo json_encode([
+        "status" => "success",
+        "message" => "Payment mode updated to: $selectedValue",
+        "data" => [
+            "group_id" => $group_id,
+            "old_status" => $oldPmode,
+            "new_status" => $selectedValue
+        ]
+    ]);
+} else {
+    if (isset($_SESSION['id'])) {
+        logUserActivity($_SESSION['id'], $_SESSION['username'], $_SESSION['role'], "Failed to update Group Bill ($groupName) | " . $finalRemark);
+    }
+    echo json_encode(["status" => "error", "message" => "Failed to update payment mode"]);
+}
+exit;
 ?>

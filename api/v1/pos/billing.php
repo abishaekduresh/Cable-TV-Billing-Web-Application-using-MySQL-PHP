@@ -84,6 +84,7 @@ $cus_name = isset($data['cus_name']) ? validateInput($data['cus_name']) : '-';
 $cus_phone = isset($data['cus_phone']) ? validateInput($data['cus_phone']) : '0';
 $discount = $data['discount'];
 $pay_mode = isset($data['pay_mode']) ? validateInput($data['pay_mode']) : '0';
+$remark = isset($data['remark']) ? validateInput($data['remark']) : '';
 $r_or_hs = $data['r_or_hs'];
 $items = $data['items'];
 $status = 1;
@@ -91,7 +92,7 @@ $unic_token = generateUniqueToken('pos_bill', 'token');
 $bill_no = generateUniquePosInvoiceId();
 
 // Insert data into the database
-$insertStmt = $con->prepare("INSERT INTO pos_bill (entry_timestamp, bill_no, username, cus_name, cus_phone, discount, token, pay_mode, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$insertStmt = $con->prepare("INSERT INTO pos_bill (entry_timestamp, bill_no, username, cus_name, cus_phone, discount, token, pay_mode, remark, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 if (!$insertStmt) {
     $response = array(
         "status" => "failed",
@@ -101,7 +102,7 @@ if (!$insertStmt) {
     echo json_encode($response);
     exit;
 }
-$insertStmt->bind_param("sssssssii", $timestamp, $bill_no, $username, $cus_name, $cus_phone, $discount, $unic_token, $pay_mode, $status);
+$insertStmt->bind_param("sssssssiss", $timestamp, $bill_no, $username, $cus_name, $cus_phone, $discount, $unic_token, $pay_mode, $remark, $status);
 
 if ($insertStmt->execute()) {
     $pos_bill_id = $insertStmt->insert_id;
